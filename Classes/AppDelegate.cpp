@@ -23,7 +23,7 @@
  ****************************************************************************/
 
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
+#include "OpeningScene.h"
 
 // #define USE_AUDIO_ENGINE 1
 
@@ -109,7 +109,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     /*-----------窗口页面设置-----------------------*/
 
     // create a scene. it's an autorelease object
-    auto scene = HelloWorld::createScene();//创建场景
+    auto scene = Opening::createScene();//创建场景
 
     // run
     director->runWithScene(scene);//移动到开始场景

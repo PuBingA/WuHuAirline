@@ -1,12 +1,12 @@
 
-#include "HelloWorldScene.h"
+#include "OpeningScene.h"
 #include<string>
 #include<vector>
 USING_NS_CC;
 using namespace std;
-Scene* HelloWorld::createScene()
+Scene* Opening::createScene()
 {
-    return HelloWorld::create();
+    return Opening::create();
 }
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -17,7 +17,7 @@ static void problemLoading(const char* filename)
 }
 
 // on "init" you need to initialize your instance
-bool HelloWorld::init()//场景布局函数
+bool Opening::init()//场景布局函数
 {
     if ( !Scene::init() )
     {
@@ -51,8 +51,8 @@ bool HelloWorld::init()//场景布局函数
     /*-------------开发人员标签--------------------*/
 
    
-        auto openItem = MenuItemImage::create("menu\\game_begin.png", "game_begin_select.png", CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
-        auto endingItem = MenuItemImage::create("menu\\game_ending.png", "game_ending_select.png", CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
+        auto openItem = MenuItemImage::create("menu\\game_begin.png", "game_begin_select.png", CC_CALLBACK_1(Opening::menuCloseCallback, this));
+        auto endingItem = MenuItemImage::create("menu\\game_ending.png", "game_ending_select.png", CC_CALLBACK_1(Opening::menuCloseCallback, this));
         auto menu = Menu::create(openItem,NULL);
         auto menu2 = Menu::create(endingItem, NULL);
         this->addChild(menu);
@@ -67,7 +67,7 @@ bool HelloWorld::init()//场景布局函数
 }
 
 
-void HelloWorld::menuCloseCallback(Ref* pSender)
+void Opening::menuCloseCallback(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application
     Director::getInstance()->end();
@@ -80,7 +80,7 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 }
 
 /*--------------输出标签函数-----------------*/
-void HelloWorld::label_output(cocos2d::Label* my_label, float wide, float high)
+void Opening::label_output(cocos2d::Label* my_label, float wide, float high)
 {
     my_label->enableShadow();
     my_label->enableGlow(Color4B::YELLOW);
