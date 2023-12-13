@@ -1,9 +1,11 @@
-
+#include"choose_map.h"
 #include "OpeningScene.h"
 #include<string>
 #include<vector>
+#include "AudioEngine.h"
 USING_NS_CC;
 using namespace std;
+
 Scene* Opening::createScene()
 {
     return Opening::create();
@@ -17,7 +19,8 @@ static void problemLoading(const char* filename)
 }
 
 // on "init" you need to initialize your instance
-bool Opening::init()//场景布局函数
+
+bool Opening::init()//场景布局函数,重要函数
 {
     if ( !Scene::init() )
     {
@@ -50,43 +53,46 @@ bool Opening::init()//场景布局函数
     }//3个成员，输出4行
     /*-------------开发人员标签--------------------*/
 
-   
-        auto openItem = MenuItemImage::create("menu\\game_begin.png", "game_begin_select.png", CC_CALLBACK_1(Opening::menuCloseCallback, this));
-        auto endingItem = MenuItemImage::create("menu\\game_ending.png", "game_ending_select.png", CC_CALLBACK_1(Opening::menuCloseCallback, this));
+   /*----------------菜单----------------------------*/
+        auto openItem = MenuItemImage::create("menu\\game_begin.png", "menu\\game_begin_select.png", CC_CALLBACK_1(Opening::menuCallback, this,begining));//点击则切换到选择地图场景
+        auto endingItem = MenuItemImage::create("menu\\game_ending.png", "menu\\game_ending_select.png", CC_CALLBACK_1(Opening::menuCallback, this,close));//点击则设置成结束场景
         auto menu = Menu::create(openItem,NULL);
         auto menu2 = Menu::create(endingItem, NULL);
         this->addChild(menu);
         this->addChild(menu2);
         menu->setPosition(1235 / 2-200, 100);
-        menu2->setPosition(1235 / 2 + 200, 100);
-    
+        menu2->setPosition(1235 / 2 + 200, 100);//菜单配置完毕
+       /*----------------菜单----------------------------*/
 
+
+        /*------------音乐----------------*/
+        auto background_music = AudioEngine::play2d("", true);
+        /*------------音乐----------------*/
 
      /*----自己添加的---*/
     return true;
 }
 
 
-void Opening::menuCloseCallback(Ref* pSender)
+void Opening::menuCallback(Ref* pSender, const choose_scene opening_menu)
 {
-    //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->end();
-    /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() as given above,instead trigger a custom event created in RootViewController.mm as below*/
-
-    //EventCustom customEndEvent("game_scene_close_event");
-    //_eventDispatcher->dispatchEvent(&customEndEvent);
-
-
+    if(opening_menu==close)
+    Director::getInstance()->end();//结束场景
+    if (opening_menu == begining)
+    {
+        auto choose_scene = choose_map::createScene();//生成选择地图场景
+        Director::getInstance()->replaceScene(choose_scene);//切换场景
+    }
 }
 
 /*--------------输出标签函数-----------------*/
-void Opening::label_output(cocos2d::Label* my_label, float wide, float high)
+template<class T, class K>
+void Opening::label_output(cocos2d::Label* my_label, T wide, K high)
 {
     my_label->enableShadow();
-    my_label->enableGlow(Color4B::YELLOW);
-    my_label->setPosition(wide,high);
+    my_label->enableGlow(Color4B::YELLOW);//给文字黄色阴影
+    my_label->setPosition(wide,high);//移动标签位置
     this->addChild(my_label);
 }
-
 /*--------------输出标签函数-----------------*/
 

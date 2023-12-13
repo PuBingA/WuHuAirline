@@ -1,19 +1,23 @@
 #include "cocos2d.h"
+#include"public_define.h"
+enum choose_scene
+{
+    close,//关闭
+    begining//开始选择地图
+};//这里存放切换场景的参数，用于简化切换场景函数
 
 class Opening : public cocos2d::Scene
 {
 public:
     static cocos2d::Scene* createScene();
 
-    virtual bool init();
+    virtual bool init();//构建场景函数
     
-    // a selector callback
-    void menuCloseCallback(cocos2d::Ref* pSender);
+    void menuCallback(cocos2d::Ref* pSender, const choose_scene opening_menu);//菜单响应函数
     
-    // implement the "static create()" method manually
     CREATE_FUNC(Opening);
 
     /*一以下为团队自定义的函数*/
-
-    void label_output(cocos2d::Label* my_label, float wide, float high);//输出标签
+    template<class T,class K>
+    void label_output(cocos2d::Label* my_label, T wide, K high);//输出标签
 };
