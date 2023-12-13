@@ -1,7 +1,7 @@
 
 #include "AppDelegate.h"
 #include "OpeningScene.h"
-
+#include "AudioEngine.h"
 // #define USE_AUDIO_ENGINE 1
 
 #if USE_AUDIO_ENGINE
@@ -89,6 +89,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto scene = Opening::createScene();//创建场景
 
     // run
+    auto background_music = AudioEngine::play2d("background_music.mp3", true);//背景音乐植入
     director->runWithScene(scene);//移动到开始场景
 
     return true;
