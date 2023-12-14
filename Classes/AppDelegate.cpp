@@ -1,14 +1,7 @@
-
+#include "cocos2d.h"
 #include "AppDelegate.h"
 #include "OpeningScene.h"
-#include "AudioEngine.h"
-// #define USE_AUDIO_ENGINE 1
-
-#if USE_AUDIO_ENGINE
 #include "audio/include/AudioEngine.h"
-using namespace cocos2d::experimental;
-#endif
-
 USING_NS_CC;
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(1235, 694);
@@ -48,7 +41,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     /*-----------窗口页面设置-----------------------*/
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
-    if(!glview) {
+    if(!glview)
+    {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
         glview = GLViewImpl::createWithRect("carrot_fantasy", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));//设置窗口大小以及名称
 #else
@@ -68,19 +62,13 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto frameSize = glview->getFrameSize();
     // if the frame's height is larger than the height of medium size.
     if (frameSize.height > mediumResolutionSize.height)
-    {        
         director->setContentScaleFactor(MIN(largeResolutionSize.height/designResolutionSize.height, largeResolutionSize.width/designResolutionSize.width));
-    }
     // if the frame's height is larger than the height of small size.
     else if (frameSize.height > smallResolutionSize.height)
-    {        
         director->setContentScaleFactor(MIN(mediumResolutionSize.height/designResolutionSize.height, mediumResolutionSize.width/designResolutionSize.width));
-    }
     // if the frame's height is smaller than the height of medium size.
     else
-    {        
         director->setContentScaleFactor(MIN(smallResolutionSize.height/designResolutionSize.height, smallResolutionSize.width/designResolutionSize.width));
-    }
 
     register_all_packages();
     /*-----------窗口页面设置-----------------------*/
@@ -89,7 +77,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto scene = Opening::createScene();//创建场景
 
     // run
-    auto background_music = AudioEngine::play2d("background_music.mp3", true);//背景音乐植入
+    auto background_music = AudioEngine::play2d("OpeningSceneBgm.mp3", true);//背景音乐植入
     director->runWithScene(scene);//移动到开始场景
 
     return true;

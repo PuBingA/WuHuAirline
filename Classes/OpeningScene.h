@@ -1,5 +1,7 @@
 #include "cocos2d.h"
 #include"public_define.h"
+#include "AudioEngine.h"
+
 enum choose_scene
 {
     close,//¹Ø±Õ

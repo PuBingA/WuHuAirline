@@ -1,6 +1,8 @@
 #include "cocos2d.h"
 #include"public_define.h"
 #include"map.h"
+#include "AudioEngine.h"
+
 enum choose_scene_2
 {
     back,//返回开始界面
@@ -12,6 +14,8 @@ enum choose_scene_2
 
 class choose_map :public cocos2d::Scene//继承场景类
 {
+private:
+    int choose_map_bgm;//背景音乐植入
 public:
     static cocos2d::Scene* createScene();
 

@@ -21,9 +21,7 @@ static void problemLoading(const char* filename)
 bool choose_map::init()//场景布局函数,重要函数
 {
     if (!Scene::init())
-    {
         return false;
-    }
 
     auto visibleSize = Director::getInstance()->getVisibleSize();//获取可见大小
     Vec2 origin = Director::getInstance()->getVisibleOrigin();//获取opengl起点
@@ -32,10 +30,6 @@ bool choose_map::init()//场景布局函数,重要函数
     auto choose_map_background = Sprite::create("choose_map_background.png");
     this->addChild(choose_map_background);
     choose_map_background->setPosition(background_wide / 2, background_high / 2);//生成背景图
-
-
-
-
 
 
     auto back_item = MenuItemImage::create("CloseNormal.png", "CloseSelected.png", CC_CALLBACK_1(choose_map::menuCallback, this, back));
@@ -56,31 +50,18 @@ bool choose_map::init()//场景布局函数,重要函数
     auto choose_map_3 = MenuItemImage::create("choose_map_3.png", "choose_map_3_selected.png", CC_CALLBACK_1(choose_map::menuCallback, this, map3));
     auto map_3_menu = Menu::create(choose_map_3, NULL);
     map_3_menu->setPosition(background_wide / 2+300, background_high / 2);
-    this->addChild(map_3_menu);//生成地图2选择菜单
- 
-
+    this->addChild(map_3_menu);//生成地图3选择菜单
 }
 
 
 void choose_map::menuCallback(cocos2d::Ref* pSender, choose_scene_2 choose_map)
 {
     if (choose_map == back)
-    {
-        Director::getInstance()->replaceScene(Opening::create());//切换场景
-    }//返回开始界面
-
+        Director::getInstance()->replaceScene(Opening::create());//切换场景,返回开始界面
     if (choose_map == map1)
-    {
-        Director::getInstance()->replaceScene(Map_One::create());//切换场景
-    }//进入地图1
-
+        Director::getInstance()->replaceScene(Map_One::create());//切换场景,进入地图1
     if (choose_map == map2)
-    {
-
-    }//进入地图2
-
+        ;//进入地图2
     if (choose_map == map3)
-    {
-
-    }//进入地图3
+        ;//进入地图3
 }
