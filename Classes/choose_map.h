@@ -17,7 +17,6 @@ public:
 
     virtual bool init();//创建场景类
 
-    // a selector callback
     void menuCallback(cocos2d::Ref* pSender,choose_scene_2 choose_map);//菜单响应函数
 
     // implement the "static create()" method manually

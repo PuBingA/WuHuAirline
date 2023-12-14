@@ -80,8 +80,7 @@ void Opening::menuCallback(Ref* pSender, const choose_scene opening_menu)
     Director::getInstance()->end();//结束场景
     if (opening_menu == begining)
     {
-        auto choose_scene = choose_map::createScene();//生成选择地图场景
-        Director::getInstance()->replaceScene(choose_scene);//切换场景
+        Director::getInstance()->replaceScene(choose_map::createScene());//切换场景
     }
 }
 

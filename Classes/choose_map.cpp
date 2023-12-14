@@ -66,12 +66,21 @@ void choose_map::menuCallback(cocos2d::Ref* pSender, choose_scene_2 choose_map)
 {
     if (choose_map == back)
     {
-        auto scene = Opening::create();//生成初始场景
-        Director::getInstance()->replaceScene(scene);//切换场景
+        Director::getInstance()->replaceScene(Opening::create());//切换场景
     }//返回开始界面
 
     if (choose_map == map1)
     {
-  
+        Director::getInstance()->replaceScene(Map_One::create());//切换场景
     }//进入地图1
+
+    if (choose_map == map2)
+    {
+
+    }//进入地图2
+
+    if (choose_map == map3)
+    {
+
+    }//进入地图3
 }
