@@ -17,6 +17,8 @@ public:
 
     void menuCallback(cocos2d::Ref* pSender);//菜单响应函数
 
+    void input_return_pause();//放置返回，以及暂停键   暂停键未实现
+
     // implement the "static create()" method manually
     CREATE_FUNC(Map_father);
 
@@ -52,6 +54,19 @@ public:
 private:
     std::vector<double>walk_way_store_x;
     std::vector<double>walk_way_store_y;//存放怪物行进的x,y轴的向量
+};
 
+#define three_walk_way_begin_x  250
+#define three_walk_way_begin_y  600//怪物开始移动坐标
+class Map_Three :public Map_father
+{
+public:
+    virtual void input_background();
+    virtual void input_walk_way();
+
+    CREATE_FUNC(Map_Three);
+private:
+    std::vector<double>walk_way_store_x;
+    std::vector<double>walk_way_store_y;//存放怪物行进的x,y轴的向量
 };
 

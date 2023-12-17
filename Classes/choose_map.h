@@ -1,6 +1,5 @@
 #include "cocos2d.h"
 #include"public_define.h"
-#include"map.h"
 #include "AudioEngine.h"
 
 enum choose_scene_2
@@ -22,6 +21,8 @@ public:
     virtual bool init();//创建场景类
 
     void menuCallback(cocos2d::Ref* pSender,choose_scene_2 choose_map);//菜单响应函数
+
+    void map_error();//地图无法进入报错
 
     // implement the "static create()" method manually
     CREATE_FUNC(choose_map);

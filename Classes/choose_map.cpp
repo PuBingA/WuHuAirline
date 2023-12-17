@@ -1,5 +1,6 @@
 #include "choose_map.h"
 #include"OpeningScene.h"
+#include"map.h"
 #include<string>
 #include<vector>
 USING_NS_CC;
@@ -61,7 +62,17 @@ void choose_map::menuCallback(cocos2d::Ref* pSender, choose_scene_2 choose_map)
     if (choose_map == map1)
         Director::getInstance()->replaceScene(Map_One::create());//切换场景,进入地图1
     if (choose_map == map2)
-        ;//进入地图2
+        Director::getInstance()->replaceScene(Map_Two::create());//进入地图2
     if (choose_map == map3)
+        Director::getInstance()->replaceScene(Map_Three::create());//进入地图3
         ;//进入地图3
+}
+
+void choose_map::map_error()//关卡选择报错函数,未完成
+{
+    Vector<MenuItem*> MenuItems;
+    auto error_report_label = Label::createWithTTF("该关卡未解锁！","fonts\\arial.ttf", 40);
+    auto error_report = MenuItemLabel::create(error_report_label);
+    MenuItems.pushBack(error_report);//将文本加入菜单
+
 }
