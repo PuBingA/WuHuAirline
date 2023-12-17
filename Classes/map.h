@@ -25,8 +25,8 @@ public:
 
 
 #define walk_way_begin_x 250 
-#define walk_way_begin_y 550
-#define way_size 82
+#define walk_way_begin_y 550//怪物开始移动的坐标
+#define way_size 82//每个地板的像素大小
 class Map_One :public Map_father
 {
 public:
@@ -37,5 +37,21 @@ public:
 private:
     std::vector<double>walk_way_store_x;
     std::vector<double>walk_way_store_y;//存放怪物行进的x,y轴的向量
+};
+
+
+#define two_walk_way_begin_x 250-way_size 
+#define two_walk_way_begin_y 550-5*way_size//怪物开始移动的坐标
+class Map_Two :public Map_father
+{
+public:
+    virtual void input_background();
+    virtual void input_walk_way();
+
+    CREATE_FUNC(Map_Two);
+private:
+    std::vector<double>walk_way_store_x;
+    std::vector<double>walk_way_store_y;//存放怪物行进的x,y轴的向量
+
 };
 
