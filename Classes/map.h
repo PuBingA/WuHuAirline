@@ -26,8 +26,7 @@ public:
 };
 
 
-#define walk_way_begin_x 250 
-#define walk_way_begin_y 550//怪物开始移动的坐标
+#define walk_way_begin_1 {250,550} //怪物开始移动的坐标
 #define way_size 82//每个地板的像素大小
 class Map_One :public Map_father
 {
@@ -37,13 +36,11 @@ public:
 
     CREATE_FUNC(Map_One);
 private:
-    std::vector<double>walk_way_store_x;
-    std::vector<double>walk_way_store_y;//存放怪物行进的x,y轴的向量
+    std::vector<std::vector<double>>walk_way_store_1;//存放怪物行进的x,y轴的向量
 };
 
 
-#define two_walk_way_begin_x 250-way_size 
-#define two_walk_way_begin_y 550-5*way_size//怪物开始移动的坐标
+#define walk_way_begin_2 {250-way_size,550-5*way_size} //怪物开始移动的坐标
 class Map_Two :public Map_father
 {
 public:
@@ -52,12 +49,10 @@ public:
 
     CREATE_FUNC(Map_Two);
 private:
-    std::vector<double>walk_way_store_x;
-    std::vector<double>walk_way_store_y;//存放怪物行进的x,y轴的向量
+    std::vector<std::vector<double>>walk_way_store_2;//存放怪物行进的x,y轴的向量
 };
 
-#define three_walk_way_begin_x  250
-#define three_walk_way_begin_y  600//怪物开始移动坐标
+#define walk_way_begin_3 {250,600} //怪物开始移动坐标
 class Map_Three :public Map_father
 {
 public:
@@ -66,7 +61,6 @@ public:
 
     CREATE_FUNC(Map_Three);
 private:
-    std::vector<double>walk_way_store_x;
-    std::vector<double>walk_way_store_y;//存放怪物行进的x,y轴的向量
+    std::vector<std::vector<double>>walk_way_store_3;//存放怪物行进的x,y轴的向量
 };
 
