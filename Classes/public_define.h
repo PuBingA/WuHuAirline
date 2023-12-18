@@ -10,3 +10,7 @@
 #define walk_way_begin_3 {250,600}						//怪物开始移动坐标
 
 #define base_move_time 0.5f								//speed设为1时走一格花费的时间
+#define blink_duration 0.5f
+#define blink_time 3
+#define fade_time 0.7f
+#define animate_duration 0.3f

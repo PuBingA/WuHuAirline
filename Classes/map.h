@@ -1,6 +1,5 @@
 #include"cocos2d.h"
 #include<vector>
-#include<string>
 #include"public_define.h"
 
 
@@ -30,7 +29,7 @@ public:
 
     CREATE_FUNC(Map_One);
 private:
-    std::vector<Vec2>walk_way_store_1;//存放怪物行进的x,y轴的向量
+    std::vector<std::vector<float>>walk_way_store_1;//存放怪物行进的x,y轴的向量
 };
 
 class Map_Two :public Map_father
@@ -41,7 +40,7 @@ public:
 
     CREATE_FUNC(Map_Two);
 private:
-    std::vector<Vec2>walk_way_store_2;//存放怪物行进的x,y轴的向量
+    std::vector<std::vector<float>>walk_way_store_2;//存放怪物行进的x,y轴的向量
 };
 
 class Map_Three :public Map_father
@@ -52,6 +51,6 @@ public:
 
     CREATE_FUNC(Map_Three);
 private:
-    std::vector<Vec2>walk_way_store_3;//存放怪物行进的x,y轴的向量
+    std::vector<std::vector<float>>walk_way_store_3;//存放怪物行进的x,y轴的向量
 };
 
