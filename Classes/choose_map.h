@@ -13,8 +13,6 @@ enum choose_scene_2
 
 class choose_map :public cocos2d::Scene//ºÃ≥–≥°æ∞¿‡
 {
-private:
-    int choose_map_bgm;//±≥æ∞“Ù¿÷÷≤»Î
 public:
     static cocos2d::Scene* createScene();
 
