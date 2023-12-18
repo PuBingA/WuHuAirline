@@ -46,6 +46,17 @@ void Map_father::menuCallback(cocos2d::Ref* pSender)//返回键触发函数
 {
     Director::getInstance()->replaceScene(choose_map::createScene());//切换到选择地图场景
 }
+template<typename T>
+
+void Map_father::input_brick(T x, T y ,int choice)//choice==1 放置怪物绿色地板
+{
+    if (choice == 1)
+    {
+        auto walk_way = Sprite::create("way.png");
+        this->addChild(walk_way);
+        walk_way->setPosition(x, y);//背景图
+    }
+}
 /*----------------------------------
 --------------------------------------------------------------------父类函数----------------------------------
 --------------------------------*/
@@ -71,37 +82,33 @@ void Map_One::input_walk_way()//放置怪物行进路径
 
     int x = walk_way_begin_x;
     int y = walk_way_begin_y;
+    input_brick(x, y, 1);
     walk_way_store_x.push_back(x);
     walk_way_store_y.push_back(y);//放好初始位置
     for (int i = 0; i < 5; i++)
     {
         y -= way_size;
-        walk_way_store_x.push_back(x);
-        walk_way_store_y.push_back(y);
+        input_brick(x,y,1);
     }//竖直向下5格
+    walk_way_store_x.push_back(x);
+    walk_way_store_y.push_back(y);//存放路径转折点
 
     for (int i = 0; i < 9; i++)
     {
         x += way_size;
-        walk_way_store_x.push_back(x);
-        walk_way_store_y.push_back(y);
+        input_brick(x, y, 1);
     }//水平向右9格
-
+    walk_way_store_x.push_back(x);
+    walk_way_store_y.push_back(y);//存放路径转折点
     for (int i = 0; i < 5; i++)
     {
         y += way_size;
-        walk_way_store_x.push_back(x);
-        walk_way_store_y.push_back(y);
+        input_brick(x, y, 1);
     }//竖直向上5格
+    walk_way_store_x.push_back(x);
+    walk_way_store_y.push_back(y);//存放路径转折点
     //存放地板向量生成完毕
 
-    for (int i = 0; i < walk_way_store_x.size(); i++)
-    {
-        auto walk_way = Sprite::create("way.png");
-        this->addChild(walk_way);
-        walk_way->setPosition(walk_way_store_x[i], walk_way_store_y[i]);//背景图
-    }
-    //放置地板
     return;
 }
 
@@ -125,52 +132,49 @@ void Map_Two::input_walk_way()
 {
     int x = two_walk_way_begin_x;
     int y = two_walk_way_begin_y;
+    input_brick(x, y, 1);
     walk_way_store_x.push_back(x);
     walk_way_store_y.push_back(y);//放好初始位置
     for (int i = 0; i < 4; i++)
     {
         x += way_size;
-        walk_way_store_x.push_back(x);
-        walk_way_store_y.push_back(y);
+        input_brick(x, y, 1);
     }//水平向右4格
-
+    walk_way_store_x.push_back(x);
+    walk_way_store_y.push_back(y);
     for (int i = 0; i < 5; i++)
     {
         y += way_size;
-        walk_way_store_x.push_back(x);
-        walk_way_store_y.push_back(y);
+        input_brick(x, y, 1);
     }//竖直向上5格
+    walk_way_store_x.push_back(x);
+    walk_way_store_y.push_back(y);
 
     for (int i = 0; i < 3; i++)
     {
         x += way_size;
-        walk_way_store_x.push_back(x);
-        walk_way_store_y.push_back(y);
+        input_brick(x, y, 1);
     }//水平向右3格
-
+    walk_way_store_x.push_back(x);
+    walk_way_store_y.push_back(y);
     for (int i = 0; i < 5; i++)
     {
         y -= way_size;
-        walk_way_store_x.push_back(x);
-        walk_way_store_y.push_back(y);
-    }//竖直向下5格
+        input_brick(x, y, 1);
 
+    }//竖直向下5格
+    walk_way_store_x.push_back(x);
+    walk_way_store_y.push_back(y);
     for (int i = 0; i < 4; i++)
     {
         x += way_size;
-        walk_way_store_x.push_back(x);
-        walk_way_store_y.push_back(y);
+        input_brick(x, y, 1);
+   
     }//水平向右4格
+    walk_way_store_x.push_back(x);
+    walk_way_store_y.push_back(y);
      //存放地板向量生成完毕
 
-
-    for (int i = 0; i < walk_way_store_x.size(); i++)
-    {
-        auto walk_way = Sprite::create("way.png");
-        this->addChild(walk_way);
-        walk_way->setPosition(walk_way_store_x[i], walk_way_store_y[i]);//背景图
-    }
-    //放置地板
     return;
    
 }
@@ -194,52 +198,52 @@ void Map_Three::input_walk_way()
 {
     int x = three_walk_way_begin_x;
     int y = three_walk_way_begin_y;
+    input_brick(x, y, 1);
     walk_way_store_x.push_back(x);
     walk_way_store_y.push_back(y);//放好初始位置
 
     for (int i = 0; i <9; i++)
     {
         x += way_size;
-        walk_way_store_x.push_back(x);
-        walk_way_store_y.push_back(y);
+        input_brick(x, y, 1);
+ 
     }//向右9格
-
+    walk_way_store_x.push_back(x);
+    walk_way_store_y.push_back(y);
     for (int i = 0; i < 3; i++)
     {
         y -= way_size;
-        walk_way_store_x.push_back(x);
-        walk_way_store_y.push_back(y);
-    }//向下3格
+        input_brick(x, y, 1);
 
+    }//向下3格
+    walk_way_store_x.push_back(x);
+    walk_way_store_y.push_back(y);
     for (int i = 0; i < 9; i++)
     {
         x -= way_size;
-        walk_way_store_x.push_back(x);
-        walk_way_store_y.push_back(y);
+        input_brick(x, y, 1);
+  
     }//向左9格
-
+    walk_way_store_x.push_back(x);
+    walk_way_store_y.push_back(y);
     for (int i = 0; i < 3; i++)
     {
         y -= way_size;
-        walk_way_store_x.push_back(x);
-        walk_way_store_y.push_back(y);
+        input_brick(x, y, 1);
+  
     }//向下3格
-
+    walk_way_store_x.push_back(x);
+    walk_way_store_y.push_back(y);
     for (int i = 0; i < 9; i++)
     {
         x += way_size;
-        walk_way_store_x.push_back(x);
-        walk_way_store_y.push_back(y);
+        input_brick(x, y, 1);
+
     }//向右9格
+    walk_way_store_x.push_back(x);
+    walk_way_store_y.push_back(y);
     //存放地板向量生成完毕
 
-    for (int i = 0; i < walk_way_store_x.size(); i++)
-    {
-        auto walk_way = Sprite::create("way.png");
-        this->addChild(walk_way);
-        walk_way->setPosition(walk_way_store_x[i], walk_way_store_y[i]);//背景图
-    }
-    //放置地板
     return;
 }
 /*----------------------------------

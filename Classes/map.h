@@ -19,6 +19,9 @@ public:
 
     void input_return_pause();//放置返回，以及暂停键   暂停键未实现
 
+    template<typename T>
+    void input_brick(T x,T y ,int choice);//放置地板
+
     // implement the "static create()" method manually
     CREATE_FUNC(Map_father);
 
