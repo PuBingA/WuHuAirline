@@ -1,6 +1,9 @@
 #include"map.h"
 #include"choose_map.h"
 #include "monster.h"
+#include"carrot.h"
+#include "ui/CocosGUI.h"
+#include"cocos-ext.h"
 USING_NS_CC;
 using namespace std;
 
@@ -28,16 +31,37 @@ bool Map_father::init()//父类创建场景总函数
     input_background();//放置背景图
     input_walk_way();//放置地板
     input_return_pause();//放置返回，暂停键
+    input_carrot();//放置萝卜
     return true;
 }
 
-void Map_father::input_return_pause()//父类放置暂停以及返回键函数  暂停键未实现
+void Map_father::input_return_pause()//父类放置暂停以及返回键函数
 {
+    bool pause = false;
     auto return_menu = MenuItemImage::create("return.png", "return_selected.png", CC_CALLBACK_1(Map_father::menuCallback, this));
     auto menu = Menu::create(return_menu, NULL);
     this->addChild(menu);
     menu->setPosition(return_x, return_y);
     //返回键放置完毕
+    auto button = ui::Button::create("pause_1.png","pause_2.png");
+    this->addChild(button);
+    button->setPosition(Point(pause_x,pause_y));
+    button->addClickEventListener(CC_CALLBACK_1(Map_father::buttonCallback, this));
+    //暂停键创建完毕
+    
+}
+void Map_father::buttonCallback(cocos2d::Ref* pSender)//暂停键触发函数
+{
+    if (!Director::getInstance()->isPaused())
+    {
+        Director::getInstance()->pause();
+        AudioEngine::pauseAll();
+    }//暂停
+    else
+    {
+        Director::getInstance()->resume();
+        AudioEngine::resumeAll();
+    }//继续
 }
 
 void Map_father::menuCallback(cocos2d::Ref* pSender)//返回键触发函数
@@ -97,7 +121,22 @@ void Map_One::input_walk_way()//放置怪物行进路径
     }//竖直向上5格
     //存放地板向量生成完毕
 
+<<<<<<< Updated upstream
+=======
+    //放置一个怪兽
+        auto monster1 = MonSprite::create("monster1_1.png");
+        this->addChild(monster1);
+        MonCtrl Moncon1(monster1, 1, walk_way_store_1);
+        Moncon1.spawn();
+>>>>>>> Stashed changes
     return;
+}
+
+void Map_One::input_carrot()//放置萝卜函数
+{
+    auto carrot = Carrot::create("carrot_level1_1.png");//放置一个完整萝卜
+    this->addChild(carrot);
+    carrot->setPosition(walk_way_store_1[walk_way_store_1.size() - 1][0], walk_way_store_1[walk_way_store_1.size() - 1][1]);
 }
 
 /*------------------------------地图一函数----------------------------------*/
@@ -156,6 +195,13 @@ void Map_Two::input_walk_way()
 
 }
 
+void Map_Two::input_carrot()//放置萝卜函数
+{
+    auto carrot = Carrot::create("carrot_level1_1.png");//放置一个完整萝卜
+    this->addChild(carrot);
+    carrot->setPosition(walk_way_store_2[walk_way_store_2.size() - 1][0], walk_way_store_2[walk_way_store_2.size() - 1][1]);
+}
+
 /*------------------------------地图二函数----------------------------------*/
 
 
@@ -204,5 +250,13 @@ void Map_Three::input_walk_way()
     }//向右9格
     //存放地板向量生成完毕
     return;
+}
+
+
+void Map_Three::input_carrot()//放置萝卜函数
+{
+    auto carrot = Carrot::create("carrot_level1_1.png");//放置一个完整萝卜
+    this->addChild(carrot);
+    carrot->setPosition(walk_way_store_3[walk_way_store_3.size() - 1][0], walk_way_store_3[walk_way_store_3.size() - 1][1]);
 }
 /*------------------------------地图三函数----------------------------------*/
