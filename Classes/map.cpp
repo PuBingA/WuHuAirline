@@ -22,6 +22,7 @@ static void problemLoading(const char* filename)
 
 bool Map_father::init()//父类创建场景总函数
 {
+    static int gold = 4321;//初始金币
     if (!Scene::init())
         return false;
 
@@ -31,6 +32,7 @@ bool Map_father::init()//父类创建场景总函数
     input_background();//放置背景图
     input_walk_way();//放置地板
     input_return_pause();//放置返回，暂停键
+    input_gold(gold);//放置金币
     input_carrot();//放置萝卜
     return true;
 }
@@ -49,6 +51,30 @@ void Map_father::input_return_pause()//父类放置暂停以及返回键函数
     button->addClickEventListener(CC_CALLBACK_1(Map_father::buttonCallback, this));
     //暂停键创建完毕
     
+}
+
+void Map_father::input_gold(const int gold)//放置金币函数,（已完成）
+{
+    int digit = 1000;
+    string figure;
+    for (int i = 0; i < 4; i++)
+    {
+        int k = (gold / digit) % 10;
+        digit /= 10;
+        figure.push_back(k+'0');
+    }//计算出每一位的数字，放入字符串中
+    auto gold_label = Label::createWithTTF(figure, "fonts\\Marker Felt.ttf",56);
+    Color3B gold_color(255, 233, 0);
+    gold_label->setColor(gold_color);//调成黄色
+    this->addChild(gold_label);
+    gold_label->setPosition(Point(gold_x, gold_y));
+    //将字体标签放好
+
+    auto gold_item = Sprite::create("gold.png");//生成阳光图标
+    this->addChild(gold_item);
+    gold_item->setPosition(gold_x - 90, gold_y);
+    //放好阳光图标
+
 }
 void Map_father::buttonCallback(cocos2d::Ref* pSender)//暂停键触发函数
 {
@@ -121,14 +147,11 @@ void Map_One::input_walk_way()//放置怪物行进路径
     }//竖直向上5格
     //存放地板向量生成完毕
 
-<<<<<<< Updated upstream
-=======
     //放置一个怪兽
         auto monster1 = MonSprite::create("monster1_1.png");
         this->addChild(monster1);
         MonCtrl Moncon1(monster1, 1, walk_way_store_1);
         Moncon1.spawn();
->>>>>>> Stashed changes
     return;
 }
 

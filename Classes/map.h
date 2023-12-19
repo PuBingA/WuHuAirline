@@ -14,6 +14,7 @@ public:
     void menuCallback(cocos2d::Ref* pSender);//返回响应函数
     void input_return_pause();//放置返回，以及暂停键 
     void buttonCallback(cocos2d::Ref* pSender);//暂停响应函数
+    void input_gold(const int gold);//放置金币UI
     virtual void input_carrot() {};//放置萝卜
     template<typename T>
     void input_brick(T x,T y ,int choice);//放置地板
