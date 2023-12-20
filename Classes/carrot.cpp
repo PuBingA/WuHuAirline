@@ -1,8 +1,16 @@
 #include"carrot.h"
+<<<<<<< Updated upstream
 using namespace std;
 
 /*----------------------萝卜类-------------------------*/
 Carrot* Carrot::create(const std::string& filename)
+=======
+using namespace cocos2d;
+
+/*----------------------萝卜类-------------------------*/
+
+Carrot* Carrot::create(const std::string& filename)//生成萝卜类
+>>>>>>> Stashed changes
 {
     Carrot* carrot_sprite = new Carrot();
 

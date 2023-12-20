@@ -32,8 +32,13 @@ bool Map_father::init()//父类创建场景总函数
     input_background();//放置背景图
     input_walk_way();//放置地板
     input_return_pause();//放置返回，暂停键
+<<<<<<< Updated upstream
     input_gold(gold);//放置金币
     input_carrot();//放置萝卜
+=======
+    input_gold_item();//放置金币
+    game_begin();//开始游戏
+>>>>>>> Stashed changes
     return true;
 }
 
@@ -53,9 +58,28 @@ void Map_father::input_return_pause()//父类放置暂停以及返回键函数
     
 }
 
-void Map_father::input_gold(const int gold)//放置金币函数,（已完成）
+void Map_father::input_gold_item()//放置阳光图标
 {
-    int digit = 1000;
+   
+    auto gold_item = Sprite::create("gold.png");//生成阳光图标
+    this->addChild(gold_item);
+    gold_item->setPosition(gold_x - 90, gold_y);
+    //放好阳光图标
+}
+
+cocos2d::Label* Map_father::input_gold()//生成金币标签
+{
+    auto gold_label = Label::createWithTTF("", "fonts\\Marker Felt.ttf", 56);
+    Color3B gold_color(255, 233, 0);
+    gold_label->setColor(gold_color);//调成黄色
+    this->addChild(gold_label);
+    gold_label->setPosition(gold_x, gold_y);
+    return gold_label;
+}
+
+string Map_father::calculate_gold(const int gold)
+{
+    int digit = 1000;//千位
     string figure;
     for (int i = 0; i < 4; i++)
     {
@@ -63,18 +87,35 @@ void Map_father::input_gold(const int gold)//放置金币函数,（已完成）
         digit /= 10;
         figure.push_back(k+'0');
     }//计算出每一位的数字，放入字符串中
-    auto gold_label = Label::createWithTTF(figure, "fonts\\Marker Felt.ttf",56);
-    Color3B gold_color(255, 233, 0);
-    gold_label->setColor(gold_color);//调成黄色
-    this->addChild(gold_label);
-    gold_label->setPosition(Point(gold_x, gold_y));
-    //将字体标签放好
+    return figure;
+}
 
-    auto gold_item = Sprite::create("gold.png");//生成阳光图标
-    this->addChild(gold_item);
-    gold_item->setPosition(gold_x - 90, gold_y);
-    //放好阳光图标
+template<typename T>
+cocos2d::Label* Map_father::HP_display(const T x, const T y)//放置萝卜血条函数
+{
+    auto HP_label = Label::createWithTTF("", "fonts\\Marker Felt.ttf", 40);
+    Color3B HP_color(255, 0, 0);
+    HP_label->setColor(HP_color);//调成红色
+    HP_label->setPosition(x, y);
+    this->addChild(HP_label);//生成好血量标签
+    auto Hp_item = Sprite::create("carrot_HP.png");
+    Hp_item->setPosition(x - 50, y);
+    this -> addChild(Hp_item);//生成血量图标
 
+    return HP_label;
+}
+
+std::string Map_father::calculate_HP(const int HP)//根据萝卜血量生成字符串
+{
+    string figure;
+    int digit = 10;//十位
+    for (int i = 0; i < 2; i++)
+    {
+        int k = (HP / digit) % 10;
+        digit /= 10;
+        figure += k + '0';
+    }//计算出每一位的数字，放入字符串中
+    return figure;
 }
 void Map_father::buttonCallback(cocos2d::Ref* pSender)//暂停键触发函数
 {
@@ -152,6 +193,7 @@ void Map_One::input_walk_way()//放置怪物行进路径
         this->addChild(monster1);
         MonCtrl Moncon1(monster1, 1, walk_way_store_1);
         Moncon1.spawn();
+<<<<<<< Updated upstream
     return;
 }
 
@@ -161,7 +203,39 @@ void Map_One::input_carrot()//放置萝卜函数
     this->addChild(carrot);
     carrot->setPosition(walk_way_store_1[walk_way_store_1.size() - 1][0], walk_way_store_1[walk_way_store_1.size() - 1][1]);
 }
+=======
 
+    return;
+}
+
+
+
+void Map_One::game_begin()//游戏开始函数
+{
+    float carrot_x = walk_way_store_1[walk_way_store_1.size() - 1][0];
+    float carrot_y = walk_way_store_1[walk_way_store_1.size() - 1][1];//萝卜坐标
+    auto carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
+    this->addChild(carrot);
+    carrot->setPosition(carrot_x, carrot_y);
+    //放置萝卜
+    auto carrot_HP = HP_display(carrot_x+120, carrot_y );//生成萝卜血量
+    carrot_HP->setString(calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
+
+
+    static int gold = gold_1;//金币变量
+    auto gold_label = input_gold();;//生成标签
+    gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
+}
+
+void Map_One::spawn_monster()//刷新怪物
+{
+    MonSprite* monster1 = MonSprite::create("monster1_1.png");
+    this->addChild(monster1);
+    MonCtrl Moncon1(monster1, 1, walk_way_store_1);
+    Moncon1.spawn();
+>>>>>>> Stashed changes
+
+}
 /*------------------------------地图一函数----------------------------------*/
 
 
@@ -174,7 +248,7 @@ void Map_Two::input_background()//放置背景图
     background->setPosition(background_wide / 2, background_high / 2);//背景图
 }
 
-void Map_Two::input_walk_way()
+void Map_Two::input_walk_way()//放置怪物路径
 {
     std::vector<float> current = walk_way_begin_2;
     walk_way_store_2.push_back(current);//放好初始位置
@@ -218,25 +292,51 @@ void Map_Two::input_walk_way()
 
 }
 
+<<<<<<< Updated upstream
 void Map_Two::input_carrot()//放置萝卜函数
+=======
+void Map_Two::game_begin()//游戏开始函数
+>>>>>>> Stashed changes
 {
-    auto carrot = Carrot::create("carrot_level1_1.png");//放置一个完整萝卜
+    float carrot_x = walk_way_store_2[walk_way_store_2.size() - 1][0];
+    float carrot_y = walk_way_store_2[walk_way_store_2.size() - 1][1];//萝卜坐标
+    auto carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
     this->addChild(carrot);
-    carrot->setPosition(walk_way_store_2[walk_way_store_2.size() - 1][0], walk_way_store_2[walk_way_store_2.size() - 1][1]);
+    carrot->setPosition(carrot_x, carrot_y);
+    //放置萝卜
+    auto carrot_HP = HP_display(carrot_x + 120, carrot_y);//生成萝卜血量
+    carrot_HP->setString(calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
+
+
+    static int gold = gold_2;//金币变量
+    auto gold_label = input_gold();;//生成标签
+    gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
 }
 
+<<<<<<< Updated upstream
+=======
+void Map_Two::spawn_monster()
+{
+    MonSprite* monster1 = MonSprite::create("monster1_1.png");
+    this->addChild(monster1);
+    MonCtrl Moncon1(monster1, 1, walk_way_store_2);
+    Moncon1.spawn();
+
+}
+
+>>>>>>> Stashed changes
 /*------------------------------地图二函数----------------------------------*/
 
 
 /*------------------------------地图三函数----------------------------------*/
-void Map_Three::input_background()
+void Map_Three::input_background()//生成背景图
 {
     auto background = Sprite::create("map\\map_three.png");
     this->addChild(background);
     background->setPosition(background_wide / 2, background_high / 2);//背景图
 }
 
-void Map_Three::input_walk_way()
+void Map_Three::input_walk_way()//放置怪物路径
 {
     std::vector<float> current = walk_way_begin_3;
     walk_way_store_3.push_back(current);//放好初始位置
@@ -274,12 +374,37 @@ void Map_Three::input_walk_way()
     //存放地板向量生成完毕
     return;
 }
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 
-void Map_Three::input_carrot()//放置萝卜函数
+void Map_Three::game_begin()//游戏开始函数
 {
-    auto carrot = Carrot::create("carrot_level1_1.png");//放置一个完整萝卜
+    float carrot_x = walk_way_store_3[walk_way_store_3.size() - 1][0];
+    float carrot_y = walk_way_store_3[walk_way_store_3.size() - 1][1];//萝卜坐标
+    auto carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
     this->addChild(carrot);
-    carrot->setPosition(walk_way_store_3[walk_way_store_3.size() - 1][0], walk_way_store_3[walk_way_store_3.size() - 1][1]);
+    carrot->setPosition(carrot_x, carrot_y);
+    //放置萝卜
+    auto carrot_HP = HP_display(carrot_x + 120, carrot_y);//生成萝卜血量
+    carrot_HP->setString(calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
+
+
+    static int gold = gold_3;//金币变量
+    auto gold_label = input_gold();;//生成标签
+    gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
 }
+<<<<<<< Updated upstream
+=======
+
+void Map_Three::spawn_monster()
+{
+    MonSprite* monster1 = MonSprite::create("monster1_1.png");
+    this->addChild(monster1);
+    MonCtrl Moncon1(monster1, 1, walk_way_store_3);
+    Moncon1.spawn();
+
+}
+>>>>>>> Stashed changes
 /*------------------------------地图三函数----------------------------------*/

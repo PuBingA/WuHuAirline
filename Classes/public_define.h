@@ -10,6 +10,13 @@
 #define pause_x 1170
 #define pause_y 630 -70-70    //暂停键坐标
 
+<<<<<<< Updated upstream
+=======
+#define gold_max 9990 //金币上限
+#define gold_1  300 //第一关初始金币
+#define gold_2   450//第二关初始金币
+#define gold_3   600//第三关初始金币
+>>>>>>> Stashed changes
 
 
 #define way_size 82										//每个地板的像素大小
