@@ -14,8 +14,15 @@
 
 #define way_size 82										//每个地板的像素大小
 #define walk_way_begin_1 {250,550}						//怪物开始移动的坐标
+#define walk_way_begin_1_x 250
+#define walk_way_begin_1_y 550
 #define walk_way_begin_2 {250-way_size,550-5*way_size}	//怪物开始移动的坐标
+#define walk_way_begin_2_x 250-way_size
+#define walk_way_begin_2_y 550-5*way_size
+
 #define walk_way_begin_3 {250,600}						//怪物开始移动坐标
+#define walk_way_begin_3_x 250
+#define walk_way_begin_3_y 600
 
 #define base_move_time 0.5f								//speed设为1时走一格花费的时间
 #define blink_duration 0.5f

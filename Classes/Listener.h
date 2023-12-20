@@ -19,14 +19,12 @@ public:
         Vec2 clickPos = Vec2(event->getCursorX(), event->getCursorY());
         if (event->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)        //检查是否是鼠标左键点击
         {
-            if (IsMonsterClicked(clickPos))
+            if (IsMonsterClicked(clickPos))//在怪物上点击，执行相应逻辑
             {
-                // 在怪物上点击，执行相应逻辑
                 ShowRedFrame();
             }
-            else if (IsRoadSideClicked(clickPos))
+            else if (IsRoadSideClicked(clickPos))//在道路两旁点击，执行相应逻辑
             {
-                // 在道路两旁点击，执行相应逻辑
                 ShowYellowFrame(clickPos);
             }
         }
@@ -41,14 +39,14 @@ public:
         return true;
     }
 
-    // 弹出红框的函数
+    //弹出红框的函数
     void ShowRedFrame()
     {
         auto RedFrame = Sprite::create("red_frame.png");
         addChild(RedFrame);
     }
 
-    // 弹出黄框的函数
+    //弹出黄框的函数
     void ShowYellowFrame(const Vec2& position)
     {
         auto YellowFrame = Sprite::create("yellow_frame.png");

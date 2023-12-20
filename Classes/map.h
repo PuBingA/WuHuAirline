@@ -2,11 +2,23 @@
 #include<vector>
 #include"public_define.h"
 #include<string>
+#include "Frames.h"
+
 
 class Map_father :public cocos2d::Scene
 {
+    /*****************************change*************************************/
+    FrameBox* yellow_frame;
+    /*****************************change*************************************/
+
 public:
     static cocos2d::Scene* createScene();
+
+    /*****************************change*************************************/
+    Map_father()  {yellow_frame = new FrameBox(Sprite::create("yellow_frame.png"));}
+    virtual void input_listener();
+    virtual void onMouseDown_Show_Yellow(Event* event);
+    /*****************************change*************************************/
 
     virtual bool init();//创建场景类,被继承公有部分
     virtual void input_background() {};//放置背景图
@@ -26,6 +38,7 @@ public:
 class Map_One :public Map_father
 {
 public:
+
     virtual void input_background();
     virtual void input_walk_way();
     virtual void input_carrot();

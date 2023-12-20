@@ -36,8 +36,9 @@ const TI ETower_3 = { 9, -1, 768, 300, 70, 1000 };
 
 class FrameSprite;
 class TowerSprite;
-class BulletSprite;
 class TowerControl;
+
+class BulletSprite;
 class BulletControl;
 
 class FrameSprite : public Sprite

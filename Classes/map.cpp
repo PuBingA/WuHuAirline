@@ -9,10 +9,41 @@ using namespace std;
 
 /*-------------------------------父类函数-----------------------------------*/
 
-cocos2d::Scene* Map_father::createScene()
+Scene* Map_father::createScene()
 {
     return Map_father::create();
 }
+
+/*****************************change*************************************/
+void Map_father::input_listener()
+{
+    auto mouseListener_show_yellow_frame = EventListenerMouse::create();
+    mouseListener_show_yellow_frame->onMouseDown = CC_CALLBACK_1(Map_father::onMouseDown_Show_Yellow, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener_show_yellow_frame, this);
+    yellow_frame->Current = Sprite::create("yellow_frame.png");
+    addChild(yellow_frame->Current);
+    yellow_frame->Current->setVisible(false);
+}
+
+void Map_father::onMouseDown_Show_Yellow(Event* event)
+{
+    EventMouse* e = dynamic_cast<EventMouse*>(event);
+    if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
+    {
+        int x = e->getCursorX(), y = e->getCursorY();
+        if (IsFrame(x, y))
+        {
+            yellow_frame->Current->setVisible(true);
+            yellow_frame->Spawn(x, y);
+            yellow_frame->Shimmer();
+        }
+        else
+        {
+            yellow_frame->Current->setVisible(false);
+        }
+    }
+}
+/*****************************change*************************************/
 
 static void problemLoading(const char* filename)
 {
@@ -148,10 +179,14 @@ void Map_One::input_walk_way()//放置怪物行进路径
     //存放地板向量生成完毕
 
     //放置一个怪兽
-        auto monster1 = MonSprite::create("monster1_1.png");
-        this->addChild(monster1);
-        MonCtrl Moncon1(monster1, 1, walk_way_store_1);
-        Moncon1.spawn();
+    auto monster1 = MonSprite::create("monster1_1.png");
+    this->addChild(monster1);
+    MonCtrl Moncon1(monster1, 1, walk_way_store_1);
+    Moncon1.spawn();
+
+    //沿着路线放置黄色框
+    input_listener();
+
     return;
 }
 
