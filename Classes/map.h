@@ -2,11 +2,7 @@
 #include<vector>
 #include"public_define.h"
 #include<string>
-<<<<<<< Updated upstream
-
-=======
 #include"cocos-ext.h"
->>>>>>> Stashed changes
 class Map_father :public cocos2d::Scene
 {
 public:
@@ -18,10 +14,6 @@ public:
     void menuCallback(cocos2d::Ref* pSender);//返回响应函数
     void input_return_pause();//放置返回，以及暂停键 
     void buttonCallback(cocos2d::Ref* pSender);//暂停响应函数
-<<<<<<< Updated upstream
-    void input_gold(const int gold);//放置金币UI
-    virtual void input_carrot() {};//放置萝卜
-=======
     void input_gold_item();//放置金币UI
     cocos2d::Label* input_gold();//生成金币标签
     std::string  calculate_gold(const int gold);//根据当前金币，得出字符串
@@ -29,7 +21,7 @@ public:
     cocos2d::Label* HP_display(const T x, const T y);//在相应坐标生成萝卜
     std::string calculate_HP(const int HP);//根据萝卜血量，等处字符串
     virtual void game_begin() {};//游戏开始函数(重点)
->>>>>>> Stashed changes
+    void game_over(cocos2d::Ref* pSender,int const choice);//游戏结束,choice==1为胜利 choice==0 为失败
     template<typename T>
     void input_brick(T x,T y ,int choice);//放置地板
     virtual void spawn_monster() {};//放置怪物
@@ -42,12 +34,8 @@ class Map_One :public Map_father
 public:
     virtual void input_background();
     virtual void input_walk_way();
-<<<<<<< Updated upstream
-    virtual void input_carrot();
-=======
     virtual void spawn_monster();
     virtual void game_begin() ;//游戏开始函数(重点)
->>>>>>> Stashed changes
     CREATE_FUNC(Map_One);
 private:
     std::vector<std::vector<float>>walk_way_store_1;//存放怪物行进的x,y轴的向量
@@ -58,12 +46,8 @@ class Map_Two :public Map_father
 public:
     virtual void input_background();
     virtual void input_walk_way();
-<<<<<<< Updated upstream
-    virtual void input_carrot();
-=======
     virtual void spawn_monster();
     virtual void game_begin() ;//游戏开始函数(重点)
->>>>>>> Stashed changes
     CREATE_FUNC(Map_Two);
 private:
     std::vector<std::vector<float>>walk_way_store_2;//存放怪物行进的x,y轴的向量
@@ -74,12 +58,8 @@ class Map_Three :public Map_father
 public:
     virtual void input_background();
     virtual void input_walk_way();
-<<<<<<< Updated upstream
-    virtual void input_carrot();
-=======
     virtual void spawn_monster();
     virtual void game_begin() ;//游戏开始函数(重点)
->>>>>>> Stashed changes
     CREATE_FUNC(Map_Three);
 private:
     std::vector<std::vector<float>>walk_way_store_3;//存放怪物行进的x,y轴的向量

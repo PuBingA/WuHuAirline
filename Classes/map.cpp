@@ -4,6 +4,7 @@
 #include"carrot.h"
 #include "ui/CocosGUI.h"
 #include"cocos-ext.h"
+#include"settlement_interface.h"
 USING_NS_CC;
 using namespace std;
 
@@ -32,13 +33,8 @@ bool Map_father::init()//父类创建场景总函数
     input_background();//放置背景图
     input_walk_way();//放置地板
     input_return_pause();//放置返回，暂停键
-<<<<<<< Updated upstream
-    input_gold(gold);//放置金币
-    input_carrot();//放置萝卜
-=======
     input_gold_item();//放置金币
     game_begin();//开始游戏
->>>>>>> Stashed changes
     return true;
 }
 
@@ -85,7 +81,7 @@ string Map_father::calculate_gold(const int gold)
     {
         int k = (gold / digit) % 10;
         digit /= 10;
-        figure.push_back(k+'0');
+        figure.push_back(k + '0');
     }//计算出每一位的数字，放入字符串中
     return figure;
 }
@@ -117,6 +113,7 @@ std::string Map_father::calculate_HP(const int HP)//根据萝卜血量生成字符串
     }//计算出每一位的数字，放入字符串中
     return figure;
 }
+
 void Map_father::buttonCallback(cocos2d::Ref* pSender)//暂停键触发函数
 {
     if (!Director::getInstance()->isPaused())
@@ -134,6 +131,12 @@ void Map_father::buttonCallback(cocos2d::Ref* pSender)//暂停键触发函数
 void Map_father::menuCallback(cocos2d::Ref* pSender)//返回键触发函数
 {
     Director::getInstance()->replaceScene(choose_map::createScene());//切换到选择地图场景
+}
+
+void Map_father::game_over(cocos2d::Ref* pSender,int const choice)
+{
+    if(choice==1)
+        Director::getInstance()->replaceScene(settlement_success::createScene());//切换到胜利场景
 }
 
 
@@ -193,17 +196,6 @@ void Map_One::input_walk_way()//放置怪物行进路径
         this->addChild(monster1);
         MonCtrl Moncon1(monster1, 1, walk_way_store_1);
         Moncon1.spawn();
-<<<<<<< Updated upstream
-    return;
-}
-
-void Map_One::input_carrot()//放置萝卜函数
-{
-    auto carrot = Carrot::create("carrot_level1_1.png");//放置一个完整萝卜
-    this->addChild(carrot);
-    carrot->setPosition(walk_way_store_1[walk_way_store_1.size() - 1][0], walk_way_store_1[walk_way_store_1.size() - 1][1]);
-}
-=======
 
     return;
 }
@@ -225,6 +217,14 @@ void Map_One::game_begin()//游戏开始函数
     static int gold = gold_1;//金币变量
     auto gold_label = input_gold();;//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
+
+    //以下为调试
+    carrot->HP = 0;
+    carrot->level = 3;
+    carrot->change();
+    carrot_HP->setString(calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
+  
+
 }
 
 void Map_One::spawn_monster()//刷新怪物
@@ -233,7 +233,6 @@ void Map_One::spawn_monster()//刷新怪物
     this->addChild(monster1);
     MonCtrl Moncon1(monster1, 1, walk_way_store_1);
     Moncon1.spawn();
->>>>>>> Stashed changes
 
 }
 /*------------------------------地图一函数----------------------------------*/
@@ -292,11 +291,7 @@ void Map_Two::input_walk_way()//放置怪物路径
 
 }
 
-<<<<<<< Updated upstream
-void Map_Two::input_carrot()//放置萝卜函数
-=======
 void Map_Two::game_begin()//游戏开始函数
->>>>>>> Stashed changes
 {
     float carrot_x = walk_way_store_2[walk_way_store_2.size() - 1][0];
     float carrot_y = walk_way_store_2[walk_way_store_2.size() - 1][1];//萝卜坐标
@@ -311,10 +306,11 @@ void Map_Two::game_begin()//游戏开始函数
     static int gold = gold_2;//金币变量
     auto gold_label = input_gold();;//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
+
+
+
 }
 
-<<<<<<< Updated upstream
-=======
 void Map_Two::spawn_monster()
 {
     MonSprite* monster1 = MonSprite::create("monster1_1.png");
@@ -324,7 +320,6 @@ void Map_Two::spawn_monster()
 
 }
 
->>>>>>> Stashed changes
 /*------------------------------地图二函数----------------------------------*/
 
 
@@ -374,10 +369,6 @@ void Map_Three::input_walk_way()//放置怪物路径
     //存放地板向量生成完毕
     return;
 }
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 
 void Map_Three::game_begin()//游戏开始函数
 {
@@ -395,8 +386,6 @@ void Map_Three::game_begin()//游戏开始函数
     auto gold_label = input_gold();;//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
 }
-<<<<<<< Updated upstream
-=======
 
 void Map_Three::spawn_monster()
 {
@@ -406,5 +395,4 @@ void Map_Three::spawn_monster()
     Moncon1.spawn();
 
 }
->>>>>>> Stashed changes
 /*------------------------------地图三函数----------------------------------*/

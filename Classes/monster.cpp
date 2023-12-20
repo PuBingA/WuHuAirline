@@ -43,10 +43,16 @@ void MonCtrl::die()const
     currentMon->runAction(FadeOut::create(fade_time));
 }
 
-void MonCtrl::spawn()const
+void MonCtrl::spawn()
 {
     currentMon->setOpacity(0);//先完全透明
     currentMon->setPosition(monsterWalkPath[0][0], monsterWalkPath[0][1]);
+    //给精灵增加血条
+    life_bar = ui::LoadingBar::create("life_bar.png");
+    life_bar->setDirection(ui::LoadingBar::Direction::LEFT);
+    life_bar->setPositionNormalized(Vec2(0.5, 0));
+    life_bar->setPercent(100);
+    currentMon->addChild(life_bar);
     move();
 }
 
@@ -55,13 +61,15 @@ void MonCtrl::move() const
 {
     if (monType == 1)
     {
+        currentMon->setTexture("monster1_1.png");
+        currentMon->setScale(0.7);
         Vector<SpriteFrame*> animFrames;
         animFrames.reserve(2);
-        animFrames.pushBack(SpriteFrame::create("monster1_1.png", Rect(0, 0, 133, 120)));
-        animFrames.pushBack(SpriteFrame::create("monster1_2.png", Rect(0, 0, 133, 120)));
+        animFrames.pushBack(SpriteFrame::create("monster1_1.png", Rect(0, 0, 135, 135)));
+        animFrames.pushBack(SpriteFrame::create("monster1_2.png", Rect(0, 0, 135, 135)));
         Animation* animation = Animation::createWithSpriteFrames(animFrames, animate_duration);
         Animate* animate = Animate::create(animation);
-        currentMon->runAction(RepeatForever::create(animate));// run it and repeat it forever
+        currentMon->runAction(RepeatForever::create(animate));//不停扭动
     }
 
     Vector<FiniteTimeAction*> monster_move_sequence;
@@ -73,3 +81,4 @@ void MonCtrl::move() const
     auto seq = Sequence::create(monster_move_sequence);
     currentMon->runAction(seq);
 }
+
