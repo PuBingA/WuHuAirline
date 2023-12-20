@@ -1,8 +1,10 @@
 #include"map.h"
 #include"choose_map.h"
 #include "monster.h"
+#include"carrot.h"
+#include "ui/CocosGUI.h"
+#include"cocos-ext.h"
 USING_NS_CC;
-using namespace std;
 
 /*-------------------------------父类函数-----------------------------------*/
 
@@ -19,6 +21,7 @@ static void problemLoading(const char* filename)
 
 bool Map_father::init()//父类创建场景总函数
 {
+    static int gold = 4321;//初始金币
     if (!Scene::init())
         return false;
 
@@ -28,24 +31,20 @@ bool Map_father::init()//父类创建场景总函数
     input_background();//放置背景图
     input_walk_way();//放置地板
     input_return_pause();//放置返回，暂停键
-<<<<<<< Updated upstream
-=======
     input_gold(gold);//放置金币
     input_carrot();//放置萝卜
     spawn_monster();//生成怪物
->>>>>>> Stashed changes
     return true;
 }
 
-void Map_father::input_return_pause()//父类放置暂停以及返回键函数  暂停键未实现
+void Map_father::input_return_pause()//父类放置暂停以及返回键函数
 {
+    bool pause = false;
     auto return_menu = MenuItemImage::create("return.png", "return_selected.png", CC_CALLBACK_1(Map_father::menuCallback, this));
     auto menu = Menu::create(return_menu, NULL);
     this->addChild(menu);
     menu->setPosition(return_x, return_y);
     //返回键放置完毕
-<<<<<<< Updated upstream
-=======
     auto button = ui::Button::create("pause_1.png","pause_2.png");
     this->addChild(button);
     button->setPosition(Point(pause_x,pause_y));
@@ -57,7 +56,7 @@ void Map_father::input_return_pause()//父类放置暂停以及返回键函数  暂停键未实现
 void Map_father::input_gold(const int gold)//放置金币函数,（已完成）
 {
     int digit = 1000;
-    string figure;
+    std::string figure;
     for (int i = 0; i < 4; i++)
     {
         int k = (gold / digit) % 10;
@@ -90,7 +89,6 @@ void Map_father::buttonCallback(cocos2d::Ref* pSender)//暂停键触发函数
         Director::getInstance()->resume();
         AudioEngine::resumeAll();
     }//继续
->>>>>>> Stashed changes
 }
 
 void Map_father::menuCallback(cocos2d::Ref* pSender)//返回键触发函数
@@ -148,30 +146,29 @@ void Map_One::input_walk_way()//放置怪物行进路径
         walk_way_store_1.push_back(current);
     }//竖直向上5格
     //存放地板向量生成完毕
-<<<<<<< Updated upstream
-
-    //放置一个怪兽
-    auto monster1 = MonSprite::create("monster1_1.png");
-    this->addChild(monster1);
-    MonCtrl Moncon1(monster1, 1, walk_way_store_1);
-    Moncon1.spawn();
-=======
     return;
 }
->>>>>>> Stashed changes
 
-
-
-    return;
+void Map_One::input_carrot()//放置萝卜函数
+{
+    auto carrot = Carrot::create("carrot_level1_1.png");//放置一个完整萝卜
+    this->addChild(carrot);
+    carrot->setPosition(walk_way_store_1[walk_way_store_1.size() - 1][0], walk_way_store_1[walk_way_store_1.size() - 1][1]);
 }
 
 void Map_One::spawn_monster()
 {
-    MonSprite* monster1 = MonSprite::create("monster1_1.png");
-    this->addChild(monster1);
-    MonCtrl Moncon1(monster1, 1, walk_way_store_1);
-    Moncon1.spawn();
-    
+    auto wave1 = Node::create();
+    MonsterSpawner wave1Spawn(wave1, walk_way_store_1, 1);
+    this->addChild(wave1);
+    wave1Spawn.spawn1(1.0f);
+    /*
+    wave1->scheduleUpdate();
+    wave1->scheduleOnce(SEL_SCHEDULE(MonsterSpawner::spawn1), 10.0f);
+    wave1->scheduleOnce(SEL_SCHEDULE(MonsterSpawner::spawn2), 11.0f);
+    wave1->scheduleOnce(SEL_SCHEDULE(MonsterSpawner::spawn3), 12.0f);
+    wave1->scheduleOnce(SEL_SCHEDULE(MonsterSpawner::spawn4), 13.0f);
+    wave1->scheduleOnce(SEL_SCHEDULE(MonsterSpawner::spawn5), 13.0f);*/
 }
 
 /*------------------------------地图一函数----------------------------------*/
@@ -230,8 +227,6 @@ void Map_Two::input_walk_way()
 
 }
 
-<<<<<<< Updated upstream
-=======
 void Map_Two::input_carrot()//放置萝卜函数
 {
     auto carrot = Carrot::create("carrot_level1_1.png");//放置一个完整萝卜
@@ -241,14 +236,8 @@ void Map_Two::input_carrot()//放置萝卜函数
 
 void Map_Two::spawn_monster()
 {
-    MonSprite* monster1 = MonSprite::create("monster1_1.png");
-    this->addChild(monster1);
-    MonCtrl Moncon1(monster1, 1, walk_way_store_2);
-    Moncon1.spawn();
-
 }
 
->>>>>>> Stashed changes
 /*------------------------------地图二函数----------------------------------*/
 
 
@@ -298,8 +287,6 @@ void Map_Three::input_walk_way()
     //存放地板向量生成完毕
     return;
 }
-<<<<<<< Updated upstream
-=======
 
 void Map_Three::input_carrot()//放置萝卜函数
 {
@@ -310,12 +297,6 @@ void Map_Three::input_carrot()//放置萝卜函数
 
 void Map_Three::spawn_monster()
 {
-    MonSprite* monster1 = MonSprite::create("monster1_1.png");
-    this->addChild(monster1);
-    MonCtrl Moncon1(monster1, 1, walk_way_store_3);
-    Moncon1.spawn();
-
 }
 
->>>>>>> Stashed changes
 /*------------------------------地图三函数----------------------------------*/
