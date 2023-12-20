@@ -28,6 +28,12 @@ bool Map_father::init()//父类创建场景总函数
     input_background();//放置背景图
     input_walk_way();//放置地板
     input_return_pause();//放置返回，暂停键
+<<<<<<< Updated upstream
+=======
+    input_gold(gold);//放置金币
+    input_carrot();//放置萝卜
+    spawn_monster();//生成怪物
+>>>>>>> Stashed changes
     return true;
 }
 
@@ -38,13 +44,59 @@ void Map_father::input_return_pause()//父类放置暂停以及返回键函数  暂停键未实现
     this->addChild(menu);
     menu->setPosition(return_x, return_y);
     //返回键放置完毕
+<<<<<<< Updated upstream
+=======
+    auto button = ui::Button::create("pause_1.png","pause_2.png");
+    this->addChild(button);
+    button->setPosition(Point(pause_x,pause_y));
+    button->addClickEventListener(CC_CALLBACK_1(Map_father::buttonCallback, this));
+    //暂停键创建完毕
+    
+}
+
+void Map_father::input_gold(const int gold)//放置金币函数,（已完成）
+{
+    int digit = 1000;
+    string figure;
+    for (int i = 0; i < 4; i++)
+    {
+        int k = (gold / digit) % 10;
+        digit /= 10;
+        figure.push_back(k + '0');
+    }//计算出每一位的数字，放入字符串中
+    auto gold_label = Label::createWithTTF(figure, "fonts\\Marker Felt.ttf",56);
+    Color3B gold_color(255, 233, 0);
+    gold_label->setColor(gold_color);//调成黄色
+    this->addChild(gold_label);
+    gold_label->setPosition(Point(gold_x, gold_y));
+    //将字体标签放好
+
+    auto gold_item = Sprite::create("gold.png");//生成阳光图标
+    this->addChild(gold_item);
+    gold_item->setPosition(gold_x - 90, gold_y);
+    //放好阳光图标
+
+}
+
+void Map_father::buttonCallback(cocos2d::Ref* pSender)//暂停键触发函数
+{
+    if (!Director::getInstance()->isPaused())
+    {
+        Director::getInstance()->pause();
+        AudioEngine::pauseAll();
+    }//暂停
+    else
+    {
+        Director::getInstance()->resume();
+        AudioEngine::resumeAll();
+    }//继续
+>>>>>>> Stashed changes
 }
 
 void Map_father::menuCallback(cocos2d::Ref* pSender)//返回键触发函数
 {
     Director::getInstance()->replaceScene(choose_map::createScene());//切换到选择地图场景
 }
-
 
 template<typename T>
 void Map_father::input_brick(T x, T y ,int choice)//choice==1 放置怪物绿色地板
@@ -96,16 +148,30 @@ void Map_One::input_walk_way()//放置怪物行进路径
         walk_way_store_1.push_back(current);
     }//竖直向上5格
     //存放地板向量生成完毕
+<<<<<<< Updated upstream
 
     //放置一个怪兽
     auto monster1 = MonSprite::create("monster1_1.png");
     this->addChild(monster1);
     MonCtrl Moncon1(monster1, 1, walk_way_store_1);
     Moncon1.spawn();
+=======
+    return;
+}
+>>>>>>> Stashed changes
 
 
 
     return;
+}
+
+void Map_One::spawn_monster()
+{
+    MonSprite* monster1 = MonSprite::create("monster1_1.png");
+    this->addChild(monster1);
+    MonCtrl Moncon1(monster1, 1, walk_way_store_1);
+    Moncon1.spawn();
+    
 }
 
 /*------------------------------地图一函数----------------------------------*/
@@ -164,6 +230,25 @@ void Map_Two::input_walk_way()
 
 }
 
+<<<<<<< Updated upstream
+=======
+void Map_Two::input_carrot()//放置萝卜函数
+{
+    auto carrot = Carrot::create("carrot_level1_1.png");//放置一个完整萝卜
+    this->addChild(carrot);
+    carrot->setPosition(walk_way_store_2[walk_way_store_2.size() - 1][0], walk_way_store_2[walk_way_store_2.size() - 1][1]);
+}
+
+void Map_Two::spawn_monster()
+{
+    MonSprite* monster1 = MonSprite::create("monster1_1.png");
+    this->addChild(monster1);
+    MonCtrl Moncon1(monster1, 1, walk_way_store_2);
+    Moncon1.spawn();
+
+}
+
+>>>>>>> Stashed changes
 /*------------------------------地图二函数----------------------------------*/
 
 
@@ -213,4 +298,24 @@ void Map_Three::input_walk_way()
     //存放地板向量生成完毕
     return;
 }
+<<<<<<< Updated upstream
+=======
+
+void Map_Three::input_carrot()//放置萝卜函数
+{
+    auto carrot = Carrot::create("carrot_level1_1.png");//放置一个完整萝卜
+    this->addChild(carrot);
+    carrot->setPosition(walk_way_store_3[walk_way_store_3.size() - 1][0], walk_way_store_3[walk_way_store_3.size() - 1][1]);
+}
+
+void Map_Three::spawn_monster()
+{
+    MonSprite* monster1 = MonSprite::create("monster1_1.png");
+    this->addChild(monster1);
+    MonCtrl Moncon1(monster1, 1, walk_way_store_3);
+    Moncon1.spawn();
+
+}
+
+>>>>>>> Stashed changes
 /*------------------------------地图三函数----------------------------------*/
