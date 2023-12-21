@@ -232,12 +232,11 @@ void Map_One::game_begin()//游戏开始函数
 
 void Map_One::spawn_monster()//刷新怪物
 {
-    MonsterController monCtrl;
     Node* wave1 = cocos2d::Node::create();
     this->addChild(wave1);
     MonSprite* monster1 = MonSprite::create(1);
     wave1->addChild(monster1);
-    monCtrl.monster_spawn(monster1,walk_way_store_1);
+    monster1->monster_spawn(walk_way_store_1);
 
 }
 
@@ -319,12 +318,11 @@ void Map_Two::game_begin()//游戏开始函数
 
 void Map_Two::spawn_monster()
 {
-    MonsterController monCtrl;
     Node* wave1 = cocos2d::Node::create();
     this->addChild(wave1);
     MonSprite* monster1 = MonSprite::create(1);
     wave1->addChild(monster1);
-    monCtrl.monster_spawn(monster1, walk_way_store_2);
+    monster1->monster_spawn(walk_way_store_2);
 
 }
 
@@ -397,12 +395,11 @@ void Map_Three::game_begin()//游戏开始函数
 
 void Map_Three::spawn_monster()
 {
-    MonsterController monCtrl;
     Node* wave1 = cocos2d::Node::create();
     this->addChild(wave1);
     MonSprite* monster1 = MonSprite::create(1);
     wave1->addChild(monster1);
-    monCtrl.monster_spawn(monster1, walk_way_store_3);
+    monster1->monster_spawn(walk_way_store_3);
 
 }
 
