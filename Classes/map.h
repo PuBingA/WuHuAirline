@@ -25,7 +25,6 @@ public:
     void game_over_failure(float dt);//游戏失败
     template<typename T>
     void input_brick(T x,T y ,int choice);//放置地板
-    virtual void spawn_monster() {};//放置怪物
     // implement the "static create()" method manually
     CREATE_FUNC(Map_father);
 };
@@ -35,7 +34,6 @@ class Map_One :public Map_father
 public:
     virtual void input_background();
     virtual void input_walk_way();
-    virtual void spawn_monster();
     virtual void game_begin() ;//游戏开始函数(重点)
     CREATE_FUNC(Map_One);
 private:
@@ -47,7 +45,6 @@ class Map_Two :public Map_father
 public:
     virtual void input_background();
     virtual void input_walk_way();
-    virtual void spawn_monster();
     virtual void game_begin() ;//游戏开始函数(重点)
     CREATE_FUNC(Map_Two);
 private:
@@ -59,7 +56,6 @@ class Map_Three :public Map_father
 public:
     virtual void input_background();
     virtual void input_walk_way();
-    virtual void spawn_monster();
     virtual void game_begin() ;//游戏开始函数(重点)
     CREATE_FUNC(Map_Three);
 private:

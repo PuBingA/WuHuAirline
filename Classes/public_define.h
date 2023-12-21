@@ -28,7 +28,7 @@
 #define animate_duration 0.3f
 
 #define mon1_vit 10										//怪物种类1的血量
-#define mon1_atk 5										//怪物种类1的攻击力
+#define mon1_atk 2										//怪物种类1的攻击力
 #define mon1_spd 2										//怪物种类1的速度
 
 

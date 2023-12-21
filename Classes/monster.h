@@ -4,15 +4,15 @@
 #include <vector>
 USING_NS_CC;
 
-class MonSprite : public cocos2d::Sprite//怪物类
+class MonSprite : public Sprite//怪物类
 {
 private:
     int monType = 1;
-    float monVitality = 1;//生命
-    float monAttack = 1;//攻击力
-    float monSpeed = 1;//速度
-    float monCurrentLife = 1;
-    cocos2d::ui::LoadingBar* monLifeBar = NULL;
+    int monVitality = 1;//生命
+    int monAttack = 1;//攻击力
+    int monSpeed = 1;//速度
+    int monCurrentLife = 1;
+    ui::LoadingBar* monLifeBar = NULL;
 
     void setType(int type)//设置数值
     {
@@ -78,31 +78,39 @@ public:
     }
 
     //怪物去世
-    int monster_die(Node* currentWave)
+    int monster_if_die(Node* currentWave)
     {
-        this->stopAllActions();
-        this->runAction(FadeOut::create(fade_time));//怪物淡出
-        currentWave->removeChild(this);//怪似了
-        delete this;
+        if (this->monVitality <= 0)
+        {
+            this->stopAllActions();
+            this->runAction(FadeOut::create(fade_time));//怪物淡出
+            currentWave->removeChild(this);//怪似了
+            delete this;
+            return 1;
+        }
+        return 0;
     }
 
-    //怪物受伤，返回值代表目前的健康状态
-    void monster_hurt(cocos2d::Node* currentWave, float hit_point)
+    //怪物受伤
+    void monster_hurt(Node* currentWave, int hit_point)
     {
         this->monVitality -= hit_point;
         this->runAction(Blink::create(blink_duration, blink_time));
-        if (this->monVitality < 0)
-            monster_die(currentWave);//怪物死亡
+        monster_if_die(currentWave);//判断怪物死亡
     }
 
-    /*
-    //攻击萝卜，返回
-    float monAttackCarrot(Carrot* carrot, Node* currentWave)
+    //攻击萝卜，返回伤害
+    int monster_attack_carrot(Rect carrot_rect, Node* currentWave)
     {
-        auto carrot_rect = carrot->getBoundingBox();
-        auto mon_rect = this->getBoundingBox();
+        if (carrot_rect.intersectsRect(this->getBoundingBox()))
+        {
+            this->monVitality = 0;
+            this->monster_if_die(currentWave);//怪物死
+            return this->monAttack;
+        }
+        return 0;
     }
-    */
+
 };
 
 
