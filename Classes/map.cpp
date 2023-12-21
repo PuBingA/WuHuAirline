@@ -201,16 +201,8 @@ void Map_One::input_walk_way()//放置怪物行进路径
     }//竖直向上5格
     //存放地板向量生成完毕
 
-    //放置一个怪兽
-        auto monster1 = MonSprite::create("monster1_1.png");
-        this->addChild(monster1);
-        MonCtrl Moncon1(monster1, 1, walk_way_store_1);
-        Moncon1.spawn();
-
     return;
 }
-
-
 
 void Map_One::game_begin()//游戏开始函数
 {
@@ -231,23 +223,24 @@ void Map_One::game_begin()//游戏开始函数
     carrot->HP = 0;
     carrot->change();
     carrot_HP->setString(calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
-
+    spawn_monster();
     if (carrot->if_dead())//萝卜死亡结束
         this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f);
 
     map_two_flag = true;
-  
-
 }
 
 void Map_One::spawn_monster()//刷新怪物
 {
-    MonSprite* monster1 = MonSprite::create("monster1_1.png");
-    this->addChild(monster1);
-    MonCtrl Moncon1(monster1, 1, walk_way_store_1);
-    Moncon1.spawn();
+    MonsterController monCtrl;
+    Node* wave1 = cocos2d::Node::create();
+    this->addChild(wave1);
+    MonSprite* monster1 = MonSprite::create(1);
+    wave1->addChild(monster1);
+    monCtrl.monster_spawn(monster1,walk_way_store_1);
 
 }
+
 /*------------------------------地图一函数----------------------------------*/
 
 
@@ -315,7 +308,7 @@ void Map_Two::game_begin()//游戏开始函数
     auto carrot_HP = HP_display(carrot_x + 120, carrot_y);//生成萝卜血量
     carrot_HP->setString(calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
 
-
+    spawn_monster();
     static int gold = gold_2;//金币变量
     auto gold_label = input_gold();;//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
@@ -326,10 +319,12 @@ void Map_Two::game_begin()//游戏开始函数
 
 void Map_Two::spawn_monster()
 {
-    MonSprite* monster1 = MonSprite::create("monster1_1.png");
-    this->addChild(monster1);
-    MonCtrl Moncon1(monster1, 1, walk_way_store_2);
-    Moncon1.spawn();
+    MonsterController monCtrl;
+    Node* wave1 = cocos2d::Node::create();
+    this->addChild(wave1);
+    MonSprite* monster1 = MonSprite::create(1);
+    wave1->addChild(monster1);
+    monCtrl.monster_spawn(monster1, walk_way_store_2);
 
 }
 
@@ -394,7 +389,7 @@ void Map_Three::game_begin()//游戏开始函数
     auto carrot_HP = HP_display(carrot_x + 120, carrot_y);//生成萝卜血量
     carrot_HP->setString(calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
 
-
+    spawn_monster();
     static int gold = gold_3;//金币变量
     auto gold_label = input_gold();;//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
@@ -402,10 +397,13 @@ void Map_Three::game_begin()//游戏开始函数
 
 void Map_Three::spawn_monster()
 {
-    MonSprite* monster1 = MonSprite::create("monster1_1.png");
-    this->addChild(monster1);
-    MonCtrl Moncon1(monster1, 1, walk_way_store_3);
-    Moncon1.spawn();
+    MonsterController monCtrl;
+    Node* wave1 = cocos2d::Node::create();
+    this->addChild(wave1);
+    MonSprite* monster1 = MonSprite::create(1);
+    wave1->addChild(monster1);
+    monCtrl.monster_spawn(monster1, walk_way_store_3);
 
 }
+
 /*------------------------------地图三函数----------------------------------*/
