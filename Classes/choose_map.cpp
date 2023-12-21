@@ -6,6 +6,8 @@
 USING_NS_CC;
 using namespace std;
 
+extern bool map_two_flag ;//关卡二flag
+extern bool map_three_flag ;//关卡三flag
 
 
 Scene* choose_map::createScene()
@@ -32,6 +34,12 @@ bool choose_map::init()//场景布局函数,重要函数
     this->addChild(choose_map_background);
     choose_map_background->setPosition(background_wide / 2, background_high / 2);//生成背景图
 
+    auto choose_label=Label::createWithTTF("Choose the map!", "fonts\\Marker Felt.ttf", 70);
+    Color3B color(0, 255, 0);//生成红色字体
+    choose_label->setColor(color);
+    choose_label->setPosition(background_wide / 2, background_high / 2-200);
+    this->addChild(choose_label);//放置标签
+
 
     auto back_item = MenuItemImage::create("CloseNormal.png", "CloseSelected.png", CC_CALLBACK_1(choose_map::menuCallback, this, back));
     auto back_menu = Menu::create(back_item, NULL);
@@ -43,15 +51,46 @@ bool choose_map::init()//场景布局函数,重要函数
     map_1_menu->setPosition(background_wide / 2-300, background_high / 2);
     this->addChild(map_1_menu);//生成地图1选择菜单
 
-    auto choose_map_2 = MenuItemImage::create("choose_map_2.png", "choose_map_2_selected.png", CC_CALLBACK_1(choose_map::menuCallback, this, map2));
-    auto map_2_menu = Menu::create(choose_map_2, NULL);
-    map_2_menu->setPosition(background_wide / 2 , background_high / 2);
-    this->addChild(map_2_menu);//生成地图2选择菜单
+    if (map_two_flag)//通关第1关才生成按钮
+    {
+        auto choose_map_2 = MenuItemImage::create("choose_map_2.png", "choose_map_2_selected.png", CC_CALLBACK_1(choose_map::menuCallback, this, map2));
+        auto map_2_menu = Menu::create(choose_map_2, NULL);
+        map_2_menu->setPosition(background_wide / 2, background_high / 2);
+        this->addChild(map_2_menu);//生成地图2选择菜单
+    }
 
-    auto choose_map_3 = MenuItemImage::create("choose_map_3.png", "choose_map_3_selected.png", CC_CALLBACK_1(choose_map::menuCallback, this, map3));
-    auto map_3_menu = Menu::create(choose_map_3, NULL);
-    map_3_menu->setPosition(background_wide / 2+300, background_high / 2);
-    this->addChild(map_3_menu);//生成地图3选择菜单
+    else
+    {
+        auto disable_2 = Sprite::create("choose_map_2_disable.png");
+        disable_2->setPosition(background_wide / 2, background_high / 2);
+        this->addChild(disable_2);//放置贴图
+
+        auto disable_label = Label::createWithTTF("LOCK", "fonts\\Marker Felt.ttf", 40);
+        disable_label->setColor(color);//调成红色
+        disable_label->setPosition(background_wide / 2, background_high / 2-80);
+        this->addChild(disable_label);//放置标签
+    }
+
+    if (map_three_flag)//通关第2关才生成按钮
+    {
+        auto choose_map_3 = MenuItemImage::create("choose_map_3.png", "choose_map_3_selected.png", CC_CALLBACK_1(choose_map::menuCallback, this, map3));
+        auto map_3_menu = Menu::create(choose_map_3, NULL);
+        map_3_menu->setPosition(background_wide / 2 + 300, background_high / 2);
+        this->addChild(map_3_menu);//生成地图3选择菜单
+    }
+
+    else
+    {
+        auto disable_3 = Sprite::create("choose_map_3_disable.png");
+        disable_3->setPosition(background_wide / 2 + 300, background_high / 2);
+        this->addChild(disable_3);//放置贴图
+
+        auto disable_label = Label::createWithTTF("LOCK", "fonts\\Marker Felt.ttf", 40);
+        disable_label->setColor(color);//调成红色
+        disable_label->setPosition(background_wide / 2 + 300, background_high / 2 - 80);
+        this->addChild(disable_label);//放置标签
+    }
+
 }
 
 

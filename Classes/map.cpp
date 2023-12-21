@@ -8,6 +8,8 @@
 USING_NS_CC;
 using namespace std;
 
+extern bool map_two_flag;
+extern bool map_three_flag;
 /*-------------------------------父类函数-----------------------------------*/
 
 cocos2d::Scene* Map_father::createScene()
@@ -133,10 +135,18 @@ void Map_father::menuCallback(cocos2d::Ref* pSender)//返回键触发函数
     Director::getInstance()->replaceScene(choose_map::createScene());//切换到选择地图场景
 }
 
-void Map_father::game_over(cocos2d::Ref* pSender,int const choice)
+void Map_father::game_over_success(float dt)//游戏胜利
 {
-    if(choice==1)
-        Director::getInstance()->replaceScene(settlement_success::createScene());//切换到胜利场景
+     auto scene = settlement_success::createScene();
+     Director::getInstance()->replaceScene(TransitionCrossFade::create(2.0f, scene));
+    
+}
+
+void Map_father::game_over_failure(float dt)//游戏失败
+{
+    auto scene = settlement_failure::createScene();
+    Director::getInstance()->replaceScene(TransitionCrossFade::create(2.0f, scene));
+
 }
 
 
@@ -218,11 +228,14 @@ void Map_One::game_begin()//游戏开始函数
     auto gold_label = input_gold();;//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
 
-    //以下为调试
     carrot->HP = 0;
-    carrot->level = 3;
     carrot->change();
     carrot_HP->setString(calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
+
+    if (carrot->if_dead())//萝卜死亡结束
+        this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f);
+
+    map_two_flag = true;
   
 
 }
@@ -307,7 +320,7 @@ void Map_Two::game_begin()//游戏开始函数
     auto gold_label = input_gold();;//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
 
-
+    map_three_flag = true;
 
 }
 

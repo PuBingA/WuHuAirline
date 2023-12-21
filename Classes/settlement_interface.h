@@ -7,8 +7,7 @@ public:
     static cocos2d::Scene* createScene();
 
     virtual bool init();//构建场景函数
-
-    void menuCallback(cocos2d::Ref* pSender, const int choice);//菜单响应函数
+    void menuCallback(cocos2d::Ref* pSender);//菜单相应函数
 
     CREATE_FUNC(settlement_success);
 
@@ -22,7 +21,7 @@ public:
 
     virtual bool init();//构建场景函数
 
-    void menuCallback(cocos2d::Ref* pSender, const int choice);//菜单响应函数
+    void menuCallback(cocos2d::Ref* pSender);//菜单响应函数
 
     CREATE_FUNC(settlement_failure);
 

@@ -21,7 +21,8 @@ public:
     cocos2d::Label* HP_display(const T x, const T y);//在相应坐标生成萝卜
     std::string calculate_HP(const int HP);//根据萝卜血量，等处字符串
     virtual void game_begin() {};//游戏开始函数(重点)
-    void game_over(cocos2d::Ref* pSender,int const choice);//游戏结束,choice==1为胜利 choice==0 为失败
+    void game_over_success(float dt);//游戏胜利
+    void game_over_failure(float dt);//游戏失败
     template<typename T>
     void input_brick(T x,T y ,int choice);//放置地板
     virtual void spawn_monster() {};//放置怪物
