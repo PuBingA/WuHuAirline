@@ -2,9 +2,9 @@
 #include "public_define.h"
 USING_NS_CC;
 
-void FrameBox::Spawn(int x, int y)
+void FrameBox::Spawn(int x, int y, float scale)
 {
-	Current->setScale(0.5);
+	Current->setScale(scale);
 	Current->setPosition(x, y);
 }
 
@@ -23,9 +23,23 @@ void FrameBox::Disappear()
 	Current->runAction(FadeOut::create(fade_time));
 }
 
-bool IsFrame(int& x, int& y)	//if (level == 1)
+bool IsFrame_Lv1(int& x, int& y)	//if (level == 1)
 {
-	for (auto& adjust_coord : AllFrames)
+	for (auto& adjust_coord : AllFrames_Lv1)
+	{
+		if (x > adjust_coord.left_up._x && x < adjust_coord.right_down._x && y > adjust_coord.right_down._y && y < adjust_coord.left_up._y)
+		{
+			x = adjust_coord.adjusted._x;
+			y = adjust_coord.adjusted._y;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool IsFramePlant_Lv1(int& x, int& y)
+{
+	for (auto& adjust_coord : AllPlants_Lv1)
 	{
 		if (x > adjust_coord.left_up._x && x < adjust_coord.right_down._x && y > adjust_coord.right_down._y && y < adjust_coord.left_up._y)
 		{
