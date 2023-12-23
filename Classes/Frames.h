@@ -32,6 +32,7 @@ typedef struct TowerInfo
 	int ATK_damage;
 	int ATK_speed;
 }TI;
+
 //数值分别代表：炮台种类，升级花费，铲除返现，攻击范围，子弹伤害，攻速(单位ms)
 //建立炮台花费100
 const TI Cannon_1 = { 1, 180, 80, 100, 30, 500 };
