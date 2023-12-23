@@ -5,8 +5,8 @@ USING_NS_CC;
 
 struct XY
 {
-	int _x;
-	int _y;
+	float _x;
+	float _y;
 };
 
 typedef struct FrameSpot
