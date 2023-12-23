@@ -4,7 +4,6 @@
 #include<string>
 #include<vector>
 USING_NS_CC;
-using namespace std;
 
 extern bool map_two_flag ;//关卡二flag
 extern bool map_three_flag ;//关卡三flag
@@ -90,7 +89,7 @@ bool choose_map::init()//场景布局函数,重要函数
         disable_label->setPosition(background_wide / 2 + 300, background_high / 2 - 80);
         this->addChild(disable_label);//放置标签
     }
-
+    return true;
 }
 
 
@@ -113,5 +112,4 @@ void choose_map::map_error()//关卡选择报错函数,未完成
     auto error_report_label = Label::createWithTTF("该关卡未解锁！","fonts\\arial.ttf", 40);
     auto error_report = MenuItemLabel::create(error_report_label);
     MenuItems.pushBack(error_report);//将文本加入菜单
-
 }

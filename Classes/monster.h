@@ -19,16 +19,20 @@ private:
         monType = type;
         switch (monType)
         {
-            case 1:
-                monVitality = mon1_vit;
-                monAttack = mon1_atk;
-                monSpeed = mon1_spd;
-                break;
+        case 1:
+            monVitality = mon1_vit;
+            monAttack = mon1_atk;
+            monSpeed = mon1_spd;
+            break;
         }
         monCurrentLife = monVitality;
     }
 
 public:
+    /**********************12.23 新增**************************/
+    friend class FrameBox;
+    /**********************12.23 新增**************************/
+
     friend class MonsterController;
 
     static MonSprite* create(int type = 0)
@@ -166,5 +170,3 @@ public:
     }
 
 };
-
-

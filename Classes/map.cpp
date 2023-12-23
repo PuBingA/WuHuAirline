@@ -1,17 +1,17 @@
-#include"map.h"
+ï»¿#include"map.h"
 #include"choose_map.h"
-#include "monster.h"
 #include"carrot.h"
 #include "ui/CocosGUI.h"
 #include"cocos-ext.h"
 #include"settlement_interface.h"
 USING_NS_CC;
-using namespace std;
 
 extern bool map_two_flag;
 extern bool map_three_flag;
-/*-------------------------------¸¸Ààº¯Êı-----------------------------------*/
 
+int CheckBox(XY obj, const std::vector<FS>& table);
+
+/*-------------------------------çˆ¶ç±»å‡½æ•°-----------------------------------*/
 cocos2d::Scene* Map_father::createScene()
 {
     return Map_father::create();
@@ -23,53 +23,66 @@ static void problemLoading(const char* filename)
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
-bool Map_father::init()//¸¸Àà´´½¨³¡¾°×Üº¯Êı
+void Map_father::waitForConditionAndExecute(const std::function<bool()>& condition, const std::function<void()>& callback)
 {
-    static int gold = 4321;//³õÊ¼½ğ±Ò
+    if (condition())
+        callback();
+    else
+    {
+        scheduleOnce([=](float dt)
+            {
+                waitForConditionAndExecute(condition, callback);
+            }, 0.1f, "waitForConditionTag");
+    }
+}
+
+bool Map_father::init()//çˆ¶ç±»åˆ›å»ºåœºæ™¯æ€»å‡½æ•°
+{
+    static int gold = 4321;//åˆå§‹é‡‘å¸
     if (!Scene::init())
         return false;
 
-    auto visibleSize = Director::getInstance()->getVisibleSize();//»ñÈ¡¿É¼û´óĞ¡
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();//»ñÈ¡openglÆğµã
+    auto visibleSize = Director::getInstance()->getVisibleSize();//è·å–å¯è§å¤§å°
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();//è·å–openglèµ·ç‚¹
 
-    input_background();//·ÅÖÃ±³¾°Í¼
-    input_walk_way();//·ÅÖÃµØ°å
-    input_return_pause();//·ÅÖÃ·µ»Ø£¬ÔİÍ£¼ü
-    input_gold_item();//·ÅÖÃ½ğ±Ò
-    game_begin();//¿ªÊ¼ÓÎÏ·
+    input_background();//æ”¾ç½®èƒŒæ™¯å›¾
+    input_walk_way();//æ”¾ç½®åœ°æ¿
+    input_return_pause();//æ”¾ç½®è¿”å›ï¼Œæš‚åœé”®
+    input_gold_item();//æ”¾ç½®é‡‘å¸
+    game_begin();//å¼€å§‹æ¸¸æˆ
     return true;
 }
 
-void Map_father::input_return_pause()//¸¸Àà·ÅÖÃÔİÍ£ÒÔ¼°·µ»Ø¼üº¯Êı
+void Map_father::input_return_pause()//çˆ¶ç±»æ”¾ç½®æš‚åœä»¥åŠè¿”å›é”®å‡½æ•°
 {
     bool pause = false;
     auto return_menu = MenuItemImage::create("return.png", "return_selected.png", CC_CALLBACK_1(Map_father::menuCallback, this));
     auto menu = Menu::create(return_menu, NULL);
     this->addChild(menu);
     menu->setPosition(return_x, return_y);
-    //·µ»Ø¼ü·ÅÖÃÍê±Ï
+    //è¿”å›é”®æ”¾ç½®å®Œæ¯•
     auto button = ui::Button::create("pause_1.png","pause_2.png");
     this->addChild(button);
     button->setPosition(Point(pause_x,pause_y));
     button->addClickEventListener(CC_CALLBACK_1(Map_father::buttonCallback, this));
-    //ÔİÍ£¼ü´´½¨Íê±Ï
+    //æš‚åœé”®åˆ›å»ºå®Œæ¯•
     
 }
 
-void Map_father::input_gold_item()//·ÅÖÃÑô¹âÍ¼±ê
+void Map_father::input_gold_item()//æ”¾ç½®é˜³å…‰å›¾æ ‡
 {
    
-    auto gold_item = Sprite::create("gold.png");//Éú³ÉÑô¹âÍ¼±ê
+    auto gold_item = Sprite::create("gold.png");//ç”Ÿæˆé˜³å…‰å›¾æ ‡
     this->addChild(gold_item);
     gold_item->setPosition(gold_x - 90, gold_y);
-    //·ÅºÃÑô¹âÍ¼±ê
+    //æ”¾å¥½é˜³å…‰å›¾æ ‡
 }
 
-cocos2d::Label* Map_father::input_gold()//Éú³É½ğ±Ò±êÇ©
+cocos2d::Label* Map_father::input_gold()//ç”Ÿæˆé‡‘å¸æ ‡ç­¾
 {
     auto gold_label = Label::createWithTTF("", "fonts\\Marker Felt.ttf", 56);
     Color3B gold_color(255, 233, 0);
-    gold_label->setColor(gold_color);//µ÷³É»ÆÉ«
+    gold_label->setColor(gold_color);//è°ƒæˆé»„è‰²
     this->addChild(gold_label);
     gold_label->setPosition(gold_x, gold_y);
     return gold_label;
@@ -77,152 +90,479 @@ cocos2d::Label* Map_father::input_gold()//Éú³É½ğ±Ò±êÇ©
 
 string Map_father::calculate_gold(const int gold)
 {
-    int digit = 1000;//Ç§Î»
+    int digit = 1000;//åƒä½
     string figure;
     for (int i = 0; i < 4; i++)
     {
         int k = (gold / digit) % 10;
         digit /= 10;
         figure.push_back(k + '0');
-    }//¼ÆËã³öÃ¿Ò»Î»µÄÊı×Ö£¬·ÅÈë×Ö·û´®ÖĞ
+    }//è®¡ç®—å‡ºæ¯ä¸€ä½çš„æ•°å­—ï¼Œæ”¾å…¥å­—ç¬¦ä¸²ä¸­
     return figure;
 }
 
 template<typename T>
-cocos2d::Label* Map_father::HP_display(const T x, const T y)//·ÅÖÃÂÜ²·ÑªÌõº¯Êı
+cocos2d::Label* Map_father::HP_display(const T x, const T y)//æ”¾ç½®èåœè¡€æ¡å‡½æ•°
 {
     auto HP_label = Label::createWithTTF("", "fonts\\Marker Felt.ttf", 40);
     Color3B HP_color(255, 0, 0);
-    HP_label->setColor(HP_color);//µ÷³ÉºìÉ«
+    HP_label->setColor(HP_color);//è°ƒæˆçº¢è‰²
     HP_label->setPosition(x, y);
-    this->addChild(HP_label);//Éú³ÉºÃÑªÁ¿±êÇ©
+    this->addChild(HP_label);//ç”Ÿæˆå¥½è¡€é‡æ ‡ç­¾
     auto Hp_item = Sprite::create("carrot_HP.png");
     Hp_item->setPosition(x - 50, y);
-    this -> addChild(Hp_item);//Éú³ÉÑªÁ¿Í¼±ê
+    this -> addChild(Hp_item);//ç”Ÿæˆè¡€é‡å›¾æ ‡
 
     return HP_label;
 }
 
-std::string Map_father::calculate_HP(const int HP)//¸ù¾İÂÜ²·ÑªÁ¿Éú³É×Ö·û´®
+std::string Map_father::calculate_HP(const int HP)//æ ¹æ®èåœè¡€é‡ç”Ÿæˆå­—ç¬¦ä¸²
 {
     string figure;
-    int digit = 10;//Ê®Î»
+    int digit = 10;//åä½
     for (int i = 0; i < 2; i++)
     {
         int k = (HP / digit) % 10;
         digit /= 10;
         figure += k + '0';
-    }//¼ÆËã³öÃ¿Ò»Î»µÄÊı×Ö£¬·ÅÈë×Ö·û´®ÖĞ
+    }//è®¡ç®—å‡ºæ¯ä¸€ä½çš„æ•°å­—ï¼Œæ”¾å…¥å­—ç¬¦ä¸²ä¸­
     return figure;
 }
 
-void Map_father::buttonCallback(cocos2d::Ref* pSender)//ÔİÍ£¼ü´¥·¢º¯Êı
+void Map_father::buttonCallback(cocos2d::Ref* pSender)//æš‚åœé”®è§¦å‘å‡½æ•°
 {
     if (!Director::getInstance()->isPaused())
     {
         Director::getInstance()->pause();
         AudioEngine::pauseAll();
-    }//ÔİÍ£
+    }//æš‚åœ
     else
     {
         Director::getInstance()->resume();
         AudioEngine::resumeAll();
-    }//¼ÌĞø
+    }//ç»§ç»­
 }
 
-void Map_father::menuCallback(cocos2d::Ref* pSender)//·µ»Ø¼ü´¥·¢º¯Êı
+void Map_father::menuCallback(cocos2d::Ref* pSender)//è¿”å›é”®è§¦å‘å‡½æ•°
 {
-    Director::getInstance()->replaceScene(choose_map::createScene());//ÇĞ»»µ½Ñ¡ÔñµØÍ¼³¡¾°
+    Director::getInstance()->replaceScene(choose_map::createScene());//åˆ‡æ¢åˆ°é€‰æ‹©åœ°å›¾åœºæ™¯
 }
 
-void Map_father::game_over_success(float dt)//ÓÎÏ·Ê¤Àû
+void Map_father::game_over_success(float dt)
 {
-     auto scene = settlement_success::createScene();
-     Director::getInstance()->replaceScene(TransitionCrossFade::create(2.0f, scene));
-    
+    auto scene = settlement_success::createScene();
+    Director::getInstance()->replaceScene(TransitionCrossFade::create(2.0f, scene));
 }
 
-void Map_father::game_over_failure(float dt)//ÓÎÏ·Ê§°Ü
+void Map_father::game_over_failure(float dt)
 {
     auto scene = settlement_failure::createScene();
     Director::getInstance()->replaceScene(TransitionCrossFade::create(2.0f, scene));
-
 }
 
-
 template<typename T>
-void Map_father::input_brick(T x, T y ,int choice)//choice==1 ·ÅÖÃ¹ÖÎïÂÌÉ«µØ°å
+void Map_father::input_brick(T x, T y ,int choice)//choice==1 æ”¾ç½®æ€ªç‰©ç»¿è‰²åœ°æ¿
 {
     if (choice == 1)
     {
         auto walk_way = Sprite::create("way.png");
         this->addChild(walk_way);
-        walk_way->setPosition(x, y);//±³¾°Í¼
+        walk_way->setPosition(x, y);//èƒŒæ™¯å›¾
     }
 }
 
-/*-------------------------------¸¸Ààº¯Êı-----------------------------------*/
+/*-------------------------------çˆ¶ç±»å‡½æ•°-----------------------------------*/
 
 
 
-/*------------------------------µØÍ¼Ò»º¯Êı----------------------------------*/
+/*------------------------------åœ°å›¾ä¸€å‡½æ•°----------------------------------*/
+Map_One::Map_One()
+{
+    //åˆå§‹åŒ–vacancy_spots
+    vacancy.clear();
+    for (int i = 0; i <= 37; i++)
+        vacancy.push_back({ i,0,0,nullptr });
+}
 
-void Map_One::input_background()//·ÅÖÃ±³¾°Í¼
+void Map_One::input_listener()
+{
+    auto mouseListener_show_yellow_frame = EventListenerMouse::create();
+    mouseListener_show_yellow_frame->onMouseDown = CC_CALLBACK_1(Map_One::onMouseDown_Show_Yellow, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener_show_yellow_frame, this);
+
+    auto mouseListener_for_planting = EventListenerMouse::create();
+    mouseListener_for_planting->onMouseDown = CC_CALLBACK_1(Map_One::onMouseDown_Do_Plant, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener_for_planting, this);
+
+    yellow_frame = FrameBox::create("yellow_frame.png");
+    this->addChild(yellow_frame); //z-value=0
+    yellow_frame->setVisible(false);
+}
+
+void Map_One::onMouseDown_Do_Plant(Event* event)
+{
+    EventMouse* e = dynamic_cast<EventMouse*>(event);
+    if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
+    {
+        float x = e->getCursorX(), y = e->getCursorY();
+        if (IsFramePlant_Lv1(x, y))
+        {
+            if (x == 450)//plant a cannon
+                WhichPlant = 1;
+            else if (x == 550)//plant a shit
+                WhichPlant = 2;
+            else if (x == 650)//upgrade
+                WhichPlant = 3;
+            else if (x == 750)//delete
+                WhichPlant = 4;
+        }
+    }
+}
+
+void Map_One::onMouseDown_Show_Yellow(Event* event)
+{
+    EventMouse* e = dynamic_cast<EventMouse*>(event);
+    if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
+    {
+        float x = e->getCursorX(), y = e->getCursorY();
+        if (IsFrame_Lv1(x, y))
+        {
+            yellow_frame->setVisible(true);
+            yellow_frame->Spawn(x, y, 0.5f);
+            yellow_frame->Shimmer();
+            singleclick._x = x, singleclick._y = y; //ä¿å­˜é»„è‰²æ¡†ä½ç½®ï¼Œå‡†å¤‡ç§æ¤
+            vacancyIndex = CheckBox(singleclick, AllFrames_Lv1);
+
+            //æŸ¥è¯¢ç§æ¤çŠ¶æ€ï¼Œå¦‚æœæ˜¯0ï¼ˆæœªç§æ¤ï¼‰åˆ™è¿›è¡Œåç»­æ“ä½œ
+            if (vacancy[vacancyIndex].state == 0)
+            {
+                tower_cannon->setVisible(false);//æš—è‰²cannonè®¾ä¸ºä¸å¯è§
+                tower_shit->setVisible(false);//æš—è‰²shitè®¾ä¸ºä¸å¯è§
+                tower_cannon_ready->setVisible(true);//äº®è‰²cannonè®¾ä¸ºå¯è§
+                tower_shit_ready->setVisible(true);//äº®è‰²shitè®¾ä¸ºå¯è§
+
+                //å¼€å§‹æ£€æµ‹é¼ æ ‡ç‚¹å‡»ä½ç½®ï¼Œä»¥åˆ¤æ–­ç§æ¤å“ªç§ç‚®å¡”ï¼Œä¸€ç›´ç­‰
+                //é—®é¢˜ï¼šå¦‚æœå•æ¬¡ç‚¹å‡»äº§ç”Ÿé»„æ¡†ååˆç‚¹å‡»äº†åˆ«çš„ä½ç½®äº§ç”Ÿé»„æ¡†ï¼Œæ–°ç§æ¤çš„ç‚®å°ä»ç„¶ä¼šç§åˆ°ä¹‹å‰çš„ä½ç½®ï¼
+                waitForConditionAndExecute(
+                    [=]() {
+                        return WhichPlant == 1 || WhichPlant == 2;
+                    },
+                    [=]() {
+                        if (WhichPlant == 1) //plant a cannon
+                        {
+                            //äºç›®æ ‡ç‚¹ç”Ÿæˆä¸€çº§cannon
+                            cannon_Lv1 = FrameBox::create("cannon_Lv1.png");
+                            this->addChild(cannon_Lv1);
+                            cannon_Lv1->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                            vacancy[vacancyIndex].state = 1;      //state=1 æ”¾ç½®äº†ä¸€çº§ç‚®å°
+                            vacancy[vacancyIndex].tower_type = 1; //cannon
+                            vacancy[vacancyIndex].spr = cannon_Lv1; //å½“å‰æŒ‡é’ˆå­˜å…¥vacancyä¸­
+                            WhichPlant = 0;
+                        }
+                        else if (WhichPlant == 2) //plant a shit
+                        {
+                            //äºç›®æ ‡ç‚¹ç”Ÿæˆä¸€çº§shit
+                            shit_Lv1 = FrameBox::create("shit_Lv1.png");
+                            this->addChild(shit_Lv1);
+                            shit_Lv1->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                            vacancy[vacancyIndex].state = 1;      //state=1 æ”¾ç½®äº†ä¸€çº§ç‚®å°
+                            vacancy[vacancyIndex].tower_type = 2; //shit
+                            vacancy[vacancyIndex].spr = shit_Lv1; //å½“å‰æŒ‡é’ˆå­˜å…¥vacancyä¸­
+                            WhichPlant = 0;
+                        }
+                    }
+                );
+            }
+            else if (vacancy[vacancyIndex].state == 1) //state=1 æ”¾ç½®äº†ä¸€çº§ç‚®å°
+            {
+                tower_cannon->setVisible(true);//æš—è‰²cannonè®¾ä¸ºå¯è§
+                tower_shit->setVisible(true);//æš—è‰²shitè®¾ä¸ºå¯è§
+                tower_cannon_ready->setVisible(false);//äº®è‰²cannonè®¾ä¸ºä¸å¯è§
+                tower_shit_ready->setVisible(false);//äº®è‰²shitè®¾ä¸ºä¸å¯è§
+                upgrade_ready->setVisible(true);//äº®è‰²å‡çº§è®¾ä¸ºå¯è§
+                delete_ready->setVisible(true);//äº®è‰²åˆ é™¤è®¾ä¸ºå¯è§
+                upgrade_grey->setVisible(false);//æš—è‰²å‡çº§è®¾ä¸ºä¸å¯è§
+                delete_grey->setVisible(false);//æš—è‰²åˆ é™¤è®¾ä¸ºä¸å¯è§
+                waitForConditionAndExecute(
+                    [=]() {
+                        return WhichPlant == 3 || WhichPlant == 4;
+                    },
+                    [=]() {
+                        if (WhichPlant == 3) //upgrade
+                        {
+                            if (vacancy[vacancyIndex].tower_type == 1)//upgrade cannon
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                cannon_Lv2 = FrameBox::create("cannon_Lv2.png");
+                                this->addChild(cannon_Lv2);
+                                cannon_Lv2->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                                vacancy[vacancyIndex].state = 2;      //state=2 æ”¾ç½®äº†äºŒçº§ç‚®å°
+                                vacancy[vacancyIndex].tower_type = 1; //cannon
+                                vacancy[vacancyIndex].spr = cannon_Lv2; //å½“å‰æŒ‡é’ˆå­˜å…¥vacancyä¸­*/
+                                WhichPlant = 0;
+                            }
+                            else if (vacancy[vacancyIndex].tower_type == 2)//upgrade shit
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                shit_Lv2 = FrameBox::create("shit_Lv2.png");
+                                this->addChild(shit_Lv2);
+                                shit_Lv2->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                                vacancy[vacancyIndex].state = 2;      //state=2 æ”¾ç½®äº†äºŒçº§ç‚®å°
+                                vacancy[vacancyIndex].tower_type = 2; //shit
+                                vacancy[vacancyIndex].spr = shit_Lv2; //å½“å‰æŒ‡é’ˆå­˜å…¥vacancyä¸­*/
+                                WhichPlant = 0;
+                            }
+                        }
+                        else if (WhichPlant == 4) //delete
+                        {
+                            if (vacancy[vacancyIndex].tower_type == 1)//delete cannon
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                            }
+                            else if (vacancy[vacancyIndex].tower_type == 2)//delete shit
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                            }
+                        }
+                    }
+                );
+            }
+            
+            else if (vacancy[vacancyIndex].state == 2) //state=2 æ”¾ç½®äº†äºŒçº§ç‚®å°
+            {
+                tower_cannon->setVisible(true);//æš—è‰²cannonè®¾ä¸ºå¯è§
+                tower_shit->setVisible(true);//æš—è‰²shitè®¾ä¸ºå¯è§
+                tower_cannon_ready->setVisible(false);//äº®è‰²cannonè®¾ä¸ºä¸å¯è§
+                tower_shit_ready->setVisible(false);//äº®è‰²shitè®¾ä¸ºä¸å¯è§
+                upgrade_ready->setVisible(true);//äº®è‰²å‡çº§è®¾ä¸ºå¯è§
+                delete_ready->setVisible(true);//äº®è‰²åˆ é™¤è®¾ä¸ºå¯è§
+                upgrade_grey->setVisible(false);//æš—è‰²å‡çº§è®¾ä¸ºä¸å¯è§
+                delete_grey->setVisible(false);//æš—è‰²åˆ é™¤è®¾ä¸ºä¸å¯è§
+                waitForConditionAndExecute(
+                    [=]() {
+                        return WhichPlant == 3 || WhichPlant == 4;
+                    },
+                    [=]() {
+                        if (WhichPlant == 3) //upgrade
+                        {
+                            if (vacancy[vacancyIndex].tower_type == 1)//upgrade cannon
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                cannon_Lv3 = FrameBox::create("cannon_Lv3.png");
+                                this->addChild(cannon_Lv3);
+                                cannon_Lv3->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                                vacancy[vacancyIndex].state = 3;      //state=3 æ”¾ç½®äº†ä¸‰çº§ç‚®å°
+                                vacancy[vacancyIndex].tower_type = 1; //cannon
+                                vacancy[vacancyIndex].spr = cannon_Lv3; //å½“å‰æŒ‡é’ˆå­˜å…¥vacancyä¸­
+                                WhichPlant = 0;
+                            }
+                            else if (vacancy[vacancyIndex].tower_type == 2)//upgrade shit
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                shit_Lv3 = FrameBox::create("shit_Lv3.png");
+                                this->addChild(shit_Lv3);
+                                shit_Lv3->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                                vacancy[vacancyIndex].state = 3;      //state=3 æ”¾ç½®äº†ä¸‰çº§ç‚®å°
+                                vacancy[vacancyIndex].tower_type = 2; //shit
+                                vacancy[vacancyIndex].spr = shit_Lv3; //å½“å‰æŒ‡é’ˆå­˜å…¥vacancyä¸­
+                                WhichPlant = 0;
+                            }
+                        }
+                        else if (WhichPlant == 4) //delete
+                        {
+                            if (vacancy[vacancyIndex].tower_type == 1)//delete cannon
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                            }
+                            else if (vacancy[vacancyIndex].tower_type == 2)//delete shit
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                            }
+                        }
+                    }
+                    );
+            }
+            else if (vacancy[vacancyIndex].state == 3)  //state=3 æ”¾ç½®äº†ä¸‰çº§ç‚®å°
+            {
+                tower_cannon->setVisible(true);//æš—è‰²cannonè®¾ä¸ºå¯è§
+                tower_shit->setVisible(true);//æš—è‰²shitè®¾ä¸ºå¯è§
+                tower_cannon_ready->setVisible(false);//äº®è‰²cannonè®¾ä¸ºä¸å¯è§
+                tower_shit_ready->setVisible(false);//äº®è‰²shitè®¾ä¸ºä¸å¯è§
+                upgrade_ready->setVisible(false);//äº®è‰²å‡çº§è®¾ä¸ºä¸å¯è§ï¼ï¼
+                delete_ready->setVisible(true);//äº®è‰²åˆ é™¤è®¾ä¸ºå¯è§
+                upgrade_grey->setVisible(true);//æš—è‰²å‡çº§è®¾ä¸ºå¯è§
+                delete_grey->setVisible(false);//æš—è‰²åˆ é™¤è®¾ä¸ºä¸å¯è§
+                waitForConditionAndExecute(
+                    [=]() {
+                        return WhichPlant == 4;
+                    },
+                    [=]() {
+                        if (WhichPlant == 4) {
+                            if (vacancy[vacancyIndex].tower_type == 1)//delete cannon
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                            }
+                            else if (vacancy[vacancyIndex].tower_type == 2)//delete shit
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                            }
+                        }
+                    }
+                );
+            }
+        }
+        else
+        {
+            yellow_frame->setVisible(false);//grey cannon visible
+            tower_cannon->setVisible(true);//grey shit visible
+            tower_shit->setVisible(true);//colored cannon invisible
+            tower_cannon_ready->setVisible(false);//colored shit invisible
+            tower_shit_ready->setVisible(false);//colored upgrade invisible
+            upgrade_ready->setVisible(false);//colored delete invisible
+            delete_ready->setVisible(false);//grey update visible
+            upgrade_grey->setVisible(true);//grey delete visible
+            delete_grey->setVisible(true);
+        }
+    }
+}
+
+void Map_One::ShowTowerDark()
+{
+    //æš—è‰²ç‚®å°â€”â€”åˆçŠ¶æ€å¯è§
+    //æš—è‰²cannon
+    tower_cannon = FrameBox::create("TI_1_unavailable.png");
+    this->addChild(tower_cannon); //z-value=0
+    tower_cannon->Spawn(450, 600, 1.0f);
+    tower_cannon->setVisible(true);
+    //æš—è‰²shit
+    tower_shit = FrameBox::create("TI_2_unavailable.png");
+    this->addChild(tower_shit); //z-value=0
+    tower_shit->Spawn(550, 600, 1.0f);
+    tower_shit->setVisible(true);
+    //æš—è‰²å‡çº§â€”â€”æ³¨æ„å‡çº§.pngéœ€è¦ç¼©æ”¾è‡³Ã—0.7
+    upgrade_grey = FrameBox::create("upgrade_grey.png");
+    this->addChild(upgrade_grey); //z-value=0
+    upgrade_grey->Spawn(650, 600, 0.7f);
+    upgrade_grey->setVisible(true);
+    //æš—è‰²ç§»é™¤â€”â€”æ³¨æ„ç§»é™¤.pngéœ€è¦ç¼©æ”¾è‡³Ã—0.7
+    delete_grey = FrameBox::create("delete_grey.png");
+    this->addChild(delete_grey); //z-value=0
+    delete_grey->Spawn(750, 600, 0.7f);
+    delete_grey->setVisible(true);
+
+
+    //äº®è‰²ç‚®å°â€”â€”åˆçŠ¶æ€ä¸å¯è§
+    //äº®è‰²cannon
+    tower_cannon_ready = FrameBox::create("TI_1_available.png");
+    this->addChild(tower_cannon_ready); //z-value=0
+    tower_cannon_ready->Spawn(450, 600, 1.0f);
+    tower_cannon_ready->setVisible(false);
+    //äº®è‰²shit
+    tower_shit_ready = FrameBox::create("TI_2_available.png");
+    this->addChild(tower_shit_ready); //z-value=0
+    tower_shit_ready->Spawn(550, 600, 1.0f);
+    tower_shit_ready->setVisible(false);
+    //äº®è‰²å‡çº§
+    upgrade_ready = FrameBox::create("upgrade_ready.png");
+    this->addChild(upgrade_ready); //z-value=0
+    upgrade_ready->Spawn(650, 600, 0.7f);
+    upgrade_ready->setVisible(false);
+    //äº®è‰²ç§»é™¤
+    delete_ready = FrameBox::create("delete_ready.png");
+    this->addChild(delete_ready); //z-value=0
+    delete_ready->Spawn(750, 600, 0.7f);
+    delete_ready->setVisible(false);
+}
+
+void Map_One::input_background()//æ”¾ç½®èƒŒæ™¯å›¾
 {
     auto background = Sprite::create("map\\map_one.png");
     this->addChild(background);
-    background->setPosition(background_wide / 2, background_high / 2);//±³¾°Í¼
+    background->setPosition(background_wide / 2, background_high / 2);//èƒŒæ™¯å›¾
 }
 
-void Map_One::input_walk_way()//·ÅÖÃ¹ÖÎïĞĞ½øÂ·¾¶
+void Map_One::input_walk_way()//æ”¾ç½®æ€ªç‰©è¡Œè¿›è·¯å¾„
 {
     std::vector<float> current = walk_way_begin_1;
-    walk_way_store_1.push_back(current);//·ÅºÃ³õÊ¼Î»ÖÃ
+    walk_way_store_1.push_back(current);//æ”¾å¥½åˆå§‹ä½ç½®
     input_brick(current[0], current[1], 1);
     for (int i = 0; i < 5; i++)
     {
         current[1] -= way_size;
         input_brick(current[0], current[1], 1);
         walk_way_store_1.push_back(current);
-    }//ÊúÖ±ÏòÏÂ5¸ñ
+    }//ç«–ç›´å‘ä¸‹5æ ¼
 
     for (int i = 0; i < 9; i++)
     {
         current[0] += way_size;
         input_brick(current[0], current[1], 1);
         walk_way_store_1.push_back(current);
-    }//Ë®Æ½ÏòÓÒ9¸ñ
+    }//æ°´å¹³å‘å³9æ ¼
 
     for (int i = 0; i < 5; i++)
     {
         current[1] += way_size;
         input_brick(current[0], current[1], 1);
         walk_way_store_1.push_back(current);
-    }//ÊúÖ±ÏòÉÏ5¸ñ
-    //´æ·ÅµØ°åÏòÁ¿Éú³ÉÍê±Ï
+    }//ç«–ç›´å‘ä¸Š5æ ¼
+    //å­˜æ”¾åœ°æ¿å‘é‡ç”Ÿæˆå®Œæ¯•
+    ShowTowerDark();
+    input_listener();
 
     return;
 }
 
-void Map_One::game_begin()//ÓÎÏ·¿ªÊ¼º¯Êı
+void Map_One::game_begin()//æ¸¸æˆå¼€å§‹å‡½æ•°
 {
     float carrot_x = walk_way_store_1[walk_way_store_1.size() - 1][0];
-    float carrot_y = walk_way_store_1[walk_way_store_1.size() - 1][1];//ÂÜ²·×ø±ê
-    auto carrot = Carrot::create("carrot_level1_1.png");//ÂÜ²·¾«Áé±äÁ¿
+    float carrot_y = walk_way_store_1[walk_way_store_1.size() - 1][1];//èåœåæ ‡
+    auto carrot = Carrot::create("carrot_level1_1.png");//èåœç²¾çµå˜é‡
     this->addChild(carrot);
     carrot->setPosition(carrot_x, carrot_y);
-    //·ÅÖÃÂÜ²·
-    auto carrot_HP = HP_display(carrot_x+120, carrot_y );//Éú³ÉÂÜ²·ÑªÁ¿
-    carrot_HP->setString(calculate_HP(carrot->HP));//¸ù¾İµ±Ç°ÑªÁ¿¸üĞÂ×ÖÌå£¬£¨×¢£ºÔö¼Ó¡¢ÏûºÄÑªÁ¿Ê±£¬¼ÇµÃÓÃÕâ¸öÓï¾ä¸üĞÂÃæ°å£©
+    //æ”¾ç½®èåœ
+    auto carrot_HP = HP_display(carrot_x+120, carrot_y );//ç”Ÿæˆèåœè¡€é‡
+    carrot_HP->setString(calculate_HP(carrot->HP));//æ ¹æ®å½“å‰è¡€é‡æ›´æ–°å­—ä½“ï¼Œï¼ˆæ³¨ï¼šå¢åŠ ã€æ¶ˆè€—è¡€é‡æ—¶ï¼Œè®°å¾—ç”¨è¿™ä¸ªè¯­å¥æ›´æ–°é¢æ¿ï¼‰
 
 
-    static int gold = gold_1;//½ğ±Ò±äÁ¿
-    auto gold_label = input_gold();;//Éú³É±êÇ©
-    gold_label->setString(calculate_gold(gold));//¸üĞÂ×ÖÌå£¬£¨×¢£ºÔö¼Ó¡¢ÏûºÄ½ğ±ÒÊ±£¬¼ÇµÃÓÃÕâ¸öÓï¾ä¸üĞÂÃæ°å£©
+    static int gold = gold_1;//é‡‘å¸å˜é‡
+    auto gold_label = input_gold();;//ç”Ÿæˆæ ‡ç­¾
+    gold_label->setString(calculate_gold(gold));//æ›´æ–°å­—ä½“ï¼Œï¼ˆæ³¨ï¼šå¢åŠ ã€æ¶ˆè€—é‡‘å¸æ—¶ï¼Œè®°å¾—ç”¨è¿™ä¸ªè¯­å¥æ›´æ–°é¢æ¿ï¼‰
 
+    //ä»¥ä¸‹ä¸ºè°ƒè¯•
+    /**********************12.23 æ–°å¢**************************/
     carrot->HP = 10;
+    carrot->level = 1;
+    /**********************12.23 æ–°å¢**************************/
     carrot->change();
-    carrot_HP->setString(calculate_HP(carrot->HP));//¸ù¾İµ±Ç°ÑªÁ¿¸üĞÂ×ÖÌå£¬£¨×¢£ºÔö¼Ó¡¢ÏûºÄÑªÁ¿Ê±£¬¼ÇµÃÓÃÕâ¸öÓï¾ä¸üĞÂÃæ°å£©
+    carrot_HP->setString(calculate_HP(carrot->HP));//æ ¹æ®å½“å‰è¡€é‡æ›´æ–°å­—ä½“ï¼Œï¼ˆæ³¨ï¼šå¢åŠ ã€æ¶ˆè€—è¡€é‡æ—¶ï¼Œè®°å¾—ç”¨è¿™ä¸ªè¯­å¥æ›´æ–°é¢æ¿ï¼‰
+    
+    
+    /**********************12.23 æ–°å¢**************************/
     Node* wave1 = cocos2d::Node::create();
     this->addChild(wave1);
     MonSprite* monster1 = MonSprite::create(1);
@@ -230,151 +570,169 @@ void Map_One::game_begin()//ÓÎÏ·¿ªÊ¼º¯Êı
     monster1->monster_spawn(walk_way_store_1);
     carrot->HP -= monster1->monster_attack_carrot(carrot->getBoundingBox(), wave1);
 
-    if (carrot->if_dead())//ÂÜ²·ËÀÍö½áÊø
+    if (carrot->if_dead())  //èåœæ­»äº¡ç»“æŸ
         this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f);
 
     map_two_flag = true;
+    /**********************12.23 æ–°å¢**************************/
+
 }
 
-/*------------------------------µØÍ¼Ò»º¯Êı----------------------------------*/
+/*------------------------------åœ°å›¾ä¸€å‡½æ•°----------------------------------*/
 
 
-/*------------------------------µØÍ¼¶şº¯Êı----------------------------------*/
+/*------------------------------åœ°å›¾äºŒå‡½æ•°----------------------------------*/
 
-void Map_Two::input_background()//·ÅÖÃ±³¾°Í¼
+void Map_Two::input_background()//æ”¾ç½®èƒŒæ™¯å›¾
 {
     auto background = Sprite::create("map\\map_two.png");
     this->addChild(background);
-    background->setPosition(background_wide / 2, background_high / 2);//±³¾°Í¼
+    background->setPosition(background_wide / 2, background_high / 2);//èƒŒæ™¯å›¾
 }
 
-void Map_Two::input_walk_way()//·ÅÖÃ¹ÖÎïÂ·¾¶
+void Map_Two::input_walk_way()//æ”¾ç½®æ€ªç‰©è·¯å¾„
 {
     std::vector<float> current = walk_way_begin_2;
-    walk_way_store_2.push_back(current);//·ÅºÃ³õÊ¼Î»ÖÃ
+    walk_way_store_2.push_back(current);//æ”¾å¥½åˆå§‹ä½ç½®
     input_brick(current[0], current[1], 1);
     for (int i = 0; i < 4; i++)
     {
         current[0] += way_size;
         input_brick(current[0], current[1], 1);
         walk_way_store_2.push_back(current);
-    }//Ë®Æ½ÏòÓÒ4¸ñ
+    }//æ°´å¹³å‘å³4æ ¼
 
     for (int i = 0; i < 5; i++)
     {
         current[1] += way_size;
         input_brick(current[0], current[1], 1);
         walk_way_store_2.push_back(current);
-    }//ÊúÖ±ÏòÉÏ5¸ñ
+    }//ç«–ç›´å‘ä¸Š5æ ¼
 
     for (int i = 0; i < 3; i++)
     {
         current[0] += way_size;
         input_brick(current[0], current[1], 1);
         walk_way_store_2.push_back(current);
-    }//Ë®Æ½ÏòÓÒ3¸ñ
+    }//æ°´å¹³å‘å³3æ ¼
 
     for (int i = 0; i < 5; i++)
     {
         current[1] -= way_size;
         input_brick(current[0], current[1], 1);
         walk_way_store_2.push_back(current);
-    }//ÊúÖ±ÏòÏÂ5¸ñ
+    }//ç«–ç›´å‘ä¸‹5æ ¼
 
     for (int i = 0; i < 4; i++)
     {
         current[0] += way_size;
         input_brick(current[0], current[1], 1);
         walk_way_store_2.push_back(current);
-    }//Ë®Æ½ÏòÓÒ4¸ñ
-     //´æ·ÅµØ°åÏòÁ¿Éú³ÉÍê±Ï
+    }//æ°´å¹³å‘å³4æ ¼
+     //å­˜æ”¾åœ°æ¿å‘é‡ç”Ÿæˆå®Œæ¯•
     return;
 
 }
 
-void Map_Two::game_begin()//ÓÎÏ·¿ªÊ¼º¯Êı
+void Map_Two::game_begin()//æ¸¸æˆå¼€å§‹å‡½æ•°
 {
     float carrot_x = walk_way_store_2[walk_way_store_2.size() - 1][0];
-    float carrot_y = walk_way_store_2[walk_way_store_2.size() - 1][1];//ÂÜ²·×ø±ê
-    auto carrot = Carrot::create("carrot_level1_1.png");//ÂÜ²·¾«Áé±äÁ¿
+    float carrot_y = walk_way_store_2[walk_way_store_2.size() - 1][1];//èåœåæ ‡
+    auto carrot = Carrot::create("carrot_level1_1.png");//èåœç²¾çµå˜é‡
     this->addChild(carrot);
     carrot->setPosition(carrot_x, carrot_y);
-    //·ÅÖÃÂÜ²·
-    auto carrot_HP = HP_display(carrot_x + 120, carrot_y);//Éú³ÉÂÜ²·ÑªÁ¿
-    carrot_HP->setString(calculate_HP(carrot->HP));//¸ù¾İµ±Ç°ÑªÁ¿¸üĞÂ×ÖÌå£¬£¨×¢£ºÔö¼Ó¡¢ÏûºÄÑªÁ¿Ê±£¬¼ÇµÃÓÃÕâ¸öÓï¾ä¸üĞÂÃæ°å£©
+    //æ”¾ç½®èåœ
+    auto carrot_HP = HP_display(carrot_x + 120, carrot_y);//ç”Ÿæˆèåœè¡€é‡
+    carrot_HP->setString(calculate_HP(carrot->HP));//æ ¹æ®å½“å‰è¡€é‡æ›´æ–°å­—ä½“ï¼Œï¼ˆæ³¨ï¼šå¢åŠ ã€æ¶ˆè€—è¡€é‡æ—¶ï¼Œè®°å¾—ç”¨è¿™ä¸ªè¯­å¥æ›´æ–°é¢æ¿ï¼‰
 
-    static int gold = gold_2;//½ğ±Ò±äÁ¿
-    auto gold_label = input_gold();;//Éú³É±êÇ©
-    gold_label->setString(calculate_gold(gold));//¸üĞÂ×ÖÌå£¬£¨×¢£ºÔö¼Ó¡¢ÏûºÄ½ğ±ÒÊ±£¬¼ÇµÃÓÃÕâ¸öÓï¾ä¸üĞÂÃæ°å£©
+
+    static int gold = gold_2;//é‡‘å¸å˜é‡
+    auto gold_label = input_gold();;//ç”Ÿæˆæ ‡ç­¾
+    gold_label->setString(calculate_gold(gold));//æ›´æ–°å­—ä½“ï¼Œï¼ˆæ³¨ï¼šå¢åŠ ã€æ¶ˆè€—é‡‘å¸æ—¶ï¼Œè®°å¾—ç”¨è¿™ä¸ªè¯­å¥æ›´æ–°é¢æ¿ï¼‰
 
     map_three_flag = true;
-
 }
 
-/*------------------------------µØÍ¼¶şº¯Êı----------------------------------*/
+
+/*------------------------------åœ°å›¾äºŒå‡½æ•°----------------------------------*/
 
 
-/*------------------------------µØÍ¼Èıº¯Êı----------------------------------*/
-void Map_Three::input_background()//Éú³É±³¾°Í¼
+/*------------------------------åœ°å›¾ä¸‰å‡½æ•°----------------------------------*/
+void Map_Three::input_background()//ç”ŸæˆèƒŒæ™¯å›¾
 {
     auto background = Sprite::create("map\\map_three.png");
     this->addChild(background);
-    background->setPosition(background_wide / 2, background_high / 2);//±³¾°Í¼
+    background->setPosition(background_wide / 2, background_high / 2);//èƒŒæ™¯å›¾
 }
 
-void Map_Three::input_walk_way()//·ÅÖÃ¹ÖÎïÂ·¾¶
+void Map_Three::input_walk_way()//æ”¾ç½®æ€ªç‰©è·¯å¾„
 {
     std::vector<float> current = walk_way_begin_3;
-    walk_way_store_3.push_back(current);//·ÅºÃ³õÊ¼Î»ÖÃ
+    walk_way_store_3.push_back(current);//æ”¾å¥½åˆå§‹ä½ç½®
     input_brick(current[0], current[1], 1);
     for (int i = 0; i < 9; i++)
     {
         current[0] += way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_3.push_back(current);//·ÅºÃ³õÊ¼Î»ÖÃ
-    }//ÏòÓÒ9¸ñ
+        walk_way_store_3.push_back(current);//æ”¾å¥½åˆå§‹ä½ç½®
+    }//å‘å³9æ ¼
     for (int i = 0; i < 3; i++)
     {
         current[1] -= way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_3.push_back(current);//·ÅºÃ³õÊ¼Î»ÖÃ
-    }//ÏòÏÂ3¸ñ
+        walk_way_store_3.push_back(current);//æ”¾å¥½åˆå§‹ä½ç½®
+    }//å‘ä¸‹3æ ¼
     for (int i = 0; i < 9; i++)
     {
         current[0] -= way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_3.push_back(current);//·ÅºÃ³õÊ¼Î»ÖÃ
-    }//Ïò×ó9¸ñ
+        walk_way_store_3.push_back(current);//æ”¾å¥½åˆå§‹ä½ç½®
+    }//å‘å·¦9æ ¼
     for (int i = 0; i < 3; i++)
     {
         current[1] -= way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_3.push_back(current);//·ÅºÃ³õÊ¼Î»ÖÃ
-    }//ÏòÏÂ3¸ñ
+        walk_way_store_3.push_back(current);//æ”¾å¥½åˆå§‹ä½ç½®
+    }//å‘ä¸‹3æ ¼
     for (int i = 0; i < 9; i++)
     {
         current[0] += way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_3.push_back(current);//·ÅºÃ³õÊ¼Î»ÖÃ
-    }//ÏòÓÒ9¸ñ
-    //´æ·ÅµØ°åÏòÁ¿Éú³ÉÍê±Ï
+        walk_way_store_3.push_back(current);//æ”¾å¥½åˆå§‹ä½ç½®
+    }//å‘å³9æ ¼
+    //å­˜æ”¾åœ°æ¿å‘é‡ç”Ÿæˆå®Œæ¯•
     return;
 }
 
-void Map_Three::game_begin()//ÓÎÏ·¿ªÊ¼º¯Êı
+void Map_Three::game_begin()//æ¸¸æˆå¼€å§‹å‡½æ•°
 {
     float carrot_x = walk_way_store_3[walk_way_store_3.size() - 1][0];
-    float carrot_y = walk_way_store_3[walk_way_store_3.size() - 1][1];//ÂÜ²·×ø±ê
-    auto carrot = Carrot::create("carrot_level1_1.png");//ÂÜ²·¾«Áé±äÁ¿
+    float carrot_y = walk_way_store_3[walk_way_store_3.size() - 1][1];//èåœåæ ‡
+    auto carrot = Carrot::create("carrot_level1_1.png");//èåœç²¾çµå˜é‡
     this->addChild(carrot);
     carrot->setPosition(carrot_x, carrot_y);
-    //·ÅÖÃÂÜ²·
-    auto carrot_HP = HP_display(carrot_x + 120, carrot_y);//Éú³ÉÂÜ²·ÑªÁ¿
-    carrot_HP->setString(calculate_HP(carrot->HP));//¸ù¾İµ±Ç°ÑªÁ¿¸üĞÂ×ÖÌå£¬£¨×¢£ºÔö¼Ó¡¢ÏûºÄÑªÁ¿Ê±£¬¼ÇµÃÓÃÕâ¸öÓï¾ä¸üĞÂÃæ°å£©
+    //æ”¾ç½®èåœ
+    auto carrot_HP = HP_display(carrot_x + 120, carrot_y);//ç”Ÿæˆèåœè¡€é‡
+    carrot_HP->setString(calculate_HP(carrot->HP));//æ ¹æ®å½“å‰è¡€é‡æ›´æ–°å­—ä½“ï¼Œï¼ˆæ³¨ï¼šå¢åŠ ã€æ¶ˆè€—è¡€é‡æ—¶ï¼Œè®°å¾—ç”¨è¿™ä¸ªè¯­å¥æ›´æ–°é¢æ¿ï¼‰
 
-    static int gold = gold_3;//½ğ±Ò±äÁ¿
-    auto gold_label = input_gold();;//Éú³É±êÇ©
-    gold_label->setString(calculate_gold(gold));//¸üĞÂ×ÖÌå£¬£¨×¢£ºÔö¼Ó¡¢ÏûºÄ½ğ±ÒÊ±£¬¼ÇµÃÓÃÕâ¸öÓï¾ä¸üĞÂÃæ°å£©
+
+    static int gold = gold_3;//é‡‘å¸å˜é‡
+    auto gold_label = input_gold();;//ç”Ÿæˆæ ‡ç­¾
+    gold_label->setString(calculate_gold(gold));//æ›´æ–°å­—ä½“ï¼Œï¼ˆæ³¨ï¼šå¢åŠ ã€æ¶ˆè€—é‡‘å¸æ—¶ï¼Œè®°å¾—ç”¨è¿™ä¸ªè¯­å¥æ›´æ–°é¢æ¿ï¼‰
 }
 
-/*------------------------------µØÍ¼Èıº¯Êı----------------------------------*/
+/*------------------------------åœ°å›¾ä¸‰å‡½æ•°----------------------------------*/
+
+
+/*************************************************************
+    CheckBoxå‡½æ•°ï¼šå·²çŸ¥å¯¹åº”æ–¹å—çš„ä¸­å¿ƒç‚¹åæ ‡ï¼ŒæŸ¥è¯¢å…¶ä»£å·
+*************************************************************/
+int CheckBox(XY obj, const std::vector<FS>& table)
+{
+    for (auto& it : table)
+    {
+        if (it.adjusted._x == obj._x && it.adjusted._y == obj._y)
+            return it.index;
+    }
+    return -1;
+}
