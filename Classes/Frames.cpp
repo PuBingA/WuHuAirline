@@ -2,7 +2,7 @@
 #include "public_define.h"
 USING_NS_CC;
 
-FrameBox* FrameBox::create(const std::string& filename)//Éú³ÉÂÜ²·Àà
+FrameBox* FrameBox::create(const std::string& filename)//?????????
 {
 	FrameBox* frame_box = new FrameBox();
 

@@ -4,6 +4,7 @@
 #include<string>
 #include<vector>
 USING_NS_CC;
+using namespace std;
 
 extern bool map_two_flag ;//关卡二flag
 extern bool map_three_flag ;//关卡三flag
@@ -89,7 +90,6 @@ bool choose_map::init()//场景布局函数,重要函数
         disable_label->setPosition(background_wide / 2 + 300, background_high / 2 - 80);
         this->addChild(disable_label);//放置标签
     }
-    return true;
 }
 
 

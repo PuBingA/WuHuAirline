@@ -1,5 +1,5 @@
 #include"carrot.h"
-USING_NS_CC;
+using namespace cocos2d;
 
 /*----------------------ÂÜ²·Àà-------------------------*/
 

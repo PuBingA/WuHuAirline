@@ -11,9 +11,9 @@
 #define pause_y 630 -70-70    //暂停键坐标
 
 #define gold_max 9990 //金币上限
-#define gold_1  300 //第一关初始金币
-#define gold_2   450//第二关初始金币
-#define gold_3   600//第三关初始金币
+#define gold_1   900  //第一关初始金币
+#define gold_2   450  //第二关初始金币
+#define gold_3   600  //第三关初始金币
 
 
 #define way_size 82										//每个地板的像素大小
@@ -45,4 +45,3 @@
 #define mon1_vit 10										
 #define mon1_atk 2										
 #define mon1_spd 1
-

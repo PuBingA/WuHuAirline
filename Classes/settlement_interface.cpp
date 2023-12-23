@@ -2,7 +2,7 @@
 #include"choose_map.h"
 #include"AudioEngine.h"
 USING_NS_CC;
-
+using namespace cocos2d;
 /*--------------------------Ê¤Àû³¡¾°--------------------------------------*/
 Scene* settlement_success::createScene()
 {

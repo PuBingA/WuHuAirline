@@ -3,6 +3,7 @@
 #include<string>
 #include<vector>
 USING_NS_CC;
+using namespace std;
 
 Scene* Opening::createScene()
 {
@@ -34,8 +35,8 @@ bool Opening::init()//场景布局函数,重要函数
     opening_background->setPosition(Vec2(1235 / 2, 694 / 2));//背景图
 
     /*-------------开发人员标签--------------------*/
-    std::vector<Label*>group_member;
-    std::string input_name[4] =
+    vector<Label*>group_member;
+    string input_name[4] =
     {
         "Group Member:",
         "Chen Fu Bing",

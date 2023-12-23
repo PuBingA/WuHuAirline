@@ -5,8 +5,8 @@ USING_NS_CC;
 
 struct XY
 {
-	float _x;
-	float _y;
+	int _x;
+	int _y;
 };
 
 typedef struct FrameSpot
@@ -97,15 +97,16 @@ const std::vector<FS> AllFrames_Lv1 =
 	/*************************  LEVEL THREE *****************************/
 const std::vector<FS> AllPlants_Lv1 = { {1,{415,635},{485,565},{450, 600}},{2,{515,635},{585,565},{550, 600}}, {3,{615,635},{685,565},{650, 600}},{4,{715,635},{785,565},{750, 600}} };
 
+
 class FrameBox : public Sprite
 {
 	friend class Map_father;
 public:
 	static FrameBox* create(const std::string& filename);
 	void Spawn(float x, float y, float scale); //在某个特定位置以特定大小显示某只精灵
-	void Shimmer();                          //自动呈现闪烁效果，直到下一次点击
+	void Shimmer();                            //自动呈现闪烁效果，直到下一次点击
 	void Disappear();                          //下一次点击后，框消失
-	void Rotate(float duration, float angle);    //以angle角度顺时针旋转
+	void Rotate(float duration, float angle);  //以angle角度顺时针旋转
 };
 bool IsFrame_Lv1(float& x, float& y);
 bool IsFramePlant_Lv1(float& x, float& y);
