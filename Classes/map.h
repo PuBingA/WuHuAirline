@@ -34,6 +34,9 @@ public:
     virtual bool init();//创建场景类,被继承公有部分
     virtual void input_background() {};//放置背景图
     virtual void input_walk_way() {};//放置怪物行进路线
+
+    void waitForConditionAndExecute(const std::function<bool()>& condition, const std::function<void()>& callback);
+
     void menuCallback(cocos2d::Ref* pSender);//返回响应函数
     void input_return_pause();//放置返回，以及暂停键 
     void buttonCallback(cocos2d::Ref* pSender);//暂停响应函数
@@ -55,21 +58,21 @@ public:
 class Map_One :public Map_father
 {
 private:
-    FrameBox* yellow_frame;
-    FrameBox* tower_cannon;
-    FrameBox* tower_shit;
-    FrameBox* tower_cannon_ready;
-    FrameBox* tower_shit_ready;
-    FrameBox* cannon_Lv1;
-    FrameBox* cannon_Lv2;
-    FrameBox* cannon_Lv3;
-    FrameBox* shit_Lv1;
-    FrameBox* shit_Lv2;
-    FrameBox* shit_Lv3;
-    FrameBox* upgrade_grey;
-    FrameBox* upgrade_ready;
-    FrameBox* delete_grey;
-    FrameBox* delete_ready;
+    FrameBox* yellow_frame = NULL;
+    FrameBox* tower_cannon = NULL;
+    FrameBox* tower_shit = NULL;
+    FrameBox* tower_cannon_ready = NULL;
+    FrameBox* tower_shit_ready = NULL;
+    FrameBox* cannon_Lv1 = NULL;
+    FrameBox* cannon_Lv2 = NULL;
+    FrameBox* cannon_Lv3 = NULL;
+    FrameBox* shit_Lv1 = NULL;
+    FrameBox* shit_Lv2 = NULL;
+    FrameBox* shit_Lv3 = NULL;
+    FrameBox* upgrade_grey = NULL;
+    FrameBox* upgrade_ready = NULL;
+    FrameBox* delete_grey = NULL;
+    FrameBox* delete_ready = NULL;
     int WhichPlant = 0; 
     /* 不仅指示植物，还指示操作！只代表相对位置！
                WhichPlant = 1 cannon
@@ -79,6 +82,7 @@ private:
     XY singleclick;
     //vacancy存放每个可放置位置的信息
     std::vector<VS> vacancy;
+    int vacancyIndex;
 
     /**********************12.23 新增**************************/
     PQueue<MonSprite*> currentMonstersOnScreen;
@@ -90,7 +94,6 @@ public:
     void input_listener();
     void onMouseDown_Do_Plant(Event* event);
     void onMouseDown_Show_Yellow(Event* event);
-    void waitForConditionAndExecute(const std::function<bool()>& condition, const std::function<void()>& callback);
 
     virtual void input_background();
     virtual void input_walk_way();

@@ -23,6 +23,19 @@ static void problemLoading(const char* filename)
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
+void Map_father::waitForConditionAndExecute(const std::function<bool()>& condition, const std::function<void()>& callback)
+{
+    if (condition())
+        callback();
+    else
+    {
+        scheduleOnce([=](float dt)
+            {
+                waitForConditionAndExecute(condition, callback);
+            }, 0.1f, "waitForConditionTag");
+    }
+}
+
 bool Map_father::init()//父类创建场景总函数
 {
     static int gold = 4321;//初始金币
@@ -163,29 +176,12 @@ void Map_father::input_brick(T x, T y ,int choice)//choice==1 放置怪物绿色
 
 
 /*------------------------------地图一函数----------------------------------*/
-/*****************************change*************************************/
 Map_One::Map_One()
 {
     //初始化vacancy_spots
     vacancy.clear();
     for (int i = 0; i <= 37; i++)
         vacancy.push_back({ i,0,0,nullptr });
-    //为指针动态分配空间，避免野指针
-    yellow_frame = FrameBox::create("yellow_frame.png");
-    tower_cannon = FrameBox::create("TI_1_unavailable.png");
-    tower_shit = FrameBox::create("TI_2_unavailable.png");
-    tower_cannon_ready = FrameBox::create("TI_1_available.png");
-    tower_shit_ready = FrameBox::create("TI_2_available.png");
-    cannon_Lv1 = FrameBox::create("cannon_Lv1.png");
-    cannon_Lv2 = FrameBox::create("cannon_Lv2.png");
-    cannon_Lv3 = FrameBox::create("cannon_Lv3.png");
-    shit_Lv1 = FrameBox::create("shit_Lv1.png");
-    shit_Lv2 = FrameBox::create("shit_Lv2.png");
-    shit_Lv3 = FrameBox::create("shit_Lv3.png");
-    upgrade_grey = FrameBox::create("upgrade_grey.png");
-    upgrade_ready = FrameBox::create("upgrade_ready.png");
-    delete_grey = FrameBox::create("delete_grey.png");
-    delete_ready = FrameBox::create("delete_ready.png");
 }
 
 void Map_One::input_listener()
@@ -235,7 +231,7 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
             yellow_frame->Spawn(x, y, 0.5f);
             yellow_frame->Shimmer();
             singleclick._x = x, singleclick._y = y; //保存黄色框位置，准备种植
-            int vacancyIndex = CheckBox(singleclick, AllFrames_Lv1);
+            vacancyIndex = CheckBox(singleclick, AllFrames_Lv1);
 
             //查询种植状态，如果是0（未种植）则进行后续操作
             if (vacancy[vacancyIndex].state == 0)
@@ -454,18 +450,6 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
     }
 }
 
-void Map_One::waitForConditionAndExecute(const std::function<bool()>& condition, const std::function<void()>& callback)
-{
-    if (condition())
-        callback();
-    else
-    {
-        scheduleOnce([=](float dt)
-            {
-                waitForConditionAndExecute(condition, callback);
-            }, 0.1f, "waitForConditionTag");
-    }
-}
 
 void Map_One::ShowTowerDark()
 {
@@ -516,7 +500,6 @@ void Map_One::ShowTowerDark()
 }
 
 
-/*****************************change*************************************/
 
 void Map_One::input_background()//放置背景图
 {
@@ -551,10 +534,8 @@ void Map_One::input_walk_way()//放置怪物行进路径
         walk_way_store_1.push_back(current);
     }//竖直向上5格
     //存放地板向量生成完毕
-    /*****************************change*************************************/
     ShowTowerDark();
     input_listener();
-    /*****************************change*************************************/
 
     return;
 }
