@@ -89,6 +89,7 @@ bool choose_map::init()//场景布局函数,重要函数
         disable_label->setPosition(background_wide / 2 + 300, background_high / 2 - 80);
         this->addChild(disable_label);//放置标签
     }
+    return true;
 }
 
 

@@ -16,7 +16,7 @@ FrameBox* FrameBox::create(const std::string& filename)//Éú³ÉÂÜ²·Àà
 }
 
 
-void FrameBox::Spawn(int x, int y, float scale)
+void FrameBox::Spawn(float x, float y, float scale)
 {
 	this->setScale(scale);
 	this->setPosition(x, y);
@@ -25,8 +25,8 @@ void FrameBox::Spawn(int x, int y, float scale)
 
 void FrameBox::Shimmer()
 {
-	auto scaleTo = ScaleTo::create(0.3, 0.7);
-	auto scaleBack = ScaleTo::create(0.3, 0.5);
+	auto scaleTo = ScaleTo::create(0.3f, 0.7f);
+	auto scaleBack = ScaleTo::create(0.3f, 0.5f);
 	auto seq = Sequence::create(scaleTo, scaleBack, nullptr);
 	this->runAction(RepeatForever::create(seq));
 }
@@ -43,7 +43,7 @@ void FrameBox::Rotate(float duration, float angle)
 	this->runAction(rotateAction);
 }
 
-bool IsFrame_Lv1(int& x, int& y)	//if (level == 1)
+bool IsFrame_Lv1(float& x, float& y)	//if (level == 1)
 {
 	for (auto& adjust_coord : AllFrames_Lv1)
 	{
@@ -57,7 +57,7 @@ bool IsFrame_Lv1(int& x, int& y)	//if (level == 1)
 	return false;
 }
 
-bool IsFramePlant_Lv1(int& x, int& y)
+bool IsFramePlant_Lv1(float& x, float& y)
 {
 	for (auto& adjust_coord : AllPlants_Lv1)
 	{

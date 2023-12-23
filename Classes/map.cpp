@@ -204,7 +204,7 @@ void Map_One::onMouseDown_Do_Plant(Event* event)
     EventMouse* e = dynamic_cast<EventMouse*>(event);
     if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
     {
-        int x = e->getCursorX(), y = e->getCursorY();
+        float x = e->getCursorX(), y = e->getCursorY();
         if (IsFramePlant_Lv1(x, y))
         {
             if (x == 450)//plant a cannon
@@ -224,7 +224,7 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
     EventMouse* e = dynamic_cast<EventMouse*>(event);
     if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
     {
-        int x = e->getCursorX(), y = e->getCursorY();
+        float x = e->getCursorX(), y = e->getCursorY();
         if (IsFrame_Lv1(x, y))
         {
             yellow_frame->setVisible(true);
@@ -450,7 +450,6 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
     }
 }
 
-
 void Map_One::ShowTowerDark()
 {
     //暗色炮台——初状态可见
@@ -499,8 +498,6 @@ void Map_One::ShowTowerDark()
     delete_ready->setVisible(false);
 }
 
-
-
 void Map_One::input_background()//放置背景图
 {
     auto background = Sprite::create("map\\map_one.png");
@@ -539,9 +536,6 @@ void Map_One::input_walk_way()//放置怪物行进路径
 
     return;
 }
-
-
-
 
 void Map_One::game_begin()//游戏开始函数
 {
