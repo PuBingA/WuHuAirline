@@ -102,10 +102,8 @@ class FrameBox : public Sprite
 	friend class Map_One;
 	friend class Map_Two;
 	friend class Map_Three;
-private:
-	Sprite* Current;
 public:
-	FrameBox(Sprite* crnt){Current = crnt;}
+	static FrameBox* create(const std::string& filename);
 	void Spawn(int x, int y, float scale); //在某个特定位置以特定大小显示某只精灵
 	void Shimmer();                          //自动呈现闪烁效果，直到下一次点击
 	void Disappear();                          //下一次点击后，框消失

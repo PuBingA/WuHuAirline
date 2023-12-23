@@ -45,3 +45,4 @@
 #define mon1_vit 10										
 #define mon1_atk 2										
 #define mon1_spd 1
+

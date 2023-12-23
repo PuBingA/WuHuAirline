@@ -4,18 +4,10 @@
 #include<string>
 #include"cocos-ext.h"
 #include "Frames.h"
-/**********************12.23 新增**************************/
 #include "monster.h"
 #include "Priority_Queue.h"
+USING_NS_CC;
 
-
-//每个活着的怪物都有一个自己的MI，涵盖了这只怪物的信息
-typedef struct MonsterInfo
-{
-    XY current_location;
-    MonSprite* current_monster;
-}MI;
-/**********************12.23 新增**************************/
 
 //VS包含每个种植位的所有信息：统一编排的序号+位置状态+防御塔种类+现有的精灵指针
 typedef struct Vacancy_State
@@ -89,12 +81,11 @@ private:
     std::vector<VS> vacancy;
 
     /**********************12.23 新增**************************/
-    PQueue<MI> currentMonstersOnScreen;
+    PQueue<MonSprite*> currentMonstersOnScreen;
     /**********************12.23 新增**************************/
 
 public:
     Map_One();
-    ~Map_One();
     void ShowTowerDark();
     void input_listener();
     void onMouseDown_Do_Plant(Event* event);

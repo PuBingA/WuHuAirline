@@ -5,7 +5,6 @@
 #include"cocos-ext.h"
 #include"settlement_interface.h"
 USING_NS_CC;
-using namespace std;
 
 extern bool map_two_flag;
 extern bool map_three_flag;
@@ -168,43 +167,25 @@ void Map_father::input_brick(T x, T y ,int choice)//choice==1 放置怪物绿色
 Map_One::Map_One()
 {
     //初始化vacancy_spots
+    vacancy.clear();
     for (int i = 0; i <= 37; i++)
         vacancy.push_back({ i,0,0,nullptr });
     //为指针动态分配空间，避免野指针
-    yellow_frame = new FrameBox(Sprite::create("yellow_frame.png"));
-    tower_cannon = new FrameBox(Sprite::create("TI_1_unavailable.png"));
-    tower_shit = new FrameBox(Sprite::create("TI_2_unavailable.png"));
-    tower_cannon_ready = new FrameBox(Sprite::create("TI_1_available.png"));
-    tower_shit_ready = new FrameBox(Sprite::create("TI_2_available.png"));
-    cannon_Lv1 = new FrameBox(Sprite::create("cannon_Lv1.png"));
-    cannon_Lv2 = new FrameBox(Sprite::create("cannon_Lv2.png"));
-    cannon_Lv3 = new FrameBox(Sprite::create("cannon_Lv3.png"));
-    shit_Lv1 = new FrameBox(Sprite::create("shit_Lv1.png"));
-    shit_Lv2 = new FrameBox(Sprite::create("shit_Lv2.png"));
-    shit_Lv3 = new FrameBox(Sprite::create("shit_Lv3.png"));
-    upgrade_grey = new FrameBox(Sprite::create("upgrade_grey.png"));
-    upgrade_ready = new FrameBox(Sprite::create("upgrade_ready.png"));
-    delete_grey = new FrameBox(Sprite::create("delete_grey.png"));
-    delete_ready = new FrameBox(Sprite::create("delete_ready.png"));
-}
-
-Map_One::~Map_One()
-{
-    CC_SAFE_DELETE(yellow_frame);
-    CC_SAFE_DELETE(tower_cannon);
-    CC_SAFE_DELETE(tower_shit);
-    CC_SAFE_DELETE(tower_cannon_ready);
-    CC_SAFE_DELETE(tower_shit_ready);
-    CC_SAFE_DELETE(cannon_Lv1);
-    CC_SAFE_DELETE(cannon_Lv2);
-    CC_SAFE_DELETE(cannon_Lv3);
-    CC_SAFE_DELETE(shit_Lv1);
-    CC_SAFE_DELETE(shit_Lv2);
-    CC_SAFE_DELETE(shit_Lv3);
-    CC_SAFE_DELETE(upgrade_grey);
-    CC_SAFE_DELETE(upgrade_ready);
-    CC_SAFE_DELETE(delete_grey);
-    CC_SAFE_DELETE(delete_ready);
+    yellow_frame = FrameBox::create("yellow_frame.png");
+    tower_cannon = FrameBox::create("TI_1_unavailable.png");
+    tower_shit = FrameBox::create("TI_2_unavailable.png");
+    tower_cannon_ready = FrameBox::create("TI_1_available.png");
+    tower_shit_ready = FrameBox::create("TI_2_available.png");
+    cannon_Lv1 = FrameBox::create("cannon_Lv1.png");
+    cannon_Lv2 = FrameBox::create("cannon_Lv2.png");
+    cannon_Lv3 = FrameBox::create("cannon_Lv3.png");
+    shit_Lv1 = FrameBox::create("shit_Lv1.png");
+    shit_Lv2 = FrameBox::create("shit_Lv2.png");
+    shit_Lv3 = FrameBox::create("shit_Lv3.png");
+    upgrade_grey = FrameBox::create("upgrade_grey.png");
+    upgrade_ready = FrameBox::create("upgrade_ready.png");
+    delete_grey = FrameBox::create("delete_grey.png");
+    delete_ready = FrameBox::create("delete_ready.png");
 }
 
 void Map_One::input_listener()
@@ -217,9 +198,9 @@ void Map_One::input_listener()
     mouseListener_for_planting->onMouseDown = CC_CALLBACK_1(Map_One::onMouseDown_Do_Plant, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener_for_planting, this);
 
-    yellow_frame->Current = Sprite::create("yellow_frame.png");
-    this->addChild(yellow_frame->Current); //z-value=0
-    yellow_frame->Current->setVisible(false);
+    yellow_frame = FrameBox::create("yellow_frame.png");
+    this->addChild(yellow_frame); //z-value=0
+    yellow_frame->setVisible(false);
 }
 
 void Map_One::onMouseDown_Do_Plant(Event* event)
@@ -231,21 +212,13 @@ void Map_One::onMouseDown_Do_Plant(Event* event)
         if (IsFramePlant_Lv1(x, y))
         {
             if (x == 450)//plant a cannon
-            {
                 WhichPlant = 1;
-            }
             else if (x == 550)//plant a shit
-            {
                 WhichPlant = 2;
-            }
             else if (x == 650)//upgrade
-            {
                 WhichPlant = 3;
-            }
             else if (x == 750)//delete
-            {
                 WhichPlant = 4;
-            }
         }
     }
 }
@@ -258,7 +231,7 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
         int x = e->getCursorX(), y = e->getCursorY();
         if (IsFrame_Lv1(x, y))
         {
-            yellow_frame->Current->setVisible(true);
+            yellow_frame->setVisible(true);
             yellow_frame->Spawn(x, y, 0.5f);
             yellow_frame->Shimmer();
             singleclick._x = x, singleclick._y = y; //保存黄色框位置，准备种植
@@ -267,10 +240,10 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
             //查询种植状态，如果是0（未种植）则进行后续操作
             if (vacancy[vacancyIndex].state == 0)
             {
-                tower_cannon->Current->setVisible(false);//暗色cannon设为不可见
-                tower_shit->Current->setVisible(false);//暗色shit设为不可见
-                tower_cannon_ready->Current->setVisible(true);//亮色cannon设为可见
-                tower_shit_ready->Current->setVisible(true);//亮色shit设为可见
+                tower_cannon->setVisible(false);//暗色cannon设为不可见
+                tower_shit->setVisible(false);//暗色shit设为不可见
+                tower_cannon_ready->setVisible(true);//亮色cannon设为可见
+                tower_shit_ready->setVisible(true);//亮色shit设为可见
 
                 //开始检测鼠标点击位置，以判断种植哪种炮塔，一直等
                 //问题：如果单次点击产生黄框后又点击了别的位置产生黄框，新种植的炮台仍然会种到之前的位置！
@@ -282,23 +255,23 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                         if (WhichPlant == 1) //plant a cannon
                         {
                             //于目标点生成一级cannon
-                            cannon_Lv1->Current = Sprite::create("cannon_Lv1.png");
-                            this->addChild(cannon_Lv1->Current);
+                            cannon_Lv1 = FrameBox::create("cannon_Lv1.png");
+                            this->addChild(cannon_Lv1);
                             cannon_Lv1->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
                             vacancy[vacancyIndex].state = 1;      //state=1 放置了一级炮台
                             vacancy[vacancyIndex].tower_type = 1; //cannon
-                            vacancy[vacancyIndex].spr = cannon_Lv1->Current; //当前指针存入vacancy中
+                            vacancy[vacancyIndex].spr = cannon_Lv1; //当前指针存入vacancy中
                             WhichPlant = 0;
                         }
                         else if (WhichPlant == 2) //plant a shit
                         {
                             //于目标点生成一级shit
-                            shit_Lv1->Current = Sprite::create("shit_Lv1.png");
-                            this->addChild(shit_Lv1->Current);
+                            shit_Lv1 = FrameBox::create("shit_Lv1.png");
+                            this->addChild(shit_Lv1);
                             shit_Lv1->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
                             vacancy[vacancyIndex].state = 1;      //state=1 放置了一级炮台
                             vacancy[vacancyIndex].tower_type = 2; //shit
-                            vacancy[vacancyIndex].spr = shit_Lv1->Current; //当前指针存入vacancy中
+                            vacancy[vacancyIndex].spr = shit_Lv1; //当前指针存入vacancy中
                             WhichPlant = 0;
                         }
                     }
@@ -306,14 +279,14 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
             }
             else if (vacancy[vacancyIndex].state == 1) //state=1 放置了一级炮台
             {
-                tower_cannon->Current->setVisible(true);//暗色cannon设为可见
-                tower_shit->Current->setVisible(true);//暗色shit设为可见
-                tower_cannon_ready->Current->setVisible(false);//亮色cannon设为不可见
-                tower_shit_ready->Current->setVisible(false);//亮色shit设为不可见
-                upgrade_ready->Current->setVisible(true);//亮色升级设为可见
-                delete_ready->Current->setVisible(true);//亮色删除设为可见
-                upgrade_grey->Current->setVisible(false);//暗色升级设为不可见
-                delete_grey->Current->setVisible(false);//暗色删除设为不可见
+                tower_cannon->setVisible(true);//暗色cannon设为可见
+                tower_shit->setVisible(true);//暗色shit设为可见
+                tower_cannon_ready->setVisible(false);//亮色cannon设为不可见
+                tower_shit_ready->setVisible(false);//亮色shit设为不可见
+                upgrade_ready->setVisible(true);//亮色升级设为可见
+                delete_ready->setVisible(true);//亮色删除设为可见
+                upgrade_grey->setVisible(false);//暗色升级设为不可见
+                delete_grey->setVisible(false);//暗色删除设为不可见
                 waitForConditionAndExecute(
                     [=]() {
                         return WhichPlant == 3 || WhichPlant == 4;
@@ -324,23 +297,23 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                             if (vacancy[vacancyIndex].tower_type == 1)//upgrade cannon
                             {
                                 this->removeChild(vacancy[vacancyIndex].spr);
-                                cannon_Lv2->Current = Sprite::create("cannon_Lv2.png");
-                                this->addChild(cannon_Lv2->Current);
+                                cannon_Lv2 = FrameBox::create("cannon_Lv2.png");
+                                this->addChild(cannon_Lv2);
                                 cannon_Lv2->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
                                 vacancy[vacancyIndex].state = 2;      //state=2 放置了二级炮台
                                 vacancy[vacancyIndex].tower_type = 1; //cannon
-                                vacancy[vacancyIndex].spr = cannon_Lv2->Current; //当前指针存入vacancy中*/
+                                vacancy[vacancyIndex].spr = cannon_Lv2; //当前指针存入vacancy中*/
                                 WhichPlant = 0;
                             }
                             else if (vacancy[vacancyIndex].tower_type == 2)//upgrade shit
                             {
                                 this->removeChild(vacancy[vacancyIndex].spr);
-                                shit_Lv2->Current = Sprite::create("shit_Lv2.png");
-                                this->addChild(shit_Lv2->Current);
+                                shit_Lv2 = FrameBox::create("shit_Lv2.png");
+                                this->addChild(shit_Lv2);
                                 shit_Lv2->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
                                 vacancy[vacancyIndex].state = 2;      //state=2 放置了二级炮台
                                 vacancy[vacancyIndex].tower_type = 2; //shit
-                                vacancy[vacancyIndex].spr = shit_Lv2->Current; //当前指针存入vacancy中*/
+                                vacancy[vacancyIndex].spr = shit_Lv2; //当前指针存入vacancy中*/
                                 WhichPlant = 0;
                             }
                         }
@@ -369,14 +342,14 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
             
             else if (vacancy[vacancyIndex].state == 2) //state=2 放置了二级炮台
             {
-                tower_cannon->Current->setVisible(true);//暗色cannon设为可见
-                tower_shit->Current->setVisible(true);//暗色shit设为可见
-                tower_cannon_ready->Current->setVisible(false);//亮色cannon设为不可见
-                tower_shit_ready->Current->setVisible(false);//亮色shit设为不可见
-                upgrade_ready->Current->setVisible(true);//亮色升级设为可见
-                delete_ready->Current->setVisible(true);//亮色删除设为可见
-                upgrade_grey->Current->setVisible(false);//暗色升级设为不可见
-                delete_grey->Current->setVisible(false);//暗色删除设为不可见
+                tower_cannon->setVisible(true);//暗色cannon设为可见
+                tower_shit->setVisible(true);//暗色shit设为可见
+                tower_cannon_ready->setVisible(false);//亮色cannon设为不可见
+                tower_shit_ready->setVisible(false);//亮色shit设为不可见
+                upgrade_ready->setVisible(true);//亮色升级设为可见
+                delete_ready->setVisible(true);//亮色删除设为可见
+                upgrade_grey->setVisible(false);//暗色升级设为不可见
+                delete_grey->setVisible(false);//暗色删除设为不可见
                 waitForConditionAndExecute(
                     [=]() {
                         return WhichPlant == 3 || WhichPlant == 4;
@@ -387,23 +360,23 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                             if (vacancy[vacancyIndex].tower_type == 1)//upgrade cannon
                             {
                                 this->removeChild(vacancy[vacancyIndex].spr);
-                                cannon_Lv3->Current = Sprite::create("cannon_Lv3.png");
-                                this->addChild(cannon_Lv3->Current);
+                                cannon_Lv3 = FrameBox::create("cannon_Lv3.png");
+                                this->addChild(cannon_Lv3);
                                 cannon_Lv3->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
                                 vacancy[vacancyIndex].state = 3;      //state=3 放置了三级炮台
                                 vacancy[vacancyIndex].tower_type = 1; //cannon
-                                vacancy[vacancyIndex].spr = cannon_Lv3->Current; //当前指针存入vacancy中
+                                vacancy[vacancyIndex].spr = cannon_Lv3; //当前指针存入vacancy中
                                 WhichPlant = 0;
                             }
                             else if (vacancy[vacancyIndex].tower_type == 2)//upgrade shit
                             {
                                 this->removeChild(vacancy[vacancyIndex].spr);
-                                shit_Lv3->Current = Sprite::create("shit_Lv3.png");
-                                this->addChild(shit_Lv3->Current);
+                                shit_Lv3 = FrameBox::create("shit_Lv3.png");
+                                this->addChild(shit_Lv3);
                                 shit_Lv3->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
                                 vacancy[vacancyIndex].state = 3;      //state=3 放置了三级炮台
                                 vacancy[vacancyIndex].tower_type = 2; //shit
-                                vacancy[vacancyIndex].spr = shit_Lv3->Current; //当前指针存入vacancy中
+                                vacancy[vacancyIndex].spr = shit_Lv3; //当前指针存入vacancy中
                                 WhichPlant = 0;
                             }
                         }
@@ -431,14 +404,14 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
             }
             else if (vacancy[vacancyIndex].state == 3)  //state=3 放置了三级炮台
             {
-                tower_cannon->Current->setVisible(true);//暗色cannon设为可见
-                tower_shit->Current->setVisible(true);//暗色shit设为可见
-                tower_cannon_ready->Current->setVisible(false);//亮色cannon设为不可见
-                tower_shit_ready->Current->setVisible(false);//亮色shit设为不可见
-                upgrade_ready->Current->setVisible(false);//亮色升级设为不可见！！
-                delete_ready->Current->setVisible(true);//亮色删除设为可见
-                upgrade_grey->Current->setVisible(true);//暗色升级设为可见
-                delete_grey->Current->setVisible(false);//暗色删除设为不可见
+                tower_cannon->setVisible(true);//暗色cannon设为可见
+                tower_shit->setVisible(true);//暗色shit设为可见
+                tower_cannon_ready->setVisible(false);//亮色cannon设为不可见
+                tower_shit_ready->setVisible(false);//亮色shit设为不可见
+                upgrade_ready->setVisible(false);//亮色升级设为不可见！！
+                delete_ready->setVisible(true);//亮色删除设为可见
+                upgrade_grey->setVisible(true);//暗色升级设为可见
+                delete_grey->setVisible(false);//暗色删除设为不可见
                 waitForConditionAndExecute(
                     [=]() {
                         return WhichPlant == 4;
@@ -468,15 +441,15 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
         }
         else
         {
-            yellow_frame->Current->setVisible(false);//grey cannon visible
-            tower_cannon->Current->setVisible(true);//grey shit visible
-            tower_shit->Current->setVisible(true);//colored cannon invisible
-            tower_cannon_ready->Current->setVisible(false);//colored shit invisible
-            tower_shit_ready->Current->setVisible(false);//colored upgrade invisible
-            upgrade_ready->Current->setVisible(false);//colored delete invisible
-            delete_ready->Current->setVisible(false);//grey update visible
-            upgrade_grey->Current->setVisible(true);//grey delete visible
-            delete_grey->Current->setVisible(true);
+            yellow_frame->setVisible(false);//grey cannon visible
+            tower_cannon->setVisible(true);//grey shit visible
+            tower_shit->setVisible(true);//colored cannon invisible
+            tower_cannon_ready->setVisible(false);//colored shit invisible
+            tower_shit_ready->setVisible(false);//colored upgrade invisible
+            upgrade_ready->setVisible(false);//colored delete invisible
+            delete_ready->setVisible(false);//grey update visible
+            upgrade_grey->setVisible(true);//grey delete visible
+            delete_grey->setVisible(true);
         }
     }
 }
@@ -484,9 +457,7 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
 void Map_One::waitForConditionAndExecute(const std::function<bool()>& condition, const std::function<void()>& callback)
 {
     if (condition())
-    {
         callback();
-    }
     else
     {
         scheduleOnce([=](float dt)
@@ -500,48 +471,48 @@ void Map_One::ShowTowerDark()
 {
     //暗色炮台——初状态可见
     //暗色cannon
-    tower_cannon->Current = Sprite::create("TI_1_unavailable.png");
-    this->addChild(tower_cannon->Current); //z-value=0
+    tower_cannon = FrameBox::create("TI_1_unavailable.png");
+    this->addChild(tower_cannon); //z-value=0
     tower_cannon->Spawn(450, 600, 1.0f);
-    tower_cannon->Current->setVisible(true);
+    tower_cannon->setVisible(true);
     //暗色shit
-    tower_shit->Current = Sprite::create("TI_2_unavailable.png");
-    this->addChild(tower_shit->Current); //z-value=0
+    tower_shit = FrameBox::create("TI_2_unavailable.png");
+    this->addChild(tower_shit); //z-value=0
     tower_shit->Spawn(550, 600, 1.0f);
-    tower_shit->Current->setVisible(true);
+    tower_shit->setVisible(true);
     //暗色升级——注意升级.png需要缩放至×0.7
-    upgrade_grey->Current = Sprite::create("upgrade_grey.png");
-    this->addChild(upgrade_grey->Current); //z-value=0
+    upgrade_grey = FrameBox::create("upgrade_grey.png");
+    this->addChild(upgrade_grey); //z-value=0
     upgrade_grey->Spawn(650, 600, 0.7f);
-    upgrade_grey->Current->setVisible(true);
+    upgrade_grey->setVisible(true);
     //暗色移除——注意移除.png需要缩放至×0.7
-    delete_grey->Current = Sprite::create("delete_grey.png");
-    this->addChild(delete_grey->Current); //z-value=0
+    delete_grey = FrameBox::create("delete_grey.png");
+    this->addChild(delete_grey); //z-value=0
     delete_grey->Spawn(750, 600, 0.7f);
-    delete_grey->Current->setVisible(true);
+    delete_grey->setVisible(true);
 
 
     //亮色炮台——初状态不可见
     //亮色cannon
-    tower_cannon_ready->Current = Sprite::create("TI_1_available.png");
-    this->addChild(tower_cannon_ready->Current); //z-value=0
+    tower_cannon_ready = FrameBox::create("TI_1_available.png");
+    this->addChild(tower_cannon_ready); //z-value=0
     tower_cannon_ready->Spawn(450, 600, 1.0f);
-    tower_cannon_ready->Current->setVisible(false);
+    tower_cannon_ready->setVisible(false);
     //亮色shit
-    tower_shit_ready->Current = Sprite::create("TI_2_available.png");
-    this->addChild(tower_shit_ready->Current); //z-value=0
+    tower_shit_ready = FrameBox::create("TI_2_available.png");
+    this->addChild(tower_shit_ready); //z-value=0
     tower_shit_ready->Spawn(550, 600, 1.0f);
-    tower_shit_ready->Current->setVisible(false);
+    tower_shit_ready->setVisible(false);
     //亮色升级
-    upgrade_ready->Current = Sprite::create("upgrade_ready.png");
-    this->addChild(upgrade_ready->Current); //z-value=0
+    upgrade_ready = FrameBox::create("upgrade_ready.png");
+    this->addChild(upgrade_ready); //z-value=0
     upgrade_ready->Spawn(650, 600, 0.7f);
-    upgrade_ready->Current->setVisible(false);
+    upgrade_ready->setVisible(false);
     //亮色移除
-    delete_ready->Current = Sprite::create("delete_ready.png");
-    this->addChild(delete_ready->Current); //z-value=0
+    delete_ready = FrameBox::create("delete_ready.png");
+    this->addChild(delete_ready); //z-value=0
     delete_ready->Spawn(750, 600, 0.7f);
-    delete_ready->Current->setVisible(false);
+    delete_ready->setVisible(false);
 }
 
 

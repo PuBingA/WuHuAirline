@@ -4,7 +4,6 @@
 #include<string>
 #include<vector>
 USING_NS_CC;
-using namespace std;
 
 extern bool map_two_flag ;//关卡二flag
 extern bool map_three_flag ;//关卡三flag

@@ -2,10 +2,24 @@
 #include "public_define.h"
 USING_NS_CC;
 
+FrameBox* FrameBox::create(const std::string& filename)//Éú³ÉÂÜ²·Àà
+{
+	FrameBox* frame_box = new FrameBox();
+
+	if (frame_box && frame_box->initWithFile(filename))
+	{
+		frame_box->autorelease();
+		return frame_box;
+	}
+	CC_SAFE_DELETE(frame_box);
+	return nullptr;
+}
+
+
 void FrameBox::Spawn(int x, int y, float scale)
 {
-	Current->setScale(scale);
-	Current->setPosition(x, y);
+	this->setScale(scale);
+	this->setPosition(x, y);
 }
 
 
@@ -14,19 +28,19 @@ void FrameBox::Shimmer()
 	auto scaleTo = ScaleTo::create(0.3, 0.7);
 	auto scaleBack = ScaleTo::create(0.3, 0.5);
 	auto seq = Sequence::create(scaleTo, scaleBack, nullptr);
-	Current->runAction(RepeatForever::create(seq));
+	this->runAction(RepeatForever::create(seq));
 }
 
 void FrameBox::Disappear()
 {
-	Current->stopAllActions();
-	Current->runAction(FadeOut::create(fade_time));
+	this->stopAllActions();
+	this->runAction(FadeOut::create(fade_time));
 }
 
 void FrameBox::Rotate(float duration, float angle)
 {
 	auto rotateAction = RotateBy::create(duration, angle);
-	Current->runAction(rotateAction);
+	this->runAction(rotateAction);
 }
 
 bool IsFrame_Lv1(int& x, int& y)	//if (level == 1)
