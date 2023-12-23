@@ -23,6 +23,12 @@ void FrameBox::Disappear()
 	Current->runAction(FadeOut::create(fade_time));
 }
 
+void FrameBox::Rotate(float duration, float angle)
+{
+	auto rotateAction = RotateBy::create(duration, angle);
+	Current->runAction(rotateAction);
+}
+
 bool IsFrame_Lv1(int& x, int& y)	//if (level == 1)
 {
 	for (auto& adjust_coord : AllFrames_Lv1)

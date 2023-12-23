@@ -1,12 +1,15 @@
 #include"map.h"
 #include"choose_map.h"
-#include "monster.h"
 #include"carrot.h"
 #include "ui/CocosGUI.h"
 #include"cocos-ext.h"
 #include"settlement_interface.h"
 USING_NS_CC;
 using namespace std;
+
+extern bool map_two_flag;
+extern bool map_three_flag;
+
 int CheckBox(XY obj, const std::vector<FS>& table);
 
 /*-------------------------------父类函数-----------------------------------*/
@@ -133,12 +136,17 @@ void Map_father::menuCallback(cocos2d::Ref* pSender)//返回键触发函数
     Director::getInstance()->replaceScene(choose_map::createScene());//切换到选择地图场景
 }
 
-void Map_father::game_over(cocos2d::Ref* pSender,int const choice)
+void Map_father::game_over_success(float dt)
 {
-    if(choice==1)
-        Director::getInstance()->replaceScene(settlement_success::createScene());//切换到胜利场景
+    auto scene = settlement_success::createScene();
+    Director::getInstance()->replaceScene(TransitionCrossFade::create(2.0f, scene));
 }
 
+void Map_father::game_over_failure(float dt)
+{
+    auto scene = settlement_failure::createScene();
+    Director::getInstance()->replaceScene(TransitionCrossFade::create(2.0f, scene));
+}
 
 template<typename T>
 void Map_father::input_brick(T x, T y ,int choice)//choice==1 放置怪物绿色地板
@@ -182,21 +190,21 @@ Map_One::Map_One()
 
 Map_One::~Map_One()
 {
-    delete yellow_frame;
-    delete tower_cannon;
-    delete tower_shit;
-    delete tower_cannon_ready;
-    delete tower_shit_ready;
-    delete cannon_Lv1;
-    delete cannon_Lv2;
-    delete cannon_Lv3;
-    delete shit_Lv1;
-    delete shit_Lv2;
-    delete shit_Lv3;
-    delete upgrade_grey;
-    delete upgrade_ready;
-    delete delete_grey;
-    delete delete_ready;
+    CC_SAFE_DELETE(yellow_frame);
+    CC_SAFE_DELETE(tower_cannon);
+    CC_SAFE_DELETE(tower_shit);
+    CC_SAFE_DELETE(tower_cannon_ready);
+    CC_SAFE_DELETE(tower_shit_ready);
+    CC_SAFE_DELETE(cannon_Lv1);
+    CC_SAFE_DELETE(cannon_Lv2);
+    CC_SAFE_DELETE(cannon_Lv3);
+    CC_SAFE_DELETE(shit_Lv1);
+    CC_SAFE_DELETE(shit_Lv2);
+    CC_SAFE_DELETE(shit_Lv3);
+    CC_SAFE_DELETE(upgrade_grey);
+    CC_SAFE_DELETE(upgrade_ready);
+    CC_SAFE_DELETE(delete_grey);
+    CC_SAFE_DELETE(delete_ready);
 }
 
 void Map_One::input_listener()
@@ -239,6 +247,13 @@ void Map_One::onMouseDown_Do_Plant(Event* event)
                 WhichPlant = 4;
             }
         }
+        /**********************12.23 新增**************************/
+        else
+        {
+            WhichPlant = 5;
+        }
+        /**********************12.23 新增**************************/
+
     }
 }
 
@@ -259,16 +274,10 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
             //查询种植状态，如果是0（未种植）则进行后续操作
             if (vacancy[vacancyIndex].state == 0)
             {
-
-                //暗色cannon设为不可见
-                tower_cannon->Current->setVisible(false);
-                //暗色shit设为不可见
-                tower_shit->Current->setVisible(false);
-                //亮色cannon设为可见
-                tower_cannon_ready->Current->setVisible(true);
-                //亮色shit设为可见
-                tower_shit_ready->Current->setVisible(true);
-
+                tower_cannon->Current->setVisible(false);//暗色cannon设为不可见
+                tower_shit->Current->setVisible(false);//暗色shit设为不可见
+                tower_cannon_ready->Current->setVisible(true);//亮色cannon设为可见
+                tower_shit_ready->Current->setVisible(true);//亮色shit设为可见
 
                 //开始检测鼠标点击位置，以判断种植哪种炮塔，一直等
                 //问题：如果单次点击产生黄框后又点击了别的位置产生黄框，新种植的炮台仍然会种到之前的位置！
@@ -304,22 +313,14 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
             }
             else if (vacancy[vacancyIndex].state == 1) //state=1 放置了一级炮台
             {
-                //暗色cannon设为可见
-                tower_cannon->Current->setVisible(true);
-                //暗色shit设为可见
-                tower_shit->Current->setVisible(true);
-                //亮色cannon设为不可见
-                tower_cannon_ready->Current->setVisible(false);
-                //亮色shit设为不可见
-                tower_shit_ready->Current->setVisible(false);
-                //亮色升级设为可见
-                upgrade_ready->Current->setVisible(true);
-                //亮色删除设为可见
-                delete_ready->Current->setVisible(true);
-                //暗色升级设为不可见
-                upgrade_grey->Current->setVisible(false);
-                //暗色删除设为不可见
-                delete_grey->Current->setVisible(false);
+                tower_cannon->Current->setVisible(true);//暗色cannon设为可见
+                tower_shit->Current->setVisible(true);//暗色shit设为可见
+                tower_cannon_ready->Current->setVisible(false);//亮色cannon设为不可见
+                tower_shit_ready->Current->setVisible(false);//亮色shit设为不可见
+                upgrade_ready->Current->setVisible(true);//亮色升级设为可见
+                delete_ready->Current->setVisible(true);//亮色删除设为可见
+                upgrade_grey->Current->setVisible(false);//暗色升级设为不可见
+                delete_grey->Current->setVisible(false);//暗色删除设为不可见
                 waitForConditionAndExecute(
                     [=]() {
                         return WhichPlant == 3 || WhichPlant == 4;
@@ -375,22 +376,14 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
             
             else if (vacancy[vacancyIndex].state == 2) //state=2 放置了二级炮台
             {
-                //暗色cannon设为可见
-                tower_cannon->Current->setVisible(true);
-                //暗色shit设为可见
-                tower_shit->Current->setVisible(true);
-                //亮色cannon设为不可见
-                tower_cannon_ready->Current->setVisible(false);
-                //亮色shit设为不可见
-                tower_shit_ready->Current->setVisible(false);
-                //亮色升级设为可见
-                upgrade_ready->Current->setVisible(true);
-                //亮色删除设为可见
-                delete_ready->Current->setVisible(true);
-                //暗色升级设为不可见
-                upgrade_grey->Current->setVisible(false);
-                //暗色删除设为不可见
-                delete_grey->Current->setVisible(false);
+                tower_cannon->Current->setVisible(true);//暗色cannon设为可见
+                tower_shit->Current->setVisible(true);//暗色shit设为可见
+                tower_cannon_ready->Current->setVisible(false);//亮色cannon设为不可见
+                tower_shit_ready->Current->setVisible(false);//亮色shit设为不可见
+                upgrade_ready->Current->setVisible(true);//亮色升级设为可见
+                delete_ready->Current->setVisible(true);//亮色删除设为可见
+                upgrade_grey->Current->setVisible(false);//暗色升级设为不可见
+                delete_grey->Current->setVisible(false);//暗色删除设为不可见
                 waitForConditionAndExecute(
                     [=]() {
                         return WhichPlant == 3 || WhichPlant == 4;
@@ -445,65 +438,56 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
             }
             else if (vacancy[vacancyIndex].state == 3)
             {
-                //暗色cannon设为可见
-                tower_cannon->Current->setVisible(true);
-                //暗色shit设为可见
-                tower_shit->Current->setVisible(true);
-                //亮色cannon设为不可见
-                tower_cannon_ready->Current->setVisible(false);
-                //亮色shit设为不可见
-                tower_shit_ready->Current->setVisible(false);
-                //亮色升级设为不可见！！
-                upgrade_ready->Current->setVisible(false);
-                //亮色删除设为可见
-                delete_ready->Current->setVisible(true);
-                //暗色升级设为可见
-                upgrade_grey->Current->setVisible(true);
-                //暗色删除设为不可见
-                delete_grey->Current->setVisible(false);
+                tower_cannon->Current->setVisible(true);//暗色cannon设为可见
+                tower_shit->Current->setVisible(true);//暗色shit设为可见
+                tower_cannon_ready->Current->setVisible(false);//亮色cannon设为不可见
+                tower_shit_ready->Current->setVisible(false);//亮色shit设为不可见
+                upgrade_ready->Current->setVisible(false);//亮色升级设为不可见！！
+                delete_ready->Current->setVisible(true);//亮色删除设为可见
+                upgrade_grey->Current->setVisible(true);//暗色升级设为可见
+                delete_grey->Current->setVisible(false);//暗色删除设为不可见
                 waitForConditionAndExecute(
                     [=]() {
-                        return WhichPlant == 4;
+                        return WhichPlant == 4 || (WhichPlant == 5);
                     },
                     [=]() {
-                        if (vacancy[vacancyIndex].tower_type == 1)//delete cannon
-                        {
-                            this->removeChild(vacancy[vacancyIndex].spr);
-                            vacancy[vacancyIndex].state = 0; //void
-                            vacancy[vacancyIndex].tower_type = 0; //void
-                            vacancy[vacancyIndex].spr = nullptr;
-                            WhichPlant = 0;
+                        if (WhichPlant == 4) {
+                            if (vacancy[vacancyIndex].tower_type == 1)//delete cannon
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                            }
+                            else if (vacancy[vacancyIndex].tower_type == 2)//delete shit
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                            }
                         }
-                        else if (vacancy[vacancyIndex].tower_type == 2)//delete shit
-                        {
-                            this->removeChild(vacancy[vacancyIndex].spr);
-                            vacancy[vacancyIndex].state = 0; //void
-                            vacancy[vacancyIndex].tower_type = 0; //void
-                            vacancy[vacancyIndex].spr = nullptr;
+                        /**********************12.23 新增**************************/
+                        else if (WhichPlant == 5)
                             WhichPlant = 0;
-                        }
+                        /**********************12.23 新增**************************/
+
                     }
                 );
             }
         }
         else
         {
-            yellow_frame->Current->setVisible(false);
-            //grey cannon visible
-            tower_cannon->Current->setVisible(true);
-            //grey shit visible
-            tower_shit->Current->setVisible(true);
-            //colored cannon invisible
-            tower_cannon_ready->Current->setVisible(false);
-            //colored shit invisible
-            tower_shit_ready->Current->setVisible(false);
-            //colored upgrade invisible
-            upgrade_ready->Current->setVisible(false);
-            //colored delete invisible
-            delete_ready->Current->setVisible(false);
-            //grey update visible
-            upgrade_grey->Current->setVisible(true);
-            //grey delete visible
+            yellow_frame->Current->setVisible(false);//grey cannon visible
+            tower_cannon->Current->setVisible(true);//grey shit visible
+            tower_shit->Current->setVisible(true);//colored cannon invisible
+            tower_cannon_ready->Current->setVisible(false);//colored shit invisible
+            tower_shit_ready->Current->setVisible(false);//colored upgrade invisible
+            upgrade_ready->Current->setVisible(false);//colored delete invisible
+            delete_ready->Current->setVisible(false);//grey update visible
+            upgrade_grey->Current->setVisible(true);//grey delete visible
             delete_grey->Current->setVisible(true);
         }
     }
@@ -608,13 +592,7 @@ void Map_One::input_walk_way()//放置怪物行进路径
         walk_way_store_1.push_back(current);
     }//竖直向上5格
     //存放地板向量生成完毕
-
-    //放置一个怪兽
-    auto monster1 = MonSprite::create("monster1_1.png");
-    this->addChild(monster1);
-    MonCtrl Moncon1(monster1, 1, walk_way_store_1);
-    Moncon1.spawn();
-
+    spawn_monster();
     /*****************************change*************************************/
     ShowTowerDark();
     input_listener();
@@ -651,11 +629,10 @@ void Map_One::game_begin()//游戏开始函数
 
 void Map_One::spawn_monster()//刷新怪物
 {
-    MonSprite* monster1 = MonSprite::create("monster1_1.png");
-    this->addChild(monster1);
-    MonCtrl Moncon1(monster1, 1, walk_way_store_1);
-    Moncon1.spawn();
-
+    auto wave1 = Node::create();
+    MonsterSpawner wave1Spawn(wave1, walk_way_store_1, 1);
+    this->addChild(wave1);
+    wave1Spawn.spawn1(1.0f);
 }
 /*------------------------------地图一函数----------------------------------*/
 
@@ -729,17 +706,11 @@ void Map_Two::game_begin()//游戏开始函数
     auto gold_label = input_gold();;//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
 
-
-
+    map_three_flag = true;
 }
 
 void Map_Two::spawn_monster()
 {
-    MonSprite* monster1 = MonSprite::create("monster1_1.png");
-    this->addChild(monster1);
-    MonCtrl Moncon1(monster1, 1, walk_way_store_2);
-    Moncon1.spawn();
-
 }
 
 /*------------------------------地图二函数----------------------------------*/
@@ -811,11 +782,6 @@ void Map_Three::game_begin()//游戏开始函数
 
 void Map_Three::spawn_monster()
 {
-    MonSprite* monster1 = MonSprite::create("monster1_1.png");
-    this->addChild(monster1);
-    MonCtrl Moncon1(monster1, 1, walk_way_store_3);
-    Moncon1.spawn();
-
 }
 /*------------------------------地图三函数----------------------------------*/
 

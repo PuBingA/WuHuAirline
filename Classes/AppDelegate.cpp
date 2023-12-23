@@ -82,7 +82,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // create a scene. it's an autorelease object
     auto scene = Opening::createScene();//创建场景
-    auto opening_background_music = AudioEngine::play2d("Shed A Light - Robin Schulz  David Guetta.mp3", true);//背景音乐植入
+    auto opening_background_music = AudioEngine::play2d("Hop-Azis.mp3", true);//背景音乐植入
     // run
    
     director->runWithScene(scene);//移动到开始场景

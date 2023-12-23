@@ -5,34 +5,12 @@ using namespace std;
 template <class T>
 class PQueue
 {
+    friend class Map_One;
 private:
     priority_queue<pair<int, T>> PQ;
 public:
-    void Push(int element, int priority);
+    void Push(int priority, T element);
     T Pop();
     bool IsEmpty() const;
+    T GetMaxPriority()const;
 };
-
-template<class T>
-inline void PQueue<T>::Push(int element, int priority)
-{
-    PQ.push(std::make_pair(priority, element));
-}
-
-template<class T>
-inline T PQueue<T>::Pop()
-{
-    if (!PQ.empty())
-    {
-        T element = PQ.top().second;
-        PQ.pop();
-        return element;
-    }
-    return T();
-}
-
-template<class T>
-inline bool PQueue<T>::IsEmpty() const
-{
-    return PQ.empty();
-}

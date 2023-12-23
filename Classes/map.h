@@ -4,8 +4,20 @@
 #include<string>
 #include"cocos-ext.h"
 #include "Frames.h"
+/**********************12.23 新增**************************/
+#include "monster.h"
+#include "Priority_Queue.h"
 
-/*****************************change*************************************/
+
+//每个活着的怪物都有一个自己的MI，涵盖了这只怪物的信息
+typedef struct MonsterInfo
+{
+    XY current_location;
+    MonSprite* current_monster;
+}MI;
+/**********************12.23 新增**************************/
+
+//VS包含每个种植位的所有信息：统一编排的序号+位置状态+防御塔种类+现有的精灵指针
 typedef struct Vacancy_State
 {
     int index;
@@ -13,18 +25,14 @@ typedef struct Vacancy_State
     int tower_type;
     Sprite* spr;
 }VS;
-    //state=0 空 
-    //state=1 放置了一级炮台
-    //state=2 放置了二级炮台
-    //state=3 放置了三级炮台
-    //state=4 选中了空？？
-    //state=5 选中了一级炮台？？
-    //state=6 选中了二级炮台？？
-    //state=7 选中了三级炮台？？
-    //tower_type=1 加农炮
-    //tower_type=2 屎
-    //tower_type=3 电磁塔
-/*****************************change*************************************/
+//state=0 空 
+//state=1 放置了一级炮台
+//state=2 放置了二级炮台
+//state=3 放置了三级炮台
+//tower_type=1 加农炮
+//tower_type=2 屎
+//tower_type=3 电磁塔
+
 
 class Map_father :public cocos2d::Scene
 {
@@ -43,7 +51,8 @@ public:
     cocos2d::Label* HP_display(const T x, const T y);//在相应坐标生成萝卜
     std::string calculate_HP(const int HP);//根据萝卜血量，等处字符串
     virtual void game_begin() {};//游戏开始函数(重点)
-    void game_over(cocos2d::Ref* pSender,int const choice);//游戏结束,choice==1为胜利 choice==0 为失败
+    void game_over_success(float dt);//游戏胜利
+    void game_over_failure(float dt);//游戏失败
     template<typename T>
     void input_brick(T x,T y ,int choice);//放置地板
     virtual void spawn_monster() {};//放置怪物
@@ -53,7 +62,6 @@ public:
 
 class Map_One :public Map_father
 {
-    /*****************************change*************************************/
 private:
     FrameBox* yellow_frame;
     FrameBox* tower_cannon;
@@ -77,8 +85,13 @@ private:
                WhichPlant = 3 upgrade
                WhichPlant = 1 delete           */
     XY singleclick;
-    //vacancy存放每个可放置位置的信息，包括了：统一编排的序号+位置状态+防御塔种类+现有的精灵指针
+    //vacancy存放每个可放置位置的信息
     std::vector<VS> vacancy;
+
+    /**********************12.23 新增**************************/
+    PQueue<MI> currentMonstersOnScreen;
+    /**********************12.23 新增**************************/
+
 public:
     Map_One();
     ~Map_One();
@@ -87,7 +100,6 @@ public:
     void onMouseDown_Do_Plant(Event* event);
     void onMouseDown_Show_Yellow(Event* event);
     void waitForConditionAndExecute(const std::function<bool()>& condition, const std::function<void()>& callback);
-    /*****************************change*************************************/
 
     virtual void input_background();
     virtual void input_walk_way();

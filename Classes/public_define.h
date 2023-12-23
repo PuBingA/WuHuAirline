@@ -40,3 +40,8 @@
 
 //第一关共有38个种植点位
 #define Level_One_Spots 38 
+
+//怪兽属性
+#define mon1_vit 10										
+#define mon1_atk 5										
+#define mon1_spd 2
