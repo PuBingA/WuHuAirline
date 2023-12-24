@@ -35,12 +35,28 @@ void Map_father::waitForConditionAndExecute(const std::function<bool()>& conditi
     }
 }
 
-void Map_father::spawn_single_monster_1(float dt)
+void Map_father::spawnMonster1_1(float dt)
 {
     MonSprite* monsterl = MonSprite::create(1);
     monsterl->monster_spawn(walk_way);
     this->addChild(monsterl);
-    //Director::getInstance()->currentMonstersOnScreen.Push(monsterl);
+    monster_wave.push(std::make_pair(monsterl, 0));
+}
+
+void Map_father::spawnMonster1_2(float dt)
+{
+    MonSprite* monsterl = MonSprite::create(1);
+    monsterl->monster_spawn(walk_way);
+    this->addChild(monsterl);
+    monster_wave.push(std::make_pair(monsterl, 0));
+}
+
+void Map_father::spawnMonster1_3(float dt)
+{
+    MonSprite* monsterl = MonSprite::create(1);
+    monsterl->monster_spawn(walk_way);
+    this->addChild(monsterl);
+    monster_wave.push(std::make_pair(monsterl, 0));
 }
 
 bool Map_father::init()//父类创建场景总函数
@@ -756,7 +772,6 @@ void Map_One::input_walk_way()//放置怪物行进路径
     return;
 }
 
-
 void Map_One::game_begin()//游戏开始函数
 {
     float carrot_x = walk_way[walk_way.size() - 1][0];
@@ -778,7 +793,9 @@ void Map_One::game_begin()//游戏开始函数
     carrot->change();
     carrot_HP->setString(calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
 
-    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawn_single_monster_1), 1.0f, 5, 0);
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_1), 1.0f, 2, 3.0f); //第1波：生成3个怪物1
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_2), 1.0f, 4, 13.0f);//第2波：生成5个怪物1
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_3), 1.0f, 5, 23.0f);//第3波：生成6个怪物1
 
     if (carrot->if_dead())  //萝卜死亡结束
         this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f);
@@ -1464,6 +1481,7 @@ void Map_Two::game_begin()//游戏开始函数
 
 
 /*------------------------------地图三函数----------------------------------*/
+
 void Map_Three::input_background()//生成背景图
 {
     auto background = Sprite::create("map\\map_three.png");

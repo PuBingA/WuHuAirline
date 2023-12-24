@@ -5,7 +5,6 @@
 #include"cocos-ext.h"
 #include "Frames.h"
 #include "monster.h"
-#include "Priority_Queue.h"
 USING_NS_CC;
 
 //VS包含每个种植位的所有信息：统一编排的序号+位置状态+防御塔种类+现有的精灵指针
@@ -60,8 +59,8 @@ protected:
     std::vector<VS> vacancy;                        //vacancy存放每个可放置位置的信息
     int gold;                                       //当前金币数
     Label* gold_label;                              //金币标签
-    PQueue<MonSprite*> currentMonstersOnScreen;     //存放场上所有怪物的指针的vector
     std::vector<std::vector<float>>walk_way;        //存放怪物行进的x,y轴的向量
+    std::priority_queue<std::pair<MonSprite*,int>>monster_wave;
 public:
     static cocos2d::Scene* createScene();
     virtual bool init();                              //创建场景类,被继承公有部分
@@ -81,7 +80,9 @@ public:
     void game_over_failure(float dt);                 //游戏失败
     template<typename T>
     void input_brick(T x,T y ,int choice);            //放置地板
-    void Map_father::spawn_single_monster_1(float dt);//生成单个怪物
+    void Map_father::spawnMonster1_1(float dt);       //生成Type=1的怪物
+    void Map_father::spawnMonster1_2(float dt);       //生成Type=1的怪物
+    void Map_father::spawnMonster1_3(float dt);       //生成Type=1的怪物
     void waitForConditionAndExecute(const std::function<bool()>& condition, const std::function<void()>& callback);
     CREATE_FUNC(Map_father);
 };
