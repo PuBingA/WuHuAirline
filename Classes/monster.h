@@ -29,9 +29,7 @@ private:
     }
 
 public:
-    /**********************12.23 新增**************************/
     friend class FrameBox;
-    /**********************12.23 新增**************************/
 
     friend class MonsterController;
 

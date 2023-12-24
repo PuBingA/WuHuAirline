@@ -5,8 +5,8 @@ USING_NS_CC;
 
 struct XY
 {
-	int _x;
-	int _y;
+	float _x;
+	float _y;
 };
 
 typedef struct FrameSpot
@@ -48,22 +48,22 @@ const TI ETower_2 = { 8, 480, 384, 275, 60, 1000 };
 const TI ETower_3 = { 9, -1, 768, 300, 70, 1000 };
 
 /**************************  LEVEL ONE ******************************/
-const std::vector<FS> AllFrames_Lv1 = 
-{   
+const std::vector<FS> AllFrames_Lv1 =
+{
 	{0,{291,591},{373,509},{332,550}} ,
 	{1,{291,509},{373,427},{332,468}} ,
 	{2,{291,427},{373,345},{332,386}} ,
 	{3,{291,345},{373,263},{332,304}} ,
 	//…œ∫·––
 	{4,{291,263},{373,181},{332,222}} ,{5,{291 + way_size,263},{373 + way_size,181},{332 + way_size,222}} ,
-    {6,{291 + way_size * 2,263},{373 + way_size * 2,181},{332 + way_size * 2,222}} ,
-    {7,{291 + way_size * 3,263},{373 + way_size * 3,181},{332 + way_size * 3,222}} ,
-    {8,{291 + way_size * 4,263},{373 + way_size * 4,181},{332 + way_size * 4,222}} ,
-    {9,{291 + way_size * 5,263},{373 + way_size * 5,181},{332 + way_size * 5,222}} ,
-    {10,{291 + way_size * 6,263},{373 + way_size * 6,181},{332 + way_size * 6,222}} ,
-    {11,{291 + way_size * 7,263},{373 + way_size * 7,181},{332 + way_size * 7,222}} ,
+	{6,{291 + way_size * 2,263},{373 + way_size * 2,181},{332 + way_size * 2,222}} ,
+	{7,{291 + way_size * 3,263},{373 + way_size * 3,181},{332 + way_size * 3,222}} ,
+	{8,{291 + way_size * 4,263},{373 + way_size * 4,181},{332 + way_size * 4,222}} ,
+	{9,{291 + way_size * 5,263},{373 + way_size * 5,181},{332 + way_size * 5,222}} ,
+	{10,{291 + way_size * 6,263},{373 + way_size * 6,181},{332 + way_size * 6,222}} ,
+	{11,{291 + way_size * 7,263},{373 + way_size * 7,181},{332 + way_size * 7,222}} ,
 	//
-    {12,{291 + way_size * 7,263 + way_size},{373 + way_size * 7,181 + way_size},{332 + way_size * 7,222 + way_size}},
+	{12,{291 + way_size * 7,263 + way_size},{373 + way_size * 7,181 + way_size},{332 + way_size * 7,222 + way_size}},
 	{13,{291 + way_size * 7,263 + way_size * 2},{373 + way_size * 7,181 + way_size * 2},{332 + way_size * 7,222 + way_size * 2}},
 	{14,{291 + way_size * 7,263 + way_size * 3},{373 + way_size * 7,181 + way_size * 3},{332 + way_size * 7,222 + way_size * 3}},
 	//

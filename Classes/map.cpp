@@ -1,11 +1,9 @@
-﻿#include"map.h"
-#include"choose_map.h"
-#include"carrot.h"
+﻿#include "map.h"
+#include "choose_map.h"
+#include "carrot.h"
 #include "ui/CocosGUI.h"
-#include"cocos-ext.h"
-#include"settlement_interface.h"
+#include "settlement_interface.h"
 USING_NS_CC;
-using namespace std;
 
 extern bool map_two_flag;
 extern bool map_three_flag;
@@ -13,17 +11,21 @@ extern bool map_three_flag;
 int CheckBox(XY obj, const std::vector<FS>& table);
 
 /*-------------------------------父类函数-----------------------------------*/
-Scene* Map_father::createScene()
+cocos2d::Scene* Map_father::createScene()
 {
     return Map_father::create();
+}
+
+static void problemLoading(const char* filename)
+{
+    printf("Error while loading: %s\n", filename);
+    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
 void Map_father::waitForConditionAndExecute(const std::function<bool()>& condition, const std::function<void()>& callback)
 {
     if (condition())
-    {
         callback();
-    }
     else
     {
         scheduleOnce([=](float dt)
@@ -33,10 +35,12 @@ void Map_father::waitForConditionAndExecute(const std::function<bool()>& conditi
     }
 }
 
-static void problemLoading(const char* filename)
+void Map_father::spawn_single_monster_1(float dt)
 {
-    printf("Error while loading: %s\n", filename);
-    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
+    MonSprite* monsterl = MonSprite::create(1);
+    monsterl->monster_spawn(walk_way);
+    this->addChild(monsterl);
+    //Director::getInstance()->currentMonstersOnScreen.Push(monsterl);
 }
 
 bool Map_father::init()//父类创建场景总函数
@@ -90,10 +94,10 @@ cocos2d::Label* Map_father::input_gold()//生成金币标签
     return gold_label;
 }
 
-string Map_father::calculate_gold(const int gold)
+std::string Map_father::calculate_gold(const int gold)
 {
     int digit = 1000;//千位
-    string figure;
+    std::string figure;
     for (int i = 0; i < 4; i++)
     {
         int k = (gold / digit) % 10;
@@ -120,7 +124,7 @@ cocos2d::Label* Map_father::HP_display(const T x, const T y)//放置萝卜血条
 
 std::string Map_father::calculate_HP(const int HP)//根据萝卜血量生成字符串
 {
-    string figure;
+    std::string figure;
     int digit = 10;//十位
     for (int i = 0; i < 2; i++)
     {
@@ -210,25 +214,16 @@ void Map_One::onMouseDown_Do_Plant(Event* event)
         if (IsFramePlant(x, y, AllPlants_Lv1))
         {
             if (x <= 450.1 && x >= 449.9)//plant a cannon
-            {
                 WhichPlant = 1;
-            }
             else if (x <= 550.1 && x >= 549.9)//plant a shit
-            {
                 WhichPlant = 2;
-            }
             else if (x <= 650.1 && x >= 649.9)//upgrade
-            {
                 WhichPlant = 3;
-            }
             else if (x <= 750.1 && x >= 749.9)//delete
-            {
                 WhichPlant = 4;
-            }
         }
     }
 }
-
 
 void Map_One::onMouseDown_Show_Yellow(Event* event)
 {
@@ -289,7 +284,7 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                                 gold_label->setString(calculate_gold(gold));//更新金币
                             }
                         }
-                    );
+                        );
                 }
                 else if (gold < 120 && gold >= 100) //只能种植cannon
                 {
@@ -318,7 +313,7 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                                 gold_label->setString(calculate_gold(gold));//更新金币
                             }
                         }
-                    );
+                        );
                 }
             }
             else if (vacancy[vacancyIndex].state == 1) //state=1 放置了一级炮台
@@ -394,7 +389,7 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                                 }
                             }
                         }
-                    );
+                        );
                 }
                 else if (gold < 220 && gold >= 180) //只能升级cannon，或者铲除cannon和shit
                 {
@@ -441,7 +436,7 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                                     }
                                 }
                             }
-                        );
+                            );
                     }
                     else if (vacancy[vacancyIndex].tower_type == 2) //只能铲除 shit
                     {
@@ -464,7 +459,7 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                                 gold += 96;
                                 gold_label->setString(calculate_gold(gold));//更新金币
                             }
-                        );
+                            );
                     }
                 }
                 else if (gold < 180 && gold >= 0) //只能铲除cannon和shit
@@ -501,7 +496,7 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                                 gold_label->setString(calculate_gold(gold));//更新金币
                             }
                         }
-                    );
+                        );
                 }
             }
             else if (vacancy[vacancyIndex].state == 2) //state=2 放置了二级炮台
@@ -577,7 +572,7 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                                 }
                             }
                         }
-                    );
+                        );
 
                 }
                 else if (gold < 260 && gold >= 0) //只能铲除cannon和shit
@@ -614,7 +609,7 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                                 gold_label->setString(calculate_gold(gold));//更新金币
                             }
                         }
-                    );
+                        );
                 }
             }
             else if (vacancy[vacancyIndex].state == 3)  //state=3 放置了三级炮台
@@ -656,7 +651,7 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                             }
                         }
                     }
-                );
+                    );
             }
         }
         else
@@ -673,7 +668,6 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
         }
     }
 }
-
 
 void Map_One::ShowTowerDark()
 {
@@ -733,48 +727,46 @@ void Map_One::input_background()//放置背景图
 void Map_One::input_walk_way()//放置怪物行进路径
 {
     std::vector<float> current = walk_way_begin_1;
-    walk_way_store_1.push_back(current);//放好初始位置
+    walk_way.push_back(current);//放好初始位置
     input_brick(current[0], current[1], 1);
     for (int i = 0; i < 5; i++)
     {
         current[1] -= way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_1.push_back(current);
+        walk_way.push_back(current);
     }//竖直向下5格
 
     for (int i = 0; i < 9; i++)
     {
         current[0] += way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_1.push_back(current);
+        walk_way.push_back(current);
     }//水平向右9格
 
     for (int i = 0; i < 5; i++)
     {
         current[1] += way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_1.push_back(current);
+        walk_way.push_back(current);
     }//竖直向上5格
     //存放地板向量生成完毕
-    /*****************************change*************************************/
     ShowTowerDark();
     input_listener();
-    /*****************************change*************************************/
 
     return;
 }
 
+
 void Map_One::game_begin()//游戏开始函数
 {
-    float carrot_x = walk_way_store_1[walk_way_store_1.size() - 1][0];
-    float carrot_y = walk_way_store_1[walk_way_store_1.size() - 1][1];//萝卜坐标
+    float carrot_x = walk_way[walk_way.size() - 1][0];
+    float carrot_y = walk_way[walk_way.size() - 1][1];//萝卜坐标
     auto carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
     this->addChild(carrot);
     carrot->setPosition(carrot_x, carrot_y);
     //放置萝卜
-    auto carrot_HP = HP_display(carrot_x+120, carrot_y );//生成萝卜血量
+    auto carrot_HP = HP_display(carrot_x + 120, carrot_y);//生成萝卜血量
     carrot_HP->setString(calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
-
 
     gold = gold_1;//金币变量
     gold_label = input_gold();//生成标签
@@ -785,21 +777,13 @@ void Map_One::game_begin()//游戏开始函数
     carrot->level = 1;
     carrot->change();
     carrot_HP->setString(calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
-    
-    
-    /**********************12.23 新增**************************/
-    Node* wave1 = cocos2d::Node::create();
-    this->addChild(wave1);
-    MonSprite* monster1 = MonSprite::create(1);
-    wave1->addChild(monster1);
-    monster1->monster_spawn(walk_way_store_1);
-    carrot->HP -= monster1->monster_attack_carrot(carrot->getBoundingBox(), wave1);
+
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawn_single_monster_1), 1.0f, 5, 0);
 
     if (carrot->if_dead())  //萝卜死亡结束
         this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f);
 
     map_two_flag = true;
-    /**********************12.23 新增**************************/
 
 }
 
@@ -887,21 +871,13 @@ void Map_Two::onMouseDown_Do_Plant(Event* event)
         if (IsFramePlant(x, y, AllPlants_Lv2))
         {
             if (y <= 550.1 && y >= 549.9)//plant a cannon
-            {
                 WhichPlant = 1;
-            }
             else if (y <= 450.1 && y >= 449.9)//plant an etower
-            {
                 WhichPlant = 2;
-            }
             else if (y <= 350.1 && y >= 349.9)//upgrade
-            {
                 WhichPlant = 3;
-            }
             else if (y <= 250.1 && y >= 249.9)//delete
-            {
                 WhichPlant = 4;
-            }
         }
     }
 }
@@ -963,7 +939,7 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                                 gold_label->setString(calculate_gold(gold));//更新金币
                             }
                         }
-                    );
+                        );
                 }
                 else if (gold < 160 && gold >= 100) //只能种植cannon
                 {
@@ -992,7 +968,7 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                                 gold_label->setString(calculate_gold(gold));//更新金币
                             }
                         }
-                    );
+                        );
                 }
             }
             else if (vacancy[vacancyIndex].state == 1) //state=1 放置了一级炮台
@@ -1068,7 +1044,7 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                                 }
                             }
                         }
-                    );
+                        );
                 }
                 else if (gold < 320 && gold >= 180) //只能升级cannon，或者铲除cannon和et
                 {
@@ -1115,7 +1091,7 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                                     }
                                 }
                             }
-                        );
+                            );
                     }
                     else if (vacancy[vacancyIndex].tower_type == 3) //只能铲除 et
                     {
@@ -1138,7 +1114,7 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                                 gold += 128;
                                 gold_label->setString(calculate_gold(gold));//更新金币
                             }
-                        );
+                            );
                     }
                 }
                 else if (gold < 180 && gold >= 0) //只能铲除cannon和shit
@@ -1175,7 +1151,7 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                                 gold_label->setString(calculate_gold(gold));//更新金币
                             }
                         }
-                    );
+                        );
                 }
             }
             else if (vacancy[vacancyIndex].state == 2) //state=2 放置了二级炮台
@@ -1251,7 +1227,7 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                                 }
                             }
                         }
-                    );
+                        );
                 }
                 else if (gold < 480 && gold >= 260) //只能升级cannon，可以铲除cannon和et
                 {
@@ -1292,7 +1268,7 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                                     gold_label->setString(calculate_gold(gold));//更新金币
                                 }
                             }
-                        );
+                            );
                     }
                     else if (vacancy[vacancyIndex].tower_type == 3) //et
                     {
@@ -1315,7 +1291,7 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                                 gold += 384;
                                 gold_label->setString(calculate_gold(gold));//更新金币
                             }
-                        );
+                            );
                     }
                 }
                 else if (gold < 260 && gold >= 0) //只能铲除cannon和et
@@ -1352,7 +1328,7 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                                 gold_label->setString(calculate_gold(gold));//更新金币
                             }
                         }
-                    );
+                        );
                 }
             }
             else if (vacancy[vacancyIndex].state == 3)  //state=3 放置了三级炮台
@@ -1394,7 +1370,7 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                             }
                         }
                     }
-                );
+                    );
             }
         }
         else
@@ -1422,41 +1398,41 @@ void Map_Two::input_background()//放置背景图
 void Map_Two::input_walk_way()//放置怪物路径
 {
     std::vector<float> current = walk_way_begin_2;
-    walk_way_store_2.push_back(current);//放好初始位置
+    walk_way.push_back(current);//放好初始位置
     input_brick(current[0], current[1], 1);
     for (int i = 0; i < 4; i++)
     {
         current[0] += way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_2.push_back(current);
+        walk_way.push_back(current);
     }//水平向右4格
 
     for (int i = 0; i < 5; i++)
     {
         current[1] += way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_2.push_back(current);
+        walk_way.push_back(current);
     }//竖直向上5格
 
     for (int i = 0; i < 3; i++)
     {
         current[0] += way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_2.push_back(current);
+        walk_way.push_back(current);
     }//水平向右3格
 
     for (int i = 0; i < 5; i++)
     {
         current[1] -= way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_2.push_back(current);
+        walk_way.push_back(current);
     }//竖直向下5格
 
     for (int i = 0; i < 4; i++)
     {
         current[0] += way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_2.push_back(current);
+        walk_way.push_back(current);
     }//水平向右4格
      //存放地板向量生成完毕
     ShowTowerDark();
@@ -1466,8 +1442,8 @@ void Map_Two::input_walk_way()//放置怪物路径
 
 void Map_Two::game_begin()//游戏开始函数
 {
-    float carrot_x = walk_way_store_2[walk_way_store_2.size() - 1][0];
-    float carrot_y = walk_way_store_2[walk_way_store_2.size() - 1][1];//萝卜坐标
+    float carrot_x = walk_way[walk_way.size() - 1][0];
+    float carrot_y = walk_way[walk_way.size() - 1][1];//萝卜坐标
     auto carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
     this->addChild(carrot);
     carrot->setPosition(carrot_x, carrot_y);
@@ -1498,37 +1474,37 @@ void Map_Three::input_background()//生成背景图
 void Map_Three::input_walk_way()//放置怪物路径
 {
     std::vector<float> current = walk_way_begin_3;
-    walk_way_store_3.push_back(current);//放好初始位置
+    walk_way.push_back(current);//放好初始位置
     input_brick(current[0], current[1], 1);
     for (int i = 0; i < 9; i++)
     {
         current[0] += way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_3.push_back(current);//放好初始位置
+        walk_way.push_back(current);//放好初始位置
     }//向右9格
     for (int i = 0; i < 3; i++)
     {
         current[1] -= way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_3.push_back(current);//放好初始位置
+        walk_way.push_back(current);//放好初始位置
     }//向下3格
     for (int i = 0; i < 9; i++)
     {
         current[0] -= way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_3.push_back(current);//放好初始位置
+        walk_way.push_back(current);//放好初始位置
     }//向左9格
     for (int i = 0; i < 3; i++)
     {
         current[1] -= way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_3.push_back(current);//放好初始位置
+        walk_way.push_back(current);//放好初始位置
     }//向下3格
     for (int i = 0; i < 9; i++)
     {
         current[0] += way_size;
         input_brick(current[0], current[1], 1);
-        walk_way_store_3.push_back(current);//放好初始位置
+        walk_way.push_back(current);//放好初始位置
     }//向右9格
     //存放地板向量生成完毕
     return;
@@ -1536,8 +1512,8 @@ void Map_Three::input_walk_way()//放置怪物路径
 
 void Map_Three::game_begin()//游戏开始函数
 {
-    float carrot_x = walk_way_store_3[walk_way_store_3.size() - 1][0];
-    float carrot_y = walk_way_store_3[walk_way_store_3.size() - 1][1];//萝卜坐标
+    float carrot_x = walk_way[walk_way.size() - 1][0];
+    float carrot_y = walk_way[walk_way.size() - 1][1];//萝卜坐标
     auto carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
     this->addChild(carrot);
     carrot->setPosition(carrot_x, carrot_y);
@@ -1547,7 +1523,7 @@ void Map_Three::game_begin()//游戏开始函数
 
 
     gold = gold_3;//金币变量
-    gold_label = input_gold();//生成标签
+    auto gold_label = input_gold();;//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
 }
 
@@ -1560,9 +1536,7 @@ void Map_Three::game_begin()//游戏开始函数
 int CheckBox(XY obj, const std::vector<FS>& table)
 {
     for (auto& it : table)
-    {
         if (it.adjusted._x == obj._x && it.adjusted._y == obj._y)
             return it.index;
-    }
     return -1;
 }

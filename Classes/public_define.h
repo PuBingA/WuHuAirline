@@ -1,17 +1,16 @@
 #define background_wide 1235							//整个游戏页面的宽度
 #define background_high 694								//整个游戏页面的高度
 
-#define gold_x  1170
-#define gold_y    630       //金币坐标
+#define gold_x 1170
+#define gold_y 630										//金币坐标
 
-#define return_x  1170     
-#define return_y  630 -70		//返回选择关卡界面坐标
+#define return_x 1170     
+#define return_y 630-70									//返回选择关卡界面坐标
 
 #define pause_x 1170
-#define pause_y 630 -70-70    //暂停键坐标
+#define pause_y 630-70-70								//暂停键坐标
 
-#define gold_max 9990 //金币上限
-//便于调试
+#define gold_max 9990  //金币上限
 #define gold_1   1000  //第一关初始金币
 #define gold_2   7000  //第二关初始金币
 #define gold_3   3000  //第三关初始金币
