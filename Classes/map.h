@@ -31,15 +31,20 @@ class Map_father :public cocos2d::Scene
 protected:
     FrameBox* yellow_frame = nullptr;
     FrameBox* tower_cannon = nullptr;
-    FrameBox* tower_shit = nullptr;
     FrameBox* tower_cannon_ready = nullptr;
+    FrameBox* tower_shit = nullptr;
     FrameBox* tower_shit_ready = nullptr;
+    FrameBox* tower_etower = nullptr;
+    FrameBox* tower_etower_ready = nullptr;
     FrameBox* cannon_Lv1 = nullptr;
     FrameBox* cannon_Lv2 = nullptr;
     FrameBox* cannon_Lv3 = nullptr;
     FrameBox* shit_Lv1 = nullptr;
     FrameBox* shit_Lv2 = nullptr;
     FrameBox* shit_Lv3 = nullptr;
+    FrameBox* etower_Lv1 = nullptr;
+    FrameBox* etower_Lv2 = nullptr;
+    FrameBox* etower_Lv3 = nullptr;
     FrameBox* upgrade_grey = nullptr;
     FrameBox* upgrade_ready = nullptr;
     FrameBox* delete_grey = nullptr;
@@ -67,7 +72,7 @@ public:
     void buttonCallback(cocos2d::Ref* pSender);       //暂停响应函数
     void input_gold_item();                           //放置金币UI
     cocos2d::Label* input_gold();                     //生成金币标签
-    std::string  calculate_gold(const int gold);      //根据当前金币，得出字符串
+    std::string calculate_gold(const int gold);       //根据当前金币，得出字符串
     template<typename T>
     cocos2d::Label* HP_display(const T x, const T y); //在相应坐标生成萝卜
     std::string calculate_HP(const int HP);           //根据萝卜血量，等处字符串
@@ -94,16 +99,23 @@ public:
 
     virtual void input_background();
     virtual void input_walk_way();
-    virtual void game_begin();     //游戏开始函数
+    virtual void game_begin();      //游戏开始函数
     CREATE_FUNC(Map_One);
 };
 
 class Map_Two :public Map_father
 {
 public:
+public:
+    Map_Two();
+    void ShowTowerDark();
+    void input_listener();
+    void onMouseDown_Do_Plant(Event* event);
+    void onMouseDown_Show_Yellow(Event* event);
+
     virtual void input_background();
     virtual void input_walk_way();
-    virtual void game_begin();//游戏开始函数(重点)
+    virtual void game_begin();      //游戏开始函数
     CREATE_FUNC(Map_Two);
 };
 
@@ -112,7 +124,7 @@ class Map_Three :public Map_father
 public:
     virtual void input_background();
     virtual void input_walk_way();
-    virtual void game_begin() ;//游戏开始函数(重点)
+    virtual void game_begin();      //游戏开始函数
     CREATE_FUNC(Map_Three);
 };
 

@@ -43,9 +43,9 @@ void FrameBox::Rotate(float duration, float angle)
 	this->runAction(rotateAction);
 }
 
-bool IsFrame_Lv1(float& x, float& y)	//if (level == 1)
+bool IsFrame(float& x, float& y, const std::vector<FS>& allframes)
 {
-	for (auto& adjust_coord : AllFrames_Lv1)
+	for (auto& adjust_coord : allframes)
 	{
 		if (x > adjust_coord.left_up._x && x < adjust_coord.right_down._x && y > adjust_coord.right_down._y && y < adjust_coord.left_up._y)
 		{
@@ -57,9 +57,9 @@ bool IsFrame_Lv1(float& x, float& y)	//if (level == 1)
 	return false;
 }
 
-bool IsFramePlant_Lv1(float& x, float& y)
+bool IsFramePlant(float& x, float& y, const std::vector<FS>& allplants)
 {
-	for (auto& adjust_coord : AllPlants_Lv1)
+	for (auto& adjust_coord : allplants)
 	{
 		if (x > adjust_coord.left_up._x && x < adjust_coord.right_down._x && y > adjust_coord.right_down._y && y < adjust_coord.left_up._y)
 		{
