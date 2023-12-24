@@ -4,33 +4,33 @@
 #include <vector>
 USING_NS_CC;
 
-class MonsterController;
-
-class MonSprite : public cocos2d::Sprite//怪物类
+class MonSprite : public Sprite//怪物类
 {
 private:
     int monType = 1;
-    float monVitality = 1;//生命
-    float monAttack = 1;//攻击力
-    float monSpeed = 1;//速度
-    float monCurrentLife = 1;
-    cocos2d::ui::LoadingBar* monLifeBar = NULL;
+    int monVitality = 1;//生命
+    int monAttack = 1;//攻击力
+    int monSpeed = 1;//速度
+    int monCurrentLife = 1;
+    ui::LoadingBar* monLifeBar = NULL;
 
     void setType(int type)//设置数值
     {
         monType = type;
         switch (monType)
         {
-            case 1:
-                monVitality = mon1_vit;
-                monAttack = mon1_atk;
-                monSpeed = mon1_spd;
-                break;
+        case 1:
+            monVitality = mon1_vit;
+            monAttack = mon1_atk;
+            monSpeed = mon1_spd;
+            break;
         }
         monCurrentLife = monVitality;
     }
 
 public:
+    friend class FrameBox;
+
     friend class MonsterController;
 
     static MonSprite* create(int type = 0)
@@ -53,72 +53,72 @@ public:
         return nullptr;
     }
 
-};
-
-
-class MonsterController
-{
-public:
     //生成一个怪物并开始移动
-    void monster_spawn(MonSprite* currentMon, std::vector<std::vector<float>>walkPath)
+    void monster_spawn(std::vector<std::vector<float>>walkPath)
     {
-        currentMon->setPosition(walkPath[0][0], walkPath[0][1]);
-        if (currentMon->monType == 1)
+        this->setPosition(walkPath[0][0], walkPath[0][1]);
+        if (this->monType == 1)
         {
-            currentMon->setTexture("monster1_1.png");
-            currentMon->setScale(0.7f);
+            this->setTexture("monster1_1.png");//设置贴图
+            this->setScale(0.7f);//设置贴图大小
             Vector<SpriteFrame*> animFrames;
             animFrames.reserve(2);
             animFrames.pushBack(SpriteFrame::create("monster1_1.png", Rect(0, 0, 135, 135)));
             animFrames.pushBack(SpriteFrame::create("monster1_2.png", Rect(0, 0, 135, 135)));
             Animation* animation = Animation::createWithSpriteFrames(animFrames, animate_duration);
             Animate* animate = Animate::create(animation);
-            currentMon->runAction(RepeatForever::create(animate));//不停扭动
+            this->runAction(RepeatForever::create(animate));//不停扭动
         }
 
         Vector<FiniteTimeAction*> monster_move_sequence;
         //怪物淡入，显示出来
         monster_move_sequence.pushBack(FadeIn::create(fade_time));
         for (auto& monster_walk_point : walkPath)
-            monster_move_sequence.pushBack(MoveTo::create((base_move_time / currentMon->monSpeed), Vec2(monster_walk_point[0], monster_walk_point[1])));
+            monster_move_sequence.pushBack(MoveTo::create((base_move_time / this->monSpeed), Vec2(monster_walk_point[0], monster_walk_point[1])));
         monster_move_sequence.pushBack(FadeIn::create(fade_time));
-        auto seq = Sequence::create(monster_move_sequence);
-        currentMon->runAction(seq);
+        this->runAction(Sequence::create(monster_move_sequence));
     }
 
-    //怪物受伤，返回值代表目前的健康状态
-    int monster_hurt(MonSprite* currentMon, float hit_point)
+    //怪物去世
+    int monster_if_die(Node* currentWave)
     {
-        currentMon->monVitality -= hit_point;
-        currentMon->runAction(Blink::create(blink_duration, blink_time));
-        if (currentMon->monVitality < 0)
-            return -1;//怪物死亡
-
+        if (this->monVitality <= 0)
+        {
+            this->stopAllActions();
+            this->runAction(FadeOut::create(fade_time));//怪物淡出
+            currentWave->removeChild(this);//怪似了
+            delete this;
+            return 1;
+        }
         return 0;
     }
 
-    //怪物死亡
-    void monster_die(Node* currentWave, MonSprite* currentMon)
+    //怪物受伤
+    void monster_hurt(Node* currentWave, int hit_point)
     {
-        currentMon->stopAllActions();
-        //怪物淡出
-        currentMon->runAction(FadeOut::create(fade_time));
-        currentWave->removeChild(currentMon);
-    }
-    
-    //攻击萝卜
-    void monAttackCarrot()
-    {
-
+        this->monVitality -= hit_point;
+        this->runAction(Blink::create(blink_duration, blink_time));
+        monster_if_die(currentWave);//判断怪物死亡
     }
 
+    //攻击萝卜，返回伤害
+    int monster_attack_carrot(Rect carrot_rect, Node* currentWave)
+    {
+        if (carrot_rect.intersectsRect(this->getBoundingBox()))
+        {
+            this->monVitality = 0;
+            this->monster_if_die(currentWave);//怪物死
+            return this->monAttack;
+        }
+        return 0;
+    }
 
 };
+
 
 class MonsterSpawner
 {
 public:
-    MonsterController monctrler;
     Node* wave;
     std::vector<std::vector<float>>walk_way;
     int monster_type;
@@ -144,29 +144,27 @@ public:
 
     void spawn1(float dt)
     {
-        monctrler.monster_spawn(monster1, walk_way);
+        monster1->monster_spawn(walk_way);
     }
 
     void spawn2(float dt)
     {
-        monctrler.monster_spawn(monster2, walk_way);
+        monster2->monster_spawn(walk_way);
     }
 
     void spawn3(float dt)
     {
-        monctrler.monster_spawn(monster3, walk_way);
+        monster3->monster_spawn(walk_way);
     }
 
     void spawn4(float dt)
     {
-        monctrler.monster_spawn(monster4, walk_way);
+        monster4->monster_spawn(walk_way);
     }
 
     void spawn5(float dt)
     {
-        monctrler.monster_spawn(monster5, walk_way);
+        monster5->monster_spawn(walk_way);
     }
 
 };
-
-
