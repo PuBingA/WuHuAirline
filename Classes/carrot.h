@@ -1,5 +1,5 @@
 #include"cocos2d.h"
-USING_NS_CC;
+using namespace cocos2d;
 class Carrot : public cocos2d::Sprite
 {
 public:
