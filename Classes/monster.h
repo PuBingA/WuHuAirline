@@ -69,7 +69,18 @@ public:
             Animate* animate = Animate::create(animation);
             this->runAction(RepeatForever::create(animate));//不停扭动
         }
-
+        else if (this->monType == 2)
+        {
+            this->setTexture("monster2_1.png");//设置贴图
+            this->setScale(0.7f);//设置贴图大小
+            Vector<SpriteFrame*> animFrames;
+            animFrames.reserve(2);
+            animFrames.pushBack(SpriteFrame::create("monster2_1.png", Rect(0, 0, 135, 135)));
+            animFrames.pushBack(SpriteFrame::create("monster2_2.png", Rect(0, 0, 135, 135)));
+            Animation* animation = Animation::createWithSpriteFrames(animFrames, animate_duration);
+            Animate* animate = Animate::create(animation);
+            this->runAction(RepeatForever::create(animate));//不停扭动
+        }
         Vector<FiniteTimeAction*> monster_move_sequence;
         //怪物淡入，显示出来
         monster_move_sequence.pushBack(FadeIn::create(fade_time));
@@ -112,7 +123,6 @@ public:
         }
         return 0;
     }
-
 };
 
 

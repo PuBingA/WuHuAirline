@@ -37,8 +37,9 @@ void FrameBox::Disappear()
 	this->runAction(FadeOut::create(fade_time));
 }
 
-void FrameBox::Rotate(float duration, float angle)
+void FrameBox::RotateAndLock()
 {
+	float duration = 1.0f, angle = 45.0f;
 	auto rotateAction = RotateBy::create(duration, angle);
 	this->runAction(rotateAction);
 }
