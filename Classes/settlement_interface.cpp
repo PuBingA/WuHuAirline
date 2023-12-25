@@ -3,6 +3,9 @@
 #include"AudioEngine.h"
 USING_NS_CC;
 
+
+
+
 /*--------------------------胜利场景--------------------------------------*/
 Scene* settlement_success::createScene()
 {
@@ -24,6 +27,12 @@ bool settlement_success::init()//场景布局函数,重要函数
     auto visibleSize = Director::getInstance()->getVisibleSize();//获取可见大小
     Vec2 origin = Director::getInstance()->getVisibleOrigin();//获取opengl起点
 
+
+
+    AudioEngine::pauseAll();
+    music = AudioEngine::play2d("success.mp3", false);
+  
+
     auto success_background = Sprite::create("success.png");
     this->addChild(success_background);
     success_background->setPosition(background_wide/2+60, background_high/2);
@@ -43,15 +52,17 @@ bool settlement_success::init()//场景布局函数,重要函数
     right->setPosition(background_wide / 2 + 400, background_high / 2);
     this->addChild(right);//放置吉祥物
 
-    auto SuccessItem = MenuItemImage::create("win_continue.png", "win_continue_selected.png", CC_CALLBACK_1(settlement_success::menuCallback, this));//点击则切换到选择地图场景
+    auto SuccessItem = MenuItemImage::create("win_continue.png", "win_continue_selected.png", CC_CALLBACK_1(settlement_success::menuCallback, this, music));//点击则切换到选择地图场景
     auto menu = Menu::create(SuccessItem, NULL);
     this->addChild(menu);
     menu->setPosition(background_wide / 2, background_high / 2 - 200);//放置菜单
     return true;
 }
 
-void settlement_success::menuCallback(cocos2d::Ref* pSender)
+void settlement_success::menuCallback(cocos2d::Ref* pSender,int &music)
 {
+    AudioEngine::resumeAll();
+    AudioEngine::stop(music);
     Director::getInstance()->replaceScene(choose_map::createScene());
 }
 
@@ -67,6 +78,10 @@ bool settlement_failure::init()//场景布局函数,重要函数
 {
     if (!Scene::init())
         return false;
+
+
+    AudioEngine::pauseAll();
+    music = AudioEngine::play2d("failure.mp3", false);
 
     auto failure_background = Sprite::create("success.png");
     this->addChild(failure_background);
@@ -87,15 +102,17 @@ bool settlement_failure::init()//场景布局函数,重要函数
     right->setPosition(background_wide / 2 + 400, background_high / 2);
     this->addChild(right);//放置吉祥物
 
-    auto failureItem = MenuItemImage::create("win_continue.png", "win_continue_selected.png", CC_CALLBACK_1(settlement_failure::menuCallback, this));//点击则切换到选择地图场景
+    auto failureItem = MenuItemImage::create("win_continue.png", "win_continue_selected.png", CC_CALLBACK_1(settlement_failure::menuCallback, this,music));//点击则切换到选择地图场景
     auto menu = Menu::create(failureItem, NULL);
     this->addChild(menu);
     menu->setPosition(background_wide / 2, background_high / 2 - 200);//放置菜单
     return true;
 }
 
-void settlement_failure::menuCallback(cocos2d::Ref* pSender)
+void settlement_failure::menuCallback(cocos2d::Ref* pSender, int& music)
 {
+    AudioEngine::resumeAll();
+    AudioEngine::stop(music);
     Director::getInstance()->replaceScene(choose_map::createScene());
 }
 /*--------------------------失败场景----------------------------------------*/
