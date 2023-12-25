@@ -9,6 +9,5 @@ public:
 	static Carrot* create(const std::string& filename);
 	std::string calculate_HP(const int HP);
 	void hurt(const int damage);//萝卜受伤，战损
-	void change();//改变萝卜外貌
-	bool if_dead();//判断萝卜是否死亡
+	void change_tex();//改变萝卜外貌
 };

@@ -16,7 +16,7 @@ Carrot* Carrot::create(const std::string& filename)//生成萝卜类
         auto Hp_item = Sprite::create("carrot_HP.png");
         Hp_item->setPosition(30, 0);
         carrot_sprite->addChild(Hp_item);//生成血量图标
-
+        carrot_sprite->change_tex();
         carrot_sprite->autorelease();
         return carrot_sprite;
     }
@@ -40,50 +40,40 @@ std::string Carrot::calculate_HP(const int HP)//根据萝卜血量生成字符串
 void Carrot::hurt(const int damage)//萝卜受伤
 {
     HP -= damage;
-    if (HP < 0)
+    if (HP <= 0)
         HP = 0;//HP修正
     HP_Label->setString(calculate_HP(HP));
+    change_tex();
 }
 
-void Carrot::change()//改变萝卜外貌
+void Carrot::change_tex()//改变萝卜外貌
 {
-    if (level == 1)
+    switch (level)
     {
-        if(HP==10)
-            this->setTexture("carrot_level1_1.png");
-
-        if (HP < 10 && HP >= 8)
-            this->setTexture("carrot_level1_2.png");
-        if (HP < 8 && HP >= 6)
-            this->setTexture("carrot_level1_3.png");
-        if (HP < 6 && HP >= 4)
-            this->setTexture("carrot_level1_4.png");
-        if (HP < 4 && HP >= 0)
-            this->setTexture("carrot_level1_5.png");
+        case 1:
+            if (HP == 10)
+                this->setTexture("carrot_level1_1.png");
+            if (HP < 10 && HP >= 8)
+                this->setTexture("carrot_level1_2.png");
+            if (HP < 8 && HP >= 6)
+                this->setTexture("carrot_level1_3.png");
+            if (HP < 6 && HP >= 4)
+                this->setTexture("carrot_level1_4.png");
+            if (HP < 4 && HP >= 0)
+                this->setTexture("carrot_level1_5.png");
+            break;
+        case 2:
+            if (HP >= 10)
+                this->setTexture("carrot_level2_1.png");
+            if (HP < 10 && HP >= 5)
+                this->setTexture("carrot_level2_2.png");
+            if (HP < 5 && HP >= 0)
+                this->setTexture("carrot_level2_3.png");
+            break;
+        case 3:
+            this->setTexture("carrot_level3.png");
+            break;
     }
-
-    if (level == 2)
-    {
-        if (HP >= 10)
-            this->setTexture("carrot_level2_1.png");
-        if (HP < 10 && HP >= 5)
-            this->setTexture("carrot_level2_2.png");
-        if (HP < 5 && HP >= 0)
-            this->setTexture("carrot_level2_3.png");
-    }
- 
-    if (level == 3)
-    {
-        this->setTexture("carrot_level3.png");
-    }
-}
-
-bool Carrot::if_dead()//判断萝卜是否死亡
-{
-    if (HP > 0)
-        return false;
-    else
-        return true;
 }
 
 /*----------------------萝卜类-------------------------*/

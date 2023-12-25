@@ -36,31 +36,116 @@ void Map_father::waitForConditionAndExecute(const std::function<bool()>& conditi
 
 void Map_father::spawnMonster1_1(float dt) 
 {
-    MonSprite* monster1 = MonSprite::create(1);
-    monster1->monster_spawn(walk_way);
-    this->addChild(monster1);
-    monster_wave.push_back(monster1);
-    monster1->monster_attack_carrot(carrot, monster_wave);
+    MonSprite* monster = MonSprite::create(1);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
 
 }
 
 void Map_father::spawnMonster1_2(float dt)
 {
-    MonSprite* monster1 = MonSprite::create(1);
-    monster1->monster_spawn(walk_way);
-    this->addChild(monster1);
-    monster_wave.push_back(monster1);
-    monster1->monster_attack_carrot(carrot, monster_wave);
+    MonSprite* monster = MonSprite::create(1);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
 }
 
 void Map_father::spawnMonster1_3(float dt)
 {
-    MonSprite* monster1 = MonSprite::create(1);
-    monster1->monster_spawn(walk_way);
-    this->addChild(monster1);
-    monster_wave.push_back(monster1);
-    monster1->monster_attack_carrot(carrot, monster_wave);
+    MonSprite* monster = MonSprite::create(1);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
 }
+
+void Map_father::spawnMonster2_1(float dt)
+{
+    MonSprite* monster = MonSprite::create(2);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+
+}
+
+void Map_father::spawnMonster2_2(float dt)
+{
+    MonSprite* monster = MonSprite::create(2);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+}
+
+void Map_father::spawnMonster2_3(float dt)
+{
+    MonSprite* monster = MonSprite::create(2);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+}
+
+void Map_father::spawnMonster3_1(float dt)
+{
+    MonSprite* monster = MonSprite::create(3);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+
+}
+
+void Map_father::spawnMonster3_2(float dt)
+{
+    MonSprite* monster = MonSprite::create(3);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+}
+
+void Map_father::spawnMonster3_3(float dt)
+{
+    MonSprite* monster = MonSprite::create(3);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+}
+
+void Map_father::spawnMonster4_1(float dt)
+{
+    MonSprite* monster = MonSprite::create(4);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+
+}
+
+void Map_father::spawnMonster4_2(float dt)
+{
+    MonSprite* monster = MonSprite::create(4);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+}
+
+void Map_father::spawnMonster4_3(float dt)
+{
+    MonSprite* monster = MonSprite::create(4);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+}
+
 
 bool Map_father::init()//父类创建场景总函数
 {
@@ -676,7 +761,7 @@ void Map_One::game_begin()//游戏开始函数
     //放置萝卜
     carrot->HP = 10;
     carrot->level = 1;
-    carrot->change();
+    carrot->change_tex();
     carrot->HP_Label->setString(carrot->calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
     this->addChild(carrot);
 
@@ -688,8 +773,10 @@ void Map_One::game_begin()//游戏开始函数
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_2), 1.0f, 4, 13.0f);//第2波：生成5个怪物1
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_3), 1.0f, 5, 23.0f);//第3波：生成6个怪物1
 
-    if (carrot->if_dead())  //萝卜死亡结束
-        this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f);
+    waitForConditionAndExecute(
+        [=](){return (carrot->HP <= 0);},
+        [=](){this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f);}
+        );
 
     map_two_flag = true;
 
@@ -1271,6 +1358,9 @@ void Map_Two::game_begin()//游戏开始函数
     carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
     carrot->setPosition(carrot_x, carrot_y);
     //放置萝卜
+    carrot->HP = 10;
+    carrot->level = 1;
+    carrot->change_tex();
     carrot->HP_Label->setString(carrot->calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
     this->addChild(carrot);
 
@@ -1278,6 +1368,17 @@ void Map_Two::game_begin()//游戏开始函数
     gold = gold_2;//金币变量
     gold_label = input_gold();//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
+
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_1), 1.0f, 3, 3.0f); //第1波：生成4个怪物1
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_2), 1.0f, 4, 13.0f);//第2波：生成5个怪物1
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster2_1), 1.0f, 3, 23.0f);//第3波：生成4个怪物2
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster2_2), 1.0f, 4, 33.0f);//第2波：生成5个怪物2
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster3_1), 1.0f, 5, 43.0f);//第3波：生成6个怪物3
+
+    waitForConditionAndExecute(
+        [=]() {return (carrot->HP <= 0); },
+        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f); }
+    );
 
     map_three_flag = true;
 }
@@ -2128,13 +2229,28 @@ void Map_Three::game_begin()//游戏开始函数
     carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
     carrot->setPosition(carrot_x, carrot_y);
     //放置萝卜
+    carrot->HP = 1000;
+    carrot->level = 1;
+    carrot->change_tex();
     carrot->HP_Label->setString(carrot->calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
     this->addChild(carrot);
-
 
     gold = gold_3;//金币变量
     gold_label = input_gold();//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
+
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster2_1), 1.0f, 3, 3.0f); //第1波：生成4个怪物2
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster2_2), 1.0f, 4, 13.0f);//第2波：生成5个怪物2
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster3_1), 1.0f, 3, 23.0f);//第3波：生成4个怪物3
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster3_2), 1.0f, 4, 33.0f);//第2波：生成5个怪物3
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster4_1), 1.0f, 4, 43.0f);//第3波：生成5个怪物4
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster4_2), 1.0f, 5, 53.0f);//第3波：生成6个怪物4
+
+    waitForConditionAndExecute(
+        [=]() {return (carrot->HP <= 0); },
+        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f); }
+    );
+
 }
 
 /*------------------------------地图三函数----------------------------------*/

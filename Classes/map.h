@@ -66,6 +66,15 @@ public:
     void spawnMonster1_1(float dt);       //生成Type=1的怪物
     void spawnMonster1_2(float dt);       //生成Type=1的怪物
     void spawnMonster1_3(float dt);       //生成Type=1的怪物
+    void spawnMonster2_1(float dt);       //生成Type=2的怪物
+    void spawnMonster2_2(float dt);       //生成Type=2的怪物
+    void spawnMonster2_3(float dt);       //生成Type=2的怪物
+    void spawnMonster3_1(float dt);       //生成Type=3的怪物
+    void spawnMonster3_2(float dt);       //生成Type=3的怪物
+    void spawnMonster3_3(float dt);       //生成Type=3的怪物
+    void spawnMonster4_1(float dt);       //生成Type=4的怪物
+    void spawnMonster4_2(float dt);       //生成Type=4的怪物
+    void spawnMonster4_3(float dt);       //生成Type=4的怪物
     void waitForConditionAndExecute(const std::function<bool()>& condition, const std::function<void()>& callback);
     CREATE_FUNC(Map_father);
 };
