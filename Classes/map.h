@@ -11,15 +11,15 @@ USING_NS_CC;
 typedef struct Vacancy_State
 {
     int index;
-    int state;
+    int level;
     int tower_type;
     Sprite* spr;
 }VS;
 
-//state=0 空 
-//state=1 放置了一级炮台
-//state=2 放置了二级炮台
-//state=3 放置了三级炮台
+//level=0 空 
+//level=1 放置了一级炮台
+//level=2 放置了二级炮台
+//level=3 放置了三级炮台
 //tower_type=1 加农炮
 //tower_type=2 屎
 //tower_type=3 电磁塔
@@ -37,6 +37,7 @@ protected:
     FrameBox* upgrade_frame = nullptr;
     FrameBox* delete_frame = nullptr;
     Carrot* carrot = nullptr;
+    bool mouse_select_type = 0;
     int WhichPlant = 0;
     XY singleclick;                                 //存储点击的位置
     int vacancyIndex = -1;                          //点位索引
@@ -82,11 +83,9 @@ public:
 class Map_One :public Map_father
 {
 public:
-    Map_One();
     virtual void ShowPlantButton();
     virtual void input_listener();
     void onMouseDown_Do_Plant(Event* event);
-    void onMouseDown_Show_Yellow(Event* event);
     void StartAttack();
     virtual void input_background();
     virtual void input_walk_way();
@@ -97,11 +96,9 @@ public:
 class Map_Two :public Map_father
 {
 public:
-    Map_Two();
     virtual void ShowPlantButton();
     virtual void input_listener();
     void onMouseDown_Do_Plant(Event* event);
-    void onMouseDown_Show_Yellow(Event* event);
 
     virtual void input_background();
     virtual void input_walk_way();
@@ -112,11 +109,9 @@ public:
 class Map_Three :public Map_father
 {
 public:
-    Map_Three();
     virtual void ShowPlantButton();
     virtual void input_listener();
     void onMouseDown_Do_Plant(Event* event);
-    void onMouseDown_Show_Yellow(Event* event);
 
     virtual void input_background();
     virtual void input_walk_way();

@@ -54,3 +54,21 @@
 #define mon4_vit 12
 #define mon4_atk 2
 #define mon4_spd 3
+
+#define type_cannon 1
+#define type_shit 2
+#define type_etower 3
+
+#define cannon_build_cost 100
+#define cannon_upgrade_1to2 180
+#define cannon_upgrade_2to3 220
+
+#define shit_build_cost 120
+#define shit_upgrade_1to2 220
+#define shit_upgrade_2to3 260
+
+#define etower_build_cost 160
+#define etower_upgrade_1to2 260
+#define etower_upgrade_2to3 300
+
+#define delete_recover 100
