@@ -35,17 +35,17 @@ typedef struct TowerInfo
 
 //数值分别代表：炮台种类，升级花费，铲除返现，攻击范围，子弹伤害，攻速(单位ms)
 //建立炮台花费100
-const TI Cannon_1 = { 1, 180, 80, 100, 30, 500 };
-const TI Cannon_2 = { 2, 260, 234, 150, 40, 500 };
-const TI Cannon_3 = { 3, -1, 432, 200, 50, 500 };
+const TI Cannon_1 = { 1, 180, 80, 75, 30, 500 };
+const TI Cannon_2 = { 2, 260, 234, 100, 40, 500 };
+const TI Cannon_3 = { 3, -1, 432, 125, 50, 500 };
 //建立屎花费120
-const TI Shit_1 = { 4, 220, 96, 75, 20, 400 };
-const TI Shit_2 = { 5, 260, 272, 100, 35, 450 };
+const TI Shit_1 = { 4, 220, 96, 75, 20, 500 };
+const TI Shit_2 = { 5, 260, 272, 100, 35, 500 };
 const TI Shit_3 = { 6, -1, 480, 125, 50, 500 };
 //建立电塔花费160
-const TI ETower_1 = { 7, 320, 128, 250, 50, 1000 };
-const TI ETower_2 = { 8, 480, 384, 275, 60, 1000 };
-const TI ETower_3 = { 9, -1, 768, 300, 70, 1000 };
+const TI ETower_1 = { 7, 320, 128, 100, 50, 1000 };
+const TI ETower_2 = { 8, 480, 384, 125, 60, 1000 };
+const TI ETower_3 = { 9, -1, 768, 150, 70, 1000 };
 
 /**************************  LEVEL ONE ******************************/
 const std::vector<FS> AllFrames_Lv1 =
@@ -142,6 +142,53 @@ const std::vector<FS> AllFrames_Lv2 =
 };
 
 /*************************  LEVEL THREE *****************************/
+const std::vector<FS> AllFrames_Lv3 =
+{
+	{0,{209,559},{291,477},{250,600 - way_size * 1}},
+	{1,{209 + way_size * 1,559},{291 + way_size * 1,477},{250 + way_size * 1,600 - way_size * 1}},
+	{2,{209 + way_size * 2,559},{291 + way_size * 2,477},{250 + way_size * 2,600 - way_size * 1}},
+	{3,{209 + way_size * 3,559},{291 + way_size * 3,477},{250 + way_size * 3,600 - way_size * 1}},
+	{4,{209 + way_size * 4,559},{291 + way_size * 4,477},{250 + way_size * 4,600 - way_size * 1}},
+	{5,{209 + way_size * 5,559},{291 + way_size * 5,477},{250 + way_size * 5,600 - way_size * 1}},
+	{6,{209 + way_size * 6,559},{291 + way_size * 6,477},{250 + way_size * 6,600 - way_size * 1}},
+	{7,{209 + way_size * 7,559},{291 + way_size * 7,477},{250 + way_size * 7,600 - way_size * 1}},
+	{8,{209 + way_size * 8,559},{291 + way_size * 8,477},{250 + way_size * 8,600 - way_size * 1}},
+	{9,{209 + way_size * 8,559 - way_size * 1},{291 + way_size * 8,477 - way_size * 1},{250 + way_size * 8,518 - way_size * 1}},
+	{10,{209 + way_size * 7,559 - way_size * 1},{291 + way_size * 7,477 - way_size * 1},{250 + way_size * 7,518 - way_size * 1}},
+	{11,{209 + way_size * 6,559 - way_size * 1},{291 + way_size * 6,477 - way_size * 1},{250 + way_size * 6,518 - way_size * 1}},
+	{12,{209 + way_size * 5,559 - way_size * 1},{291 + way_size * 5,477 - way_size * 1},{250 + way_size * 5,518 - way_size * 1}},
+	{13,{209 + way_size * 4,559 - way_size * 1},{291 + way_size * 4,477 - way_size * 1},{250 + way_size * 4,518 - way_size * 1}},
+	{14,{209 + way_size * 3,559 - way_size * 1},{291 + way_size * 3,477 - way_size * 1},{250 + way_size * 3,518 - way_size * 1}},
+	{15,{209 + way_size * 2,559 - way_size * 1},{291 + way_size * 2,477 - way_size * 1},{250 + way_size * 2,518 - way_size * 1}},
+	{16,{209 + way_size * 1,559 - way_size * 1},{291 + way_size * 1,477 - way_size * 1},{250 + way_size * 1,518 - way_size * 1}},
+	{17,{209               ,559 - way_size * 1},{291               ,477 - way_size * 1},{250               ,518 - way_size * 1}},
+	{18,{209 - way_size * 1,559 - way_size * 1},{291 - way_size * 1,477 - way_size * 1},{250 - way_size * 1,518 - way_size * 1}},
+	{19,{209 - way_size * 1,559 - way_size * 2},{291 - way_size * 1,477 - way_size * 2},{250 - way_size * 1,518 - way_size * 2}},
+	{20,{209 - way_size * 1,559 - way_size * 3},{291 - way_size * 1,477 - way_size * 3},{250 - way_size * 1,518 - way_size * 3}},
+	{21,{209 - way_size * 1,559 - way_size * 4},{291 - way_size * 1,477 - way_size * 4},{250 - way_size * 1,518 - way_size * 4}},
+	{22,{209 - way_size * 1,559 - way_size * 5},{291 - way_size * 1,477 - way_size * 5},{250 - way_size * 1,518 - way_size * 5}},
+	{23,{209 + way_size * 10,559               },{291 + way_size * 10,477               },{250 + way_size * 10,518               }},
+	{24,{209 + way_size * 10,559 - way_size * 1},{291 + way_size * 10,477 - way_size * 1},{250 + way_size * 10,518 - way_size * 1}},
+	{25,{209 + way_size * 10,559 - way_size * 2},{291 + way_size * 10,477 - way_size * 2},{250 + way_size * 10,518 - way_size * 2}},
+	{26,{209 + way_size * 10,559 - way_size * 3},{291 + way_size * 10,477 - way_size * 3},{250 + way_size * 10,518 - way_size * 3}},
+	{27,{209 + way_size * 9,559 - way_size * 3},{291 + way_size * 9,477 - way_size * 3},{250 + way_size * 9,518 - way_size * 3}},
+	{28,{209 + way_size * 8,559 - way_size * 3},{291 + way_size * 8,477 - way_size * 3},{250 + way_size * 8,518 - way_size * 3}},
+	{29,{209 + way_size * 7,559 - way_size * 3},{291 + way_size * 7,477 - way_size * 3},{250 + way_size * 7,518 - way_size * 3}},
+	{30,{209 + way_size * 6,559 - way_size * 3},{291 + way_size * 6,477 - way_size * 3},{250 + way_size * 6,518 - way_size * 3}},
+	{31,{209 + way_size * 5,559 - way_size * 3},{291 + way_size * 5,477 - way_size * 3},{250 + way_size * 5,518 - way_size * 3}},
+	{32,{209 + way_size * 4,559 - way_size * 3},{291 + way_size * 4,477 - way_size * 3},{250 + way_size * 4,518 - way_size * 3}},
+	{33,{209 + way_size * 3,559 - way_size * 3},{291 + way_size * 3,477 - way_size * 3},{250 + way_size * 3,518 - way_size * 3}},
+	{34,{209 + way_size * 2,559 - way_size * 3},{291 + way_size * 2,477 - way_size * 3},{250 + way_size * 2,518 - way_size * 3}},
+	{35,{209 + way_size * 1,559 - way_size * 3},{291 + way_size * 1,477 - way_size * 3},{250 + way_size * 1,518 - way_size * 3}},
+	{36,{209 + way_size * 1,559 - way_size * 4},{291 + way_size * 1,477 - way_size * 4},{250 + way_size * 1,518 - way_size * 4}},
+	{37,{209 + way_size * 2,559 - way_size * 4},{291 + way_size * 2,477 - way_size * 4},{250 + way_size * 2,518 - way_size * 4}},
+	{38,{209 + way_size * 3,559 - way_size * 4},{291 + way_size * 3,477 - way_size * 4},{250 + way_size * 3,518 - way_size * 4}},
+	{39,{209 + way_size * 4,559 - way_size * 4},{291 + way_size * 4,477 - way_size * 4},{250 + way_size * 4,518 - way_size * 4}},
+	{40,{209 + way_size * 5,559 - way_size * 4},{291 + way_size * 5,477 - way_size * 4},{250 + way_size * 5,518 - way_size * 4}},
+	{41,{209 + way_size * 6,559 - way_size * 4},{291 + way_size * 6,477 - way_size * 4},{250 + way_size * 6,518 - way_size * 4}},
+	{42,{209 + way_size * 7,559 - way_size * 4},{291 + way_size * 7,477 - way_size * 4},{250 + way_size * 7,518 - way_size * 4}},
+	{43,{209 + way_size * 8,559 - way_size * 4},{291 + way_size * 8,477 - way_size * 4},{250 + way_size * 8,518 - way_size * 4}}
+};
 
 const std::vector<FS> AllPlants_Lv1 =
 {
@@ -158,16 +205,24 @@ const std::vector<FS> AllPlants_Lv2 =
 	{4,{25,285},{95,215},{60, 250}}
 };
 
+const std::vector<FS> AllPlants_Lv3 =
+{
+	{1,{25,585},{95,515},{60, 550}},
+	{2,{25,485},{95,415},{60, 450}},
+	{3,{25,385},{95,315},{60, 350}},
+	{4,{25,285},{95,215},{60, 250}},
+	{5,{25,185},{95,115},{60, 150}}
+};
+
 bool IsFrame(float&, float&, const std::vector<FS>&);
 bool IsFramePlant(float&, float&, const std::vector<FS>&);
 
 class FrameBox : public Sprite
 {
-	friend class Map_father;
 public:
 	static FrameBox* create(const std::string& filename);
 	void Spawn(float x, float y, float scale); //在某个特定位置以特定大小显示某只精灵
 	void Shimmer();                            //自动呈现闪烁效果，直到下一次点击
 	void Disappear();                          //下一次点击后，框消失
-	void Rotate(float duration, float angle);  //以angle角度顺时针旋转
+	void RotateAndLock();                      //旋转至攻击范围内最近的敌人，随后射击
 };

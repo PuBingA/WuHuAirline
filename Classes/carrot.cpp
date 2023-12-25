@@ -9,6 +9,14 @@ Carrot* Carrot::create(const std::string& filename)//生成萝卜类
 
     if (carrot_sprite && carrot_sprite->initWithFile(filename))
     {
+        carrot_sprite->HP_Label = Label::createWithTTF("", "fonts\\Marker Felt.ttf", 40);
+        carrot_sprite->HP_Label->setColor({ 255,0,0 });//调成红色
+        carrot_sprite->HP_Label->setPosition(100, 0);
+        carrot_sprite->addChild(carrot_sprite->HP_Label);//生成好血量标签
+        auto Hp_item = Sprite::create("carrot_HP.png");
+        Hp_item->setPosition(30, 0);
+        carrot_sprite->addChild(Hp_item);//生成血量图标
+
         carrot_sprite->autorelease();
         return carrot_sprite;
     }
@@ -16,13 +24,25 @@ Carrot* Carrot::create(const std::string& filename)//生成萝卜类
     return nullptr;
 }
 
-template<typename T>
-void Carrot::hurt(const T damage)//萝卜受伤
+std::string Carrot::calculate_HP(const int HP)//根据萝卜血量生成字符串
+{
+    std::string figure;
+    int digit = 10;//十位
+    for (int i = 0; i < 2; i++)
+    {
+        int k = (HP / digit) % 10;
+        digit /= 10;
+        figure += k + '0';
+    }//计算出每一位的数字，放入字符串中
+    return figure;
+}
+
+void Carrot::hurt(const int damage)//萝卜受伤
 {
     HP -= damage;
     if (HP < 0)
-        HP == 0;//HP修正
-    return;
+        HP = 0;//HP修正
+    HP_Label->setString(calculate_HP(HP));
 }
 
 void Carrot::change()//改变萝卜外貌

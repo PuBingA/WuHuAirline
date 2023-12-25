@@ -1,7 +1,9 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include "public_define.h"
+#include "carrot.h"
 #include <vector>
+#include <algorithm>
 USING_NS_CC;
 
 class MonSprite : public Sprite//怪物类
@@ -24,15 +26,26 @@ private:
             monAttack = mon1_atk;
             monSpeed = mon1_spd;
             break;
+        case 2:
+            monVitality = mon2_vit;
+            monAttack = mon2_atk;
+            monSpeed = mon2_spd;
+            break;
+        case 3:
+            monVitality = mon3_vit;
+            monAttack = mon3_atk;
+            monSpeed = mon3_spd;
+            break;
+        case 4:
+            monVitality = mon4_vit;
+            monAttack = mon4_atk;
+            monSpeed = mon4_spd;
+            break;
         }
         monCurrentLife = monVitality;
     }
 
 public:
-    friend class FrameBox;
-
-    friend class MonsterController;
-
     static MonSprite* create(int type = 0)
     {
         MonSprite* monster_sprite = new MonSprite();
@@ -52,6 +65,19 @@ public:
         CC_SAFE_DELETE(monster_sprite);
         return nullptr;
     }
+    
+    void wait_for_condition_and_execute(const std::function<bool()>& condition, const std::function<void()>& callback)
+    {
+        if (condition())
+            callback();
+        else
+        {
+            scheduleOnce([=](float dt)
+                {
+                    wait_for_condition_and_execute(condition, callback);
+                }, 0.05f, "waitForConditionTag");
+        }
+    }
 
     //生成一个怪物并开始移动
     void monster_spawn(std::vector<std::vector<float>>walkPath)
@@ -60,11 +86,50 @@ public:
         if (this->monType == 1)
         {
             this->setTexture("monster1_1.png");//设置贴图
-            this->setScale(0.7f);//设置贴图大小
+            this->setScale(0.9f);//设置贴图大小
             Vector<SpriteFrame*> animFrames;
             animFrames.reserve(2);
-            animFrames.pushBack(SpriteFrame::create("monster1_1.png", Rect(0, 0, 135, 135)));
-            animFrames.pushBack(SpriteFrame::create("monster1_2.png", Rect(0, 0, 135, 135)));
+            animFrames.pushBack(SpriteFrame::create("monster1_1.png", Rect(0, 0, monster_texture_size, monster_texture_size)));
+            animFrames.pushBack(SpriteFrame::create("monster1_2.png", Rect(0, 0, monster_texture_size, monster_texture_size)));
+            Animation* animation = Animation::createWithSpriteFrames(animFrames, animate_duration);
+            Animate* animate = Animate::create(animation);
+            this->runAction(RepeatForever::create(animate));//不停扭动
+        }
+        else if (this->monType == 2)
+        {
+            this->setTexture("monster2_1.png");//设置贴图
+            this->setScale(0.9f);//设置贴图大小
+            Vector<SpriteFrame*> animFrames;
+            animFrames.reserve(3);
+            animFrames.pushBack(SpriteFrame::create("monster2_1.png", Rect(0, 0, monster_texture_size, monster_texture_size)));
+            animFrames.pushBack(SpriteFrame::create("monster2_2.png", Rect(0, 0, monster_texture_size, monster_texture_size)));
+            animFrames.pushBack(SpriteFrame::create("monster2_3.png", Rect(0, 0, monster_texture_size, monster_texture_size)));
+            Animation* animation = Animation::createWithSpriteFrames(animFrames, animate_duration);
+            Animate* animate = Animate::create(animation);
+            this->runAction(RepeatForever::create(animate));//不停扭动
+        }
+        else if (this->monType == 3)
+        {
+            this->setTexture("monster3_1.png");//设置贴图
+            this->setScale(0.9f);//设置贴图大小
+            Vector<SpriteFrame*> animFrames;
+            animFrames.reserve(3);
+            animFrames.pushBack(SpriteFrame::create("monster3_1.png", Rect(0, 0, monster_texture_size, monster_texture_size)));
+            animFrames.pushBack(SpriteFrame::create("monster3_2.png", Rect(0, 0, monster_texture_size, monster_texture_size)));
+            animFrames.pushBack(SpriteFrame::create("monster3_3.png", Rect(0, 0, monster_texture_size, monster_texture_size)));
+            Animation* animation = Animation::createWithSpriteFrames(animFrames, animate_duration);
+            Animate* animate = Animate::create(animation);
+            this->runAction(RepeatForever::create(animate));//不停扭动
+        }
+        else if (this->monType == 4)
+        {
+            this->setTexture("monster4_1.png");//设置贴图
+            this->setScale(0.9f);//设置贴图大小
+            Vector<SpriteFrame*> animFrames;
+            animFrames.reserve(3);
+            animFrames.pushBack(SpriteFrame::create("monster4_1.png", Rect(0, 0, monster_texture_size, monster_texture_size)));
+            animFrames.pushBack(SpriteFrame::create("monster4_2.png", Rect(0, 0, monster_texture_size, monster_texture_size)));
+            animFrames.pushBack(SpriteFrame::create("monster4_3.png", Rect(0, 0, monster_texture_size, monster_texture_size)));
             Animation* animation = Animation::createWithSpriteFrames(animFrames, animate_duration);
             Animate* animate = Animate::create(animation);
             this->runAction(RepeatForever::create(animate));//不停扭动
@@ -80,91 +145,37 @@ public:
     }
 
     //怪物去世
-    int monster_if_die(Node* currentWave)
+    void monster_die(std::vector<MonSprite*>currentWave)
     {
-        if (this->monVitality <= 0)
-        {
-            this->stopAllActions();
-            this->runAction(FadeOut::create(fade_time));//怪物淡出
-            currentWave->removeChild(this);//怪似了
-            delete this;
-            return 1;
-        }
-        return 0;
+        this->stopAllActions();
+        this->runAction(FadeOut::create(fade_time));//怪物淡出
+        currentWave.erase(find(currentWave.begin(), currentWave.end(), this));//怪似了
+        this->removeAllChildren();
     }
 
     //怪物受伤
-    void monster_hurt(Node* currentWave, int hit_point)
+    void monster_hurt(std::vector<MonSprite*>currentWave, int hit_point)
     {
         this->monVitality -= hit_point;
         this->runAction(Blink::create(blink_duration, blink_time));
-        monster_if_die(currentWave);//判断怪物死亡
+        monster_die(currentWave);//判断怪物死亡
     }
 
     //攻击萝卜，返回伤害
-    int monster_attack_carrot(Rect carrot_rect, Node* currentWave)
+    void monster_attack_carrot(Carrot* carrot, std::vector<MonSprite*>currentWave)
     {
-        if (carrot_rect.intersectsRect(this->getBoundingBox()))
-        {
-            this->monVitality = 0;
-            this->monster_if_die(currentWave);//怪物死
-            return this->monAttack;
-        }
-        return 0;
+        wait_for_condition_and_execute(
+            [=]()
+            {
+                return carrot->getBoundingBox().intersectsRect(this->getBoundingBox());
+            },
+            [=]()
+            {
+                this->monster_die(currentWave);//怪物死
+                carrot->hurt(this->monAttack);
+            }
+            );
     }
-
 };
 
 
-class MonsterSpawner
-{
-public:
-    Node* wave;
-    std::vector<std::vector<float>>walk_way;
-    int monster_type;
-    MonSprite* monster1;
-    MonSprite* monster2;
-    MonSprite* monster3;
-    MonSprite* monster4;
-    MonSprite* monster5;
-
-    MonsterSpawner(Node* wv, std::vector<std::vector<float>>w_w, int mon_type = 0) : wave(wv), walk_way(w_w), monster_type(mon_type)
-    {
-        monster1 = MonSprite::create(monster_type);
-        wave->addChild(monster1);
-        monster2 = MonSprite::create(monster_type);
-        wave->addChild(monster2);
-        monster3 = MonSprite::create(monster_type);
-        wave->addChild(monster3);
-        monster4 = MonSprite::create(monster_type);
-        wave->addChild(monster4);
-        monster5 = MonSprite::create(monster_type);
-        wave->addChild(monster5);
-    }
-
-    void spawn1(float dt)
-    {
-        monster1->monster_spawn(walk_way);
-    }
-
-    void spawn2(float dt)
-    {
-        monster2->monster_spawn(walk_way);
-    }
-
-    void spawn3(float dt)
-    {
-        monster3->monster_spawn(walk_way);
-    }
-
-    void spawn4(float dt)
-    {
-        monster4->monster_spawn(walk_way);
-    }
-
-    void spawn5(float dt)
-    {
-        monster5->monster_spawn(walk_way);
-    }
-
-};

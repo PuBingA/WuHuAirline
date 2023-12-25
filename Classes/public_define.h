@@ -11,9 +11,9 @@
 #define pause_y 630-70-70								//暂停键坐标
 
 #define gold_max 9990  //金币上限
-#define gold_1   1000  //第一关初始金币
+#define gold_1   4000  //第一关初始金币
 #define gold_2   7000  //第二关初始金币
-#define gold_3   3000  //第三关初始金币
+#define gold_3   9000  //第三关初始金币
 
 
 #define way_size 82										//每个地板的像素大小
@@ -27,7 +27,7 @@
 #define walk_way_begin_3_x 250
 #define walk_way_begin_3_y 600
 
-
+#define monster_texture_size 100						//规定怪物贴图大小均为100*100像素
 #define base_move_time 0.5f								//speed设为1时走一格花费的时间
 #define blink_duration 0.5f
 #define blink_time 3
@@ -45,3 +45,12 @@
 #define mon1_vit 10										
 #define mon1_atk 2										
 #define mon1_spd 1
+#define mon2_vit 10										
+#define mon2_atk 2										
+#define mon2_spd 1
+#define mon3_vit 10										
+#define mon3_atk 2										
+#define mon3_spd 1
+#define mon4_vit 10										
+#define mon4_atk 2										
+#define mon4_spd 1
