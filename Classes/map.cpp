@@ -1,6 +1,5 @@
 ﻿#include "map.h"
 #include "choose_map.h"
-#include "carrot.h"
 #include "ui/CocosGUI.h"
 #include "settlement_interface.h"
 USING_NS_CC;
@@ -35,29 +34,118 @@ void Map_father::waitForConditionAndExecute(const std::function<bool()>& conditi
     }
 }
 
-void Map_father::spawnMonster1_1(float dt)
+void Map_father::spawnMonster1_1(float dt) 
 {
-    MonSprite* monsterl = MonSprite::create(1);
-    monsterl->monster_spawn(walk_way);
-    this->addChild(monsterl);
-    monster_wave.push(std::make_pair(monsterl, 0));
+    MonSprite* monster = MonSprite::create(1);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+
 }
 
 void Map_father::spawnMonster1_2(float dt)
 {
-    MonSprite* monsterl = MonSprite::create(1);
-    monsterl->monster_spawn(walk_way);
-    this->addChild(monsterl);
-    monster_wave.push(std::make_pair(monsterl, 0));
+    MonSprite* monster = MonSprite::create(1);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
 }
 
 void Map_father::spawnMonster1_3(float dt)
 {
-    MonSprite* monsterl = MonSprite::create(1);
-    monsterl->monster_spawn(walk_way);
-    this->addChild(monsterl);
-    monster_wave.push(std::make_pair(monsterl, 0));
+    MonSprite* monster = MonSprite::create(1);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
 }
+
+void Map_father::spawnMonster2_1(float dt)
+{
+    MonSprite* monster = MonSprite::create(2);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+
+}
+
+void Map_father::spawnMonster2_2(float dt)
+{
+    MonSprite* monster = MonSprite::create(2);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+}
+
+void Map_father::spawnMonster2_3(float dt)
+{
+    MonSprite* monster = MonSprite::create(2);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+}
+
+void Map_father::spawnMonster3_1(float dt)
+{
+    MonSprite* monster = MonSprite::create(3);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+
+}
+
+void Map_father::spawnMonster3_2(float dt)
+{
+    MonSprite* monster = MonSprite::create(3);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+}
+
+void Map_father::spawnMonster3_3(float dt)
+{
+    MonSprite* monster = MonSprite::create(3);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+}
+
+void Map_father::spawnMonster4_1(float dt)
+{
+    MonSprite* monster = MonSprite::create(4);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+
+}
+
+void Map_father::spawnMonster4_2(float dt)
+{
+    MonSprite* monster = MonSprite::create(4);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+}
+
+void Map_father::spawnMonster4_3(float dt)
+{
+    MonSprite* monster = MonSprite::create(4);
+    monster->monster_spawn(walk_way);
+    this->addChild(monster);
+    monster_wave.push_back(monster);
+    monster->monster_attack_carrot(carrot, monster_wave);
+}
+
 
 bool Map_father::init()//父类创建场景总函数
 {
@@ -71,6 +159,9 @@ bool Map_father::init()//父类创建场景总函数
     input_walk_way();//放置地板
     input_return_pause();//放置返回，暂停键
     input_gold_item();//放置金币
+    ShowPlantButton();
+    input_listener();
+    //StartAttack();
     game_begin();//开始游戏
     return true;
 }
@@ -119,34 +210,6 @@ std::string Map_father::calculate_gold(const int gold)
         int k = (gold / digit) % 10;
         digit /= 10;
         figure.push_back(k + '0');
-    }//计算出每一位的数字，放入字符串中
-    return figure;
-}
-
-template<typename T>
-cocos2d::Label* Map_father::HP_display(const T x, const T y)//放置萝卜血条函数
-{
-    auto HP_label = Label::createWithTTF("", "fonts\\Marker Felt.ttf", 40);
-    Color3B HP_color(255, 0, 0);
-    HP_label->setColor(HP_color);//调成红色
-    HP_label->setPosition(x, y);
-    this->addChild(HP_label);//生成好血量标签
-    auto Hp_item = Sprite::create("carrot_HP.png");
-    Hp_item->setPosition(x - 50, y);
-    this -> addChild(Hp_item);//生成血量图标
-
-    return HP_label;
-}
-
-std::string Map_father::calculate_HP(const int HP)//根据萝卜血量生成字符串
-{
-    std::string figure;
-    int digit = 10;//十位
-    for (int i = 0; i < 2; i++)
-    {
-        int k = (HP / digit) % 10;
-        digit /= 10;
-        figure += k + '0';
     }//计算出每一位的数字，放入字符串中
     return figure;
 }
@@ -260,10 +323,8 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
             {
                 if (gold >= 120) //可以种植cannon和shit 
                 {
-                    tower_cannon->setVisible(false);//暗色cannon设为不可见
-                    tower_shit->setVisible(false);//暗色shit设为不可见
-                    tower_cannon_ready->setVisible(true);//亮色cannon设为可见
-                    tower_shit_ready->setVisible(true);//亮色shit设为可见
+                    plant_cannon->setTexture("TI_1_available.png");//亮色cannon设为可见
+                    plant_shit->setTexture("TI_2_available.png");//亮色shit设为可见
 
                     //开始检测鼠标点击位置，以判断种植哪种炮塔，一直等
                     waitForConditionAndExecute(
@@ -276,12 +337,12 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                             if (WhichPlant == 1) //plant a cannon
                             {
                                 //于目标点生成一级cannon
-                                cannon_Lv1 = FrameBox::create("cannon_Lv1.png");
-                                this->addChild(cannon_Lv1);
-                                cannon_Lv1->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                                cannon = FrameBox::create("cannon_Lv1.png");
+                                this->addChild(cannon);
+                                cannon->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
                                 vacancy[vacancyIndex].state = 1;      //state=1 放置了一级炮台
                                 vacancy[vacancyIndex].tower_type = 1; //cannon
-                                vacancy[vacancyIndex].spr = cannon_Lv1; //当前指针存入vacancy中
+                                vacancy[vacancyIndex].spr = cannon;   //当前指针存入vacancy中
                                 WhichPlant = 0;
                                 gold -= 100;
                                 gold_label->setString(calculate_gold(gold));//更新金币
@@ -289,12 +350,12 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                             else if (WhichPlant == 2) //plant a shit
                             {
                                 //于目标点生成一级shit
-                                shit_Lv1 = FrameBox::create("shit_Lv1.png");
-                                this->addChild(shit_Lv1);
-                                shit_Lv1->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                                shit = FrameBox::create("shit_Lv1.png");
+                                this->addChild(shit);
+                                shit->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
                                 vacancy[vacancyIndex].state = 1;      //state=1 放置了一级炮台
                                 vacancy[vacancyIndex].tower_type = 2; //shit
-                                vacancy[vacancyIndex].spr = shit_Lv1; //当前指针存入vacancy中
+                                vacancy[vacancyIndex].spr = shit; //当前指针存入vacancy中
                                 WhichPlant = 0;
                                 gold -= 120;
                                 gold_label->setString(calculate_gold(gold));//更新金币
@@ -304,8 +365,7 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                 }
                 else if (gold < 120 && gold >= 100) //只能种植cannon
                 {
-                    tower_cannon->setVisible(false);//暗色cannon设为不可见
-                    tower_cannon_ready->setVisible(true);//亮色cannon设为可见
+                    plant_cannon->setTexture("TI_1_available.png");//亮色cannon设为可见
 
                     //开始检测鼠标点击位置，以判断种植哪种炮塔，一直等
                     waitForConditionAndExecute(
@@ -318,12 +378,12 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                             if (WhichPlant == 1) //plant a cannon
                             {
                                 //于目标点生成一级cannon
-                                cannon_Lv1 = FrameBox::create("cannon_Lv1.png");
-                                this->addChild(cannon_Lv1);
-                                cannon_Lv1->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                                cannon = FrameBox::create("cannon_Lv1.png");
+                                this->addChild(cannon);
+                                cannon->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
                                 vacancy[vacancyIndex].state = 1;      //state=1 放置了一级炮台
                                 vacancy[vacancyIndex].tower_type = 1; //cannon
-                                vacancy[vacancyIndex].spr = cannon_Lv1; //当前指针存入vacancy中
+                                vacancy[vacancyIndex].spr = cannon; //当前指针存入vacancy中
                                 WhichPlant = 0;
                                 gold -= 100;
                                 gold_label->setString(calculate_gold(gold));//更新金币
@@ -334,17 +394,13 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
             }
             else if (vacancy[vacancyIndex].state == 1) //state=1 放置了一级炮台
             {
-                tower_cannon->setVisible(true);       //暗色cannon设为可见
-                tower_shit->setVisible(true);         //暗色shit设为可见
-                tower_cannon_ready->setVisible(false);//亮色cannon设为不可见
-                tower_shit_ready->setVisible(false);  //亮色shit设为不可见
+                plant_cannon->setTexture("TI_1_unavailable.png");       //暗色cannon设为可见
+                plant_shit->setTexture("TI_2_unavailable.png");         //暗色shit设为可见
 
                 if (gold >= 220)  //可以对cannon和shit进行升级，也可以铲除cannon和shit
                 {
-                    upgrade_ready->setVisible(true);    //亮色升级设为可见
-                    delete_ready->setVisible(true);     //亮色删除设为可见
-                    upgrade_grey->setVisible(false);   //暗色升级设为不可见
-                    delete_grey->setVisible(false);    //暗色删除设为不可见
+                    upgrade_frame->setTexture("upgrade_ready.png");    //亮色升级设为可见
+                    delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
                     waitForConditionAndExecute(
                         [=]()
                         {
@@ -356,26 +412,16 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                             {
                                 if (vacancy[vacancyIndex].tower_type == 1)//upgrade cannon
                                 {
-                                    this->removeChild(vacancy[vacancyIndex].spr);
-                                    cannon_Lv2 = FrameBox::create("cannon_Lv2.png");
-                                    this->addChild(cannon_Lv2);
-                                    cannon_Lv2->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                                    cannon->setTexture("cannon_Lv2.png");
                                     vacancy[vacancyIndex].state = 2;      //state=2 放置了二级炮台
-                                    vacancy[vacancyIndex].tower_type = 1; //cannon
-                                    vacancy[vacancyIndex].spr = cannon_Lv2; //当前指针存入vacancy中*/
                                     WhichPlant = 0;
                                     gold -= 180;
                                     gold_label->setString(calculate_gold(gold));//更新金币
                                 }
                                 else if (vacancy[vacancyIndex].tower_type == 2)//upgrade shit
                                 {
-                                    this->removeChild(vacancy[vacancyIndex].spr);
-                                    shit_Lv2 = FrameBox::create("shit_Lv2.png");
-                                    this->addChild(shit_Lv2);
-                                    shit_Lv2->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                                    shit->setTexture("shit_Lv2.png");
                                     vacancy[vacancyIndex].state = 2;      //state=2 放置了二级炮台
-                                    vacancy[vacancyIndex].tower_type = 2; //shit
-                                    vacancy[vacancyIndex].spr = shit_Lv2; //当前指针存入vacancy中*/
                                     WhichPlant = 0;
                                     gold -= 220;
                                     gold_label->setString(calculate_gold(gold));//更新金币
@@ -411,10 +457,8 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                 {
                     if (vacancy[vacancyIndex].tower_type == 1) //升级cannon，或者铲除cannon
                     {
-                        upgrade_ready->setVisible(true);    //亮色升级设为可见
-                        delete_ready->setVisible(true);     //亮色删除设为可见
-                        upgrade_grey->setVisible(false);    //暗色升级设为不可见
-                        delete_grey->setVisible(false);     //暗色删除设为不可见
+                        upgrade_frame->setTexture("upgrade_ready.png");    //亮色升级设为可见
+                        delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
                         waitForConditionAndExecute(
                             [=]()
                             {
@@ -426,13 +470,8 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                                 {
                                     if (vacancy[vacancyIndex].tower_type == 1)//upgrade cannon
                                     {
-                                        this->removeChild(vacancy[vacancyIndex].spr);
-                                        cannon_Lv2 = FrameBox::create("cannon_Lv2.png");
-                                        this->addChild(cannon_Lv2);
-                                        cannon_Lv2->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                                        cannon->setTexture("cannon_Lv2.png");
                                         vacancy[vacancyIndex].state = 2;        //state=2 放置了二级炮台
-                                        vacancy[vacancyIndex].tower_type = 1;   //cannon
-                                        vacancy[vacancyIndex].spr = cannon_Lv2; //当前指针存入vacancy中*/
                                         WhichPlant = 0;
                                         gold -= 180;
                                         gold_label->setString(calculate_gold(gold));//更新金币
@@ -456,10 +495,8 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                     }
                     else if (vacancy[vacancyIndex].tower_type == 2) //只能铲除 shit
                     {
-                        upgrade_ready->setVisible(false);    //亮色升级设为不可见
-                        upgrade_grey->setVisible(true);      //暗色升级设为可见
-                        delete_ready->setVisible(true);      //亮色删除设为可见
-                        delete_grey->setVisible(false);      //暗色删除设为不可见
+                        upgrade_frame->setTexture("upgrade_grey.png");      //暗色升级设为可见
+                        delete_frame->setTexture("delete_ready.png");      //亮色删除设为可见
                         waitForConditionAndExecute(
                             [=]()
                             {
@@ -480,10 +517,8 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                 }
                 else if (gold < 180 && gold >= 0) //只能铲除cannon和shit
                 {
-                    upgrade_ready->setVisible(false);    //亮色升级设为不可见
-                    upgrade_grey->setVisible(true);   //暗色升级设为可见
-                    delete_grey->setVisible(false);    //暗色删除设为不可见
-                    delete_ready->setVisible(true);     //亮色删除设为可见
+                    upgrade_frame->setTexture("upgrade_grey.png");   //暗色升级设为可见
+                    delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
                     waitForConditionAndExecute(
                         [=]()
                         {
@@ -517,17 +552,13 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
             }
             else if (vacancy[vacancyIndex].state == 2) //state=2 放置了二级炮台
             {
-                tower_cannon->setVisible(true);       //暗色cannon设为可见
-                tower_shit->setVisible(true);         //暗色shit设为可见
-                tower_cannon_ready->setVisible(false);//亮色cannon设为不可见
-                tower_shit_ready->setVisible(false);  //亮色shit设为不可见
+                plant_cannon->setTexture("TI_1_unavailable.png");       //暗色cannon设为可见
+                plant_shit->setTexture("TI_2_unavailable.png");         //暗色shit设为可见
 
                 if (gold >= 260) //可以升级cannon和shit，同时可以铲除cannon和shit
                 {
-                    upgrade_ready->setVisible(true); //亮色升级设为可见
-                    delete_ready->setVisible(true);  //亮色删除设为可见
-                    upgrade_grey->setVisible(false); //暗色升级设为不可见
-                    delete_grey->setVisible(false);  //暗色删除设为不可见
+                    upgrade_frame->setTexture("upgrade_ready.png"); //亮色升级设为可见
+                    delete_frame->setTexture("delete_ready.png");  //亮色删除设为可见
                     waitForConditionAndExecute(
                         [=]()
                         {
@@ -539,26 +570,16 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                             {
                                 if (vacancy[vacancyIndex].tower_type == 1)//upgrade cannon
                                 {
-                                    this->removeChild(vacancy[vacancyIndex].spr);
-                                    cannon_Lv3 = FrameBox::create("cannon_Lv3.png");
-                                    this->addChild(cannon_Lv3);
-                                    cannon_Lv3->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                                    cannon->setTexture("cannon_Lv3.png");
                                     vacancy[vacancyIndex].state = 3;      //state=3 放置了三级炮台
-                                    vacancy[vacancyIndex].tower_type = 1; //cannon
-                                    vacancy[vacancyIndex].spr = cannon_Lv3; //当前指针存入vacancy中
                                     WhichPlant = 0;
                                     gold -= 260;
                                     gold_label->setString(calculate_gold(gold));//更新金币
                                 }
                                 else if (vacancy[vacancyIndex].tower_type == 2)//upgrade shit
                                 {
-                                    this->removeChild(vacancy[vacancyIndex].spr);
-                                    shit_Lv3 = FrameBox::create("shit_Lv3.png");
-                                    this->addChild(shit_Lv3);
-                                    shit_Lv3->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                                    shit->setTexture("shit_Lv3.png");
                                     vacancy[vacancyIndex].state = 3;      //state=3 放置了三级炮台
-                                    vacancy[vacancyIndex].tower_type = 2; //shit
-                                    vacancy[vacancyIndex].spr = shit_Lv3; //当前指针存入vacancy中
                                     WhichPlant = 0;
                                     gold -= 260;
                                     gold_label->setString(calculate_gold(gold));//更新金币
@@ -593,10 +614,8 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
                 }
                 else if (gold < 260 && gold >= 0) //只能铲除cannon和shit
                 {
-                    upgrade_ready->setVisible(false); //亮色升级设为不可见
-                    delete_ready->setVisible(true);   //亮色删除设为可见
-                    upgrade_grey->setVisible(true);   //暗色升级设为可见
-                    delete_grey->setVisible(false);   //暗色删除设为不可见
+                    delete_frame->setTexture("delete_ready.png");   //亮色删除设为可见
+                    upgrade_frame->setTexture("upgrade_grey.png");   //暗色升级设为可见
                     waitForConditionAndExecute(
                         [=]()
                         {
@@ -630,14 +649,10 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
             }
             else if (vacancy[vacancyIndex].state == 3)  //state=3 放置了三级炮台
             {
-                tower_cannon->setVisible(true);       //暗色cannon设为可见
-                tower_shit->setVisible(true);         //暗色shit设为可见
-                tower_cannon_ready->setVisible(false);//亮色cannon设为不可见
-                tower_shit_ready->setVisible(false);  //亮色shit设为不可见
-                upgrade_ready->setVisible(false);     //亮色升级设为不可见！！
-                delete_ready->setVisible(true);       //亮色删除设为可见
-                upgrade_grey->setVisible(true);       //暗色升级设为可见
-                delete_grey->setVisible(false);       //暗色删除设为不可见
+                plant_cannon->setTexture("TI_1_unavailable.png");       //暗色cannon设为可见
+                plant_shit->setTexture("TI_2_unavailable.png");         //暗色shit设为可见
+                delete_frame->setTexture("delete_ready.png");       //亮色删除设为可见
+                upgrade_frame->setTexture("upgrade_grey.png");       //暗色升级设为可见
                 //只能铲除cannon和shit
                 waitForConditionAndExecute(
                     [=]() {
@@ -673,64 +688,32 @@ void Map_One::onMouseDown_Show_Yellow(Event* event)
         else
         {
             yellow_frame->setVisible(false);//grey cannon visible
-            tower_cannon->setVisible(true);//grey shit visible
-            tower_shit->setVisible(true);//colored cannon invisible
-            tower_cannon_ready->setVisible(false);//colored shit invisible
-            tower_shit_ready->setVisible(false);//colored upgrade invisible
-            upgrade_ready->setVisible(false);//colored delete invisible
-            delete_ready->setVisible(false);//grey update visible
-            upgrade_grey->setVisible(true);//grey delete visible
-            delete_grey->setVisible(true);
+            plant_cannon->setTexture("TI_1_unavailable.png");//grey shit visible
+            plant_shit->setTexture("TI_2_unavailable.png");//colored cannon invisible
+            upgrade_frame->setTexture("upgrade_grey.png");//grey delete visible
+            delete_frame->setTexture("delete_grey.png");
         }
     }
 }
 
-void Map_One::ShowTowerDark()
+void Map_One::ShowPlantButton()
 {
-    //暗色炮台——初状态可见
     //暗色cannon
-    tower_cannon = FrameBox::create("TI_1_unavailable.png");
-    this->addChild(tower_cannon); //z-value=0
-    tower_cannon->Spawn(450, 600, 1.0f);
-    tower_cannon->setVisible(true);
+    plant_cannon = FrameBox::create("TI_1_unavailable.png");
+    this->addChild(plant_cannon); //z-value=0
+    plant_cannon->Spawn(450, 600, 1.0f);
     //暗色shit
-    tower_shit = FrameBox::create("TI_2_unavailable.png");
-    this->addChild(tower_shit); //z-value=0
-    tower_shit->Spawn(550, 600, 1.0f);
-    tower_shit->setVisible(true);
+    plant_shit = FrameBox::create("TI_2_unavailable.png");
+    this->addChild(plant_shit); //z-value=0
+    plant_shit->Spawn(550, 600, 1.0f);
     //暗色升级——注意升级.png需要缩放至×0.7
-    upgrade_grey = FrameBox::create("upgrade_grey.png");
-    this->addChild(upgrade_grey); //z-value=0
-    upgrade_grey->Spawn(650, 600, 0.7f);
-    upgrade_grey->setVisible(true);
+    upgrade_frame = FrameBox::create("upgrade_grey.png");
+    this->addChild(upgrade_frame); //z-value=0
+    upgrade_frame->Spawn(650, 600, 0.7f);
     //暗色移除——注意移除.png需要缩放至×0.7
-    delete_grey = FrameBox::create("delete_grey.png");
-    this->addChild(delete_grey); //z-value=0
-    delete_grey->Spawn(750, 600, 0.7f);
-    delete_grey->setVisible(true);
-
-
-    //亮色炮台——初状态不可见
-    //亮色cannon
-    tower_cannon_ready = FrameBox::create("TI_1_available.png");
-    this->addChild(tower_cannon_ready); //z-value=0
-    tower_cannon_ready->Spawn(450, 600, 1.0f);
-    tower_cannon_ready->setVisible(false);
-    //亮色shit
-    tower_shit_ready = FrameBox::create("TI_2_available.png");
-    this->addChild(tower_shit_ready); //z-value=0
-    tower_shit_ready->Spawn(550, 600, 1.0f);
-    tower_shit_ready->setVisible(false);
-    //亮色升级
-    upgrade_ready = FrameBox::create("upgrade_ready.png");
-    this->addChild(upgrade_ready); //z-value=0
-    upgrade_ready->Spawn(650, 600, 0.7f);
-    upgrade_ready->setVisible(false);
-    //亮色移除
-    delete_ready = FrameBox::create("delete_ready.png");
-    this->addChild(delete_ready); //z-value=0
-    delete_ready->Spawn(750, 600, 0.7f);
-    delete_ready->setVisible(false);
+    delete_frame = FrameBox::create("delete_grey.png");
+    this->addChild(delete_frame); //z-value=0
+    delete_frame->Spawn(750, 600, 0.7f);
 }
 
 void Map_One::input_background()//放置背景图
@@ -766,9 +749,6 @@ void Map_One::input_walk_way()//放置怪物行进路径
         walk_way.push_back(current);
     }//竖直向上5格
     //存放地板向量生成完毕
-    ShowTowerDark();
-    input_listener();
-
     return;
 }
 
@@ -776,33 +756,32 @@ void Map_One::game_begin()//游戏开始函数
 {
     float carrot_x = walk_way[walk_way.size() - 1][0];
     float carrot_y = walk_way[walk_way.size() - 1][1];//萝卜坐标
-    auto carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
-    this->addChild(carrot);
+    carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
     carrot->setPosition(carrot_x, carrot_y);
     //放置萝卜
-    auto carrot_HP = HP_display(carrot_x + 120, carrot_y);//生成萝卜血量
-    carrot_HP->setString(calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
+    carrot->HP = 10;
+    carrot->level = 1;
+    carrot->change_tex();
+    carrot->HP_Label->setString(carrot->calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
+    this->addChild(carrot);
 
     gold = gold_1;//金币变量
     gold_label = input_gold();//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
 
-    //以下为调试
-    carrot->HP = 10;
-    carrot->level = 1;
-    carrot->change();
-    carrot_HP->setString(calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
-
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_1), 1.0f, 2, 3.0f); //第1波：生成3个怪物1
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_2), 1.0f, 4, 13.0f);//第2波：生成5个怪物1
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_3), 1.0f, 5, 23.0f);//第3波：生成6个怪物1
 
-    if (carrot->if_dead())  //萝卜死亡结束
-        this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f);
+    waitForConditionAndExecute(
+        [=](){return (carrot->HP <= 0);},
+        [=](){this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f);}
+        );
 
     map_two_flag = true;
 
 }
+
 
 /*------------------------------地图一函数----------------------------------*/
 
@@ -817,51 +796,28 @@ Map_Two::Map_Two()
         vacancy.push_back({ i,0,0,nullptr });
 }
 
-void Map_Two::ShowTowerDark()
+void Map_Two::ShowPlantButton()
 {
-    //暗色炮台——初状态可见
     //暗色cannon
-    tower_cannon = FrameBox::create("TI_1_unavailable.png");
-    this->addChild(tower_cannon); //z-value=0
-    tower_cannon->Spawn(60.0f, 550.0f, 1.0f);
-    tower_cannon->setVisible(true);
+    plant_cannon = FrameBox::create("TI_1_unavailable.png");
+    this->addChild(plant_cannon); //z-value=0
+    plant_cannon->Spawn(60.0f, 550.0f, 1.0f);
+    plant_cannon->setTexture("TI_1_unavailable.png");
     //暗色etower
-    tower_etower = FrameBox::create("TI_3_unavailable.png");
-    this->addChild(tower_etower); //z-value=0
-    tower_etower->Spawn(60.0f, 450.0f, 1.0f);
-    tower_etower->setVisible(true);
+    plant_etower = FrameBox::create("TI_3_unavailable.png");
+    this->addChild(plant_etower); //z-value=0
+    plant_etower->Spawn(60.0f, 450.0f, 1.0f);
+    plant_etower->setTexture("TI_3_unavailable.png");
     //暗色升级——注意升级.png需要缩放至×0.7
-    upgrade_grey = FrameBox::create("upgrade_grey.png");
-    this->addChild(upgrade_grey); //z-value=0
-    upgrade_grey->Spawn(60.0f, 350.0f, 0.7f);
-    upgrade_grey->setVisible(true);
+    upgrade_frame = FrameBox::create("upgrade_grey.png");
+    this->addChild(upgrade_frame); //z-value=0
+    upgrade_frame->Spawn(60.0f, 350.0f, 0.7f);
+    upgrade_frame->setTexture("upgrade_grey.png");
     //暗色移除——注意移除.png需要缩放至×0.7
-    delete_grey = FrameBox::create("delete_grey.png");
-    this->addChild(delete_grey); //z-value=0
-    delete_grey->Spawn(60.0f, 250.0f, 0.7f);
-    delete_grey->setVisible(true);
-
-    //亮色炮台——初状态不可见
-    //亮色cannon
-    tower_cannon_ready = FrameBox::create("TI_1_available.png");
-    this->addChild(tower_cannon_ready); //z-value=0
-    tower_cannon_ready->Spawn(60.0f, 550.0f, 1.0f);
-    tower_cannon_ready->setVisible(false);
-    //亮色etower
-    tower_etower_ready = FrameBox::create("TI_3_available.png");
-    this->addChild(tower_etower_ready); //z-value=0
-    tower_etower_ready->Spawn(60.0f, 450.0f, 1.0f);
-    tower_etower_ready->setVisible(false);
-    //亮色升级
-    upgrade_ready = FrameBox::create("upgrade_ready.png");
-    this->addChild(upgrade_ready); //z-value=0
-    upgrade_ready->Spawn(60.0f, 350.0f, 0.7f);
-    upgrade_ready->setVisible(false);
-    //亮色移除
-    delete_ready = FrameBox::create("delete_ready.png");
-    this->addChild(delete_ready); //z-value=0
-    delete_ready->Spawn(60.0f, 250.0f, 0.7f);
-    delete_ready->setVisible(false);
+    delete_frame = FrameBox::create("delete_grey.png");
+    this->addChild(delete_frame); //z-value=0
+    delete_frame->Spawn(60.0f, 250.0f, 0.7f);
+    delete_frame->setTexture("delete_grey.png");
 }
 
 void Map_Two::input_listener()
@@ -916,10 +872,8 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
             {
                 if (gold >= 160) //可以种植cannon和etower 
                 {
-                    tower_cannon->setVisible(false);//暗色cannon设为不可见
-                    tower_etower->setVisible(false);//暗色shit设为不可见
-                    tower_cannon_ready->setVisible(true);//亮色cannon设为可见
-                    tower_etower_ready->setVisible(true);//亮色shit设为可见
+                    plant_cannon->setTexture("TI_1_available.png");//亮色cannon设为可见
+                    plant_etower->setTexture("TI_3_available.png");//亮色shit设为可见
 
                     //开始检测鼠标点击位置，以判断种植哪种炮塔，一直等
                     waitForConditionAndExecute(
@@ -932,12 +886,12 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                             if (WhichPlant == 1) //plant a cannon
                             {
                                 //于目标点生成一级cannon
-                                cannon_Lv1 = FrameBox::create("cannon_Lv1.png");
-                                this->addChild(cannon_Lv1);
-                                cannon_Lv1->Spawn(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y, 1.0f);
+                                cannon = FrameBox::create("cannon_Lv1.png");
+                                this->addChild(cannon);
+                                cannon->Spawn(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y, 1.0f);
                                 vacancy[vacancyIndex].state = 1;        //state=1 放置了一级炮台
                                 vacancy[vacancyIndex].tower_type = 1;   //cannon
-                                vacancy[vacancyIndex].spr = cannon_Lv1; //当前指针存入vacancy中
+                                vacancy[vacancyIndex].spr = cannon; //当前指针存入vacancy中
                                 WhichPlant = 0;
                                 gold -= 100;
                                 gold_label->setString(calculate_gold(gold));//更新金币
@@ -945,12 +899,12 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                             else if (WhichPlant == 2) //plant an et
                             {
                                 //于目标点生成一级et
-                                etower_Lv1 = FrameBox::create("etower_Lv1.png");
-                                this->addChild(etower_Lv1);
-                                etower_Lv1->Spawn(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y, 1.0f);
+                                etower = FrameBox::create("etower_Lv1.png");
+                                this->addChild(etower);
+                                etower->Spawn(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y, 1.0f);
                                 vacancy[vacancyIndex].state = 1;      //state=1 放置了一级炮台
                                 vacancy[vacancyIndex].tower_type = 3; //et
-                                vacancy[vacancyIndex].spr = etower_Lv1; //当前指针存入vacancy中
+                                vacancy[vacancyIndex].spr = etower; //当前指针存入vacancy中
                                 WhichPlant = 0;
                                 gold -= 160;
                                 gold_label->setString(calculate_gold(gold));//更新金币
@@ -960,8 +914,7 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                 }
                 else if (gold < 160 && gold >= 100) //只能种植cannon
                 {
-                    tower_cannon->setVisible(false);//暗色cannon设为不可见
-                    tower_cannon_ready->setVisible(true);//亮色cannon设为可见
+                    plant_cannon->setTexture("TI_1_available.png");//亮色cannon设为可见
 
                     //开始检测鼠标点击位置，以判断种植哪种炮塔，一直等
                     waitForConditionAndExecute(
@@ -974,12 +927,12 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                             if (WhichPlant == 1) //plant a cannon
                             {
                                 //于目标点生成一级cannon
-                                cannon_Lv1 = FrameBox::create("cannon_Lv1.png");
-                                this->addChild(cannon_Lv1);
-                                cannon_Lv1->Spawn(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y, 1.0f);
+                                cannon = FrameBox::create("cannon_Lv1.png");
+                                this->addChild(cannon);
+                                cannon->Spawn(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y, 1.0f);
                                 vacancy[vacancyIndex].state = 1;      //state=1 放置了一级炮台
                                 vacancy[vacancyIndex].tower_type = 1; //cannon
-                                vacancy[vacancyIndex].spr = cannon_Lv1; //当前指针存入vacancy中
+                                vacancy[vacancyIndex].spr = cannon; //当前指针存入vacancy中
                                 WhichPlant = 0;
                                 gold -= 100;
                                 gold_label->setString(calculate_gold(gold));//更新金币
@@ -990,17 +943,13 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
             }
             else if (vacancy[vacancyIndex].state == 1) //state=1 放置了一级炮台
             {
-                tower_cannon->setVisible(true);         //暗色cannon设为可见
-                tower_etower->setVisible(true);         //暗色et设为可见
-                tower_cannon_ready->setVisible(false);  //亮色cannon设为不可见
-                tower_etower_ready->setVisible(false);  //亮色et设为不可见
+                plant_cannon->setTexture("TI_1_unavailable.png");         //暗色cannon设为可见
+                plant_etower->setTexture("TI_3_unavailable.png");         //暗色et设为可见
 
                 if (gold >= 320)  //可以对cannon和et进行升级，也可以铲除cannon和et
                 {
-                    upgrade_ready->setVisible(true);    //亮色升级设为可见
-                    delete_ready->setVisible(true);     //亮色删除设为可见
-                    upgrade_grey->setVisible(false);    //暗色升级设为不可见
-                    delete_grey->setVisible(false);     //暗色删除设为不可见
+                    upgrade_frame->setTexture("upgrade_ready.png");    //亮色升级设为可见
+                    delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
                     waitForConditionAndExecute(
                         [=]()
                         {
@@ -1012,26 +961,17 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                             {
                                 if (vacancy[vacancyIndex].tower_type == 1)//upgrade cannon
                                 {
-                                    this->removeChild(vacancy[vacancyIndex].spr);
-                                    cannon_Lv2 = FrameBox::create("cannon_Lv2.png");
-                                    this->addChild(cannon_Lv2);
-                                    cannon_Lv2->Spawn(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y, 1.0f);
+                                    cannon->setTexture("cannon_Lv2.png");
                                     vacancy[vacancyIndex].state = 2;      //state=2 放置了二级炮台
                                     vacancy[vacancyIndex].tower_type = 1; //cannon
-                                    vacancy[vacancyIndex].spr = cannon_Lv2; //当前指针存入vacancy中
                                     WhichPlant = 0;
                                     gold -= 180;
                                     gold_label->setString(calculate_gold(gold));//更新金币
                                 }
                                 else if (vacancy[vacancyIndex].tower_type == 3)//upgrade et
                                 {
-                                    this->removeChild(vacancy[vacancyIndex].spr);
-                                    etower_Lv2 = FrameBox::create("etower_Lv2.png");
-                                    this->addChild(etower_Lv2);
-                                    etower_Lv2->Spawn(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y, 1.0f);
+                                    etower->setTexture("etower_Lv2.png");
                                     vacancy[vacancyIndex].state = 2;      //state=2 放置了二级炮台
-                                    vacancy[vacancyIndex].tower_type = 3; //et
-                                    vacancy[vacancyIndex].spr = etower_Lv2; //当前指针存入vacancy中
                                     WhichPlant = 0;
                                     gold -= 320;
                                     gold_label->setString(calculate_gold(gold));//更新金币
@@ -1067,10 +1007,8 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                 {
                     if (vacancy[vacancyIndex].tower_type == 1) //升级cannon，或者铲除cannon
                     {
-                        upgrade_ready->setVisible(true);    //亮色升级设为可见
-                        delete_ready->setVisible(true);     //亮色删除设为可见
-                        upgrade_grey->setVisible(false);    //暗色升级设为不可见
-                        delete_grey->setVisible(false);     //暗色删除设为不可见
+                        upgrade_frame->setTexture("upgrade_ready.png");    //亮色升级设为可见
+                        delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
                         waitForConditionAndExecute(
                             [=]()
                             {
@@ -1082,13 +1020,8 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                                 {
                                     if (vacancy[vacancyIndex].tower_type == 1)//upgrade cannon
                                     {
-                                        this->removeChild(vacancy[vacancyIndex].spr);
-                                        cannon_Lv2 = FrameBox::create("cannon_Lv2.png");
-                                        this->addChild(cannon_Lv2);
-                                        cannon_Lv2->Spawn(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y, 1.0f);
+                                        cannon->setTexture("cannon_Lv2.png");
                                         vacancy[vacancyIndex].state = 2;        //state=2 放置了二级炮台
-                                        vacancy[vacancyIndex].tower_type = 1;   //cannon
-                                        vacancy[vacancyIndex].spr = cannon_Lv2; //当前指针存入vacancy中
                                         WhichPlant = 0;
                                         gold -= 180;
                                         gold_label->setString(calculate_gold(gold));//更新金币
@@ -1112,10 +1045,8 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                     }
                     else if (vacancy[vacancyIndex].tower_type == 3) //只能铲除 et
                     {
-                        upgrade_ready->setVisible(false);    //亮色升级设为不可见
-                        upgrade_grey->setVisible(true);      //暗色升级设为可见
-                        delete_ready->setVisible(true);      //亮色删除设为可见
-                        delete_grey->setVisible(false);      //暗色删除设为不可见
+                        upgrade_frame->setTexture("upgrade_grey.png");      //暗色升级设为可见
+                        delete_frame->setTexture("delete_ready.png");      //亮色删除设为可见
                         waitForConditionAndExecute(
                             [=]()
                             {
@@ -1136,10 +1067,8 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                 }
                 else if (gold < 180 && gold >= 0) //只能铲除cannon和shit
                 {
-                    upgrade_ready->setVisible(false);    //亮色升级设为不可见
-                    upgrade_grey->setVisible(true);   //暗色升级设为可见
-                    delete_grey->setVisible(false);    //暗色删除设为不可见
-                    delete_ready->setVisible(true);     //亮色删除设为可见
+                    upgrade_frame->setTexture("upgrade_grey.png");   //暗色升级设为可见
+                    delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
                     waitForConditionAndExecute(
                         [=]()
                         {
@@ -1173,17 +1102,13 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
             }
             else if (vacancy[vacancyIndex].state == 2) //state=2 放置了二级炮台
             {
-                tower_cannon->setVisible(true);       //暗色cannon设为可见
-                tower_etower->setVisible(true);         //暗色et设为可见
-                tower_cannon_ready->setVisible(false);//亮色cannon设为不可见
-                tower_etower_ready->setVisible(false);  //亮色et设为不可见
+                plant_cannon->setTexture("TI_1_unavailable.png");       //暗色cannon设为可见
+                plant_etower->setTexture("TI_3_unavailable.png");         //暗色et设为可见
 
                 if (gold >= 480)                    //可以升级cannon和et，同时可以铲除cannon和et
                 {
-                    upgrade_ready->setVisible(true); //亮色升级设为可见
-                    delete_ready->setVisible(true);  //亮色删除设为可见
-                    upgrade_grey->setVisible(false); //暗色升级设为不可见
-                    delete_grey->setVisible(false);  //暗色删除设为不可见
+                    upgrade_frame->setTexture("upgrade_ready.png"); //亮色升级设为可见
+                    delete_frame->setTexture("delete_ready.png");  //亮色删除设为可见
                     waitForConditionAndExecute(
                         [=]()
                         {
@@ -1195,26 +1120,16 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                             {
                                 if (vacancy[vacancyIndex].tower_type == 1)//upgrade cannon
                                 {
-                                    this->removeChild(vacancy[vacancyIndex].spr);
-                                    cannon_Lv3 = FrameBox::create("cannon_Lv3.png");
-                                    this->addChild(cannon_Lv3);
-                                    cannon_Lv3->Spawn(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y, 1.0f);
+                                    cannon->setTexture("cannon_Lv3.png");
                                     vacancy[vacancyIndex].state = 3;      //state=3 放置了三级炮台
-                                    vacancy[vacancyIndex].tower_type = 1; //cannon
-                                    vacancy[vacancyIndex].spr = cannon_Lv3; //当前指针存入vacancy中
                                     WhichPlant = 0;
                                     gold -= 260;
                                     gold_label->setString(calculate_gold(gold));//更新金币
                                 }
                                 else if (vacancy[vacancyIndex].tower_type == 3)//upgrade et
                                 {
-                                    this->removeChild(vacancy[vacancyIndex].spr);
-                                    etower_Lv3 = FrameBox::create("etower_Lv3.png");
-                                    this->addChild(etower_Lv3);
-                                    etower_Lv3->Spawn(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y, 1.0f);
+                                    etower->setTexture("etower_Lv3.png");
                                     vacancy[vacancyIndex].state = 3;      //state=3 放置了三级炮台
-                                    vacancy[vacancyIndex].tower_type = 3; //et
-                                    vacancy[vacancyIndex].spr = etower_Lv3; //当前指针存入vacancy中
                                     WhichPlant = 0;
                                     gold -= 480;
                                     gold_label->setString(calculate_gold(gold));//更新金币
@@ -1250,10 +1165,8 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                 {
                     if (vacancy[vacancyIndex].tower_type == 1) //cannon
                     {
-                        upgrade_ready->setVisible(true); //亮色升级设为可见
-                        delete_ready->setVisible(true);  //亮色删除设为可见
-                        upgrade_grey->setVisible(false); //暗色升级设为不可见
-                        delete_grey->setVisible(false);  //暗色删除设为不可见
+                        upgrade_frame->setTexture("upgrade_ready.png"); //亮色升级设为可见
+                        delete_frame->setTexture("delete_ready.png");  //亮色删除设为可见
                         waitForConditionAndExecute(
                             [=]()
                             {
@@ -1263,13 +1176,8 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                             {
                                 if (WhichPlant == 3) //upgrade
                                 {
-                                    this->removeChild(vacancy[vacancyIndex].spr);
-                                    cannon_Lv3 = FrameBox::create("cannon_Lv3.png");
-                                    this->addChild(cannon_Lv3);
-                                    cannon_Lv3->Spawn(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y, 1.0f);
+                                    cannon->setTexture("cannon_Lv3.png");
                                     vacancy[vacancyIndex].state = 3;      //state=3 放置了三级炮台
-                                    vacancy[vacancyIndex].tower_type = 1; //cannon
-                                    vacancy[vacancyIndex].spr = cannon_Lv3; //当前指针存入vacancy中
                                     WhichPlant = 0;
                                     gold -= 260;
                                     gold_label->setString(calculate_gold(gold));//更新金币
@@ -1289,10 +1197,8 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                     }
                     else if (vacancy[vacancyIndex].tower_type == 3) //et
                     {
-                        upgrade_ready->setVisible(false); //亮色升级设为可见
-                        delete_ready->setVisible(true);  //亮色删除设为可见
-                        upgrade_grey->setVisible(false); //暗色升级设为不可见
-                        delete_grey->setVisible(false);  //暗色删除设为不可见
+                        delete_frame->setTexture("delete_ready.png");  //亮色删除设为可见
+                        upgrade_frame->setTexture("upgrade_grey.png"); //暗色升级设为不可见
                         waitForConditionAndExecute(
                             [=]()
                             {
@@ -1313,10 +1219,8 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
                 }
                 else if (gold < 260 && gold >= 0) //只能铲除cannon和et
                 {
-                    upgrade_ready->setVisible(false); //亮色升级设为不可见
-                    delete_ready->setVisible(true);   //亮色删除设为可见
-                    upgrade_grey->setVisible(true);   //暗色升级设为可见
-                    delete_grey->setVisible(false);   //暗色删除设为不可见
+                    delete_frame->setTexture("delete_ready.png");   //亮色删除设为可见
+                    upgrade_frame->setTexture("upgrade_grey.png");   //暗色升级设为可见
                     waitForConditionAndExecute(
                         [=]()
                         {
@@ -1350,14 +1254,10 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
             }
             else if (vacancy[vacancyIndex].state == 3)  //state=3 放置了三级炮台
             {
-                tower_cannon->setVisible(true);       //暗色cannon设为可见
-                tower_etower->setVisible(true);         //暗色et设为可见
-                tower_cannon_ready->setVisible(false);//亮色cannon设为不可见
-                tower_etower_ready->setVisible(false);  //亮色et设为不可见
-                upgrade_ready->setVisible(false);     //亮色升级设为不可见！！
-                delete_ready->setVisible(true);       //亮色删除设为可见
-                upgrade_grey->setVisible(true);       //暗色升级设为可见
-                delete_grey->setVisible(false);       //暗色删除设为不可见
+                plant_cannon->setTexture("TI_1_unavailable.png");       //暗色cannon设为可见
+                plant_etower->setTexture("TI_3_unavailable.png");         //暗色et设为可见
+                delete_frame->setTexture("delete_ready.png");       //亮色删除设为可见
+                upgrade_frame->setTexture("upgrade_grey.png");       //暗色升级设为可见
                 //只能铲除cannon和et
                 waitForConditionAndExecute(
                     [=]() {
@@ -1393,14 +1293,10 @@ void Map_Two::onMouseDown_Show_Yellow(Event* event)
         else
         {
             yellow_frame->setVisible(false);//grey cannon visible
-            tower_cannon->setVisible(true);//grey shit visible
-            tower_etower->setVisible(true);//colored cannon invisible
-            tower_cannon_ready->setVisible(false);//colored shit invisible
-            tower_etower_ready->setVisible(false);//colored upgrade invisible
-            upgrade_ready->setVisible(false);//colored delete invisible
-            delete_ready->setVisible(false);//grey update visible
-            upgrade_grey->setVisible(true);//grey delete visible
-            delete_grey->setVisible(true);
+            plant_cannon->setTexture("TI_1_unavailable.png");//grey shit visible
+            plant_etower->setTexture("TI_3_unavailable.png");//colored cannon invisible
+            upgrade_frame->setTexture("upgrade_grey.png");//grey delete visible
+            delete_frame->setTexture("delete_grey.png");
         }
     }
 }
@@ -1452,8 +1348,6 @@ void Map_Two::input_walk_way()//放置怪物路径
         walk_way.push_back(current);
     }//水平向右4格
      //存放地板向量生成完毕
-    ShowTowerDark();
-    input_listener();
     return;
 }
 
@@ -1461,17 +1355,30 @@ void Map_Two::game_begin()//游戏开始函数
 {
     float carrot_x = walk_way[walk_way.size() - 1][0];
     float carrot_y = walk_way[walk_way.size() - 1][1];//萝卜坐标
-    auto carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
-    this->addChild(carrot);
+    carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
     carrot->setPosition(carrot_x, carrot_y);
     //放置萝卜
-    auto carrot_HP = HP_display(carrot_x + 120, carrot_y);//生成萝卜血量
-    carrot_HP->setString(calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
+    carrot->HP = 10;
+    carrot->level = 1;
+    carrot->change_tex();
+    carrot->HP_Label->setString(carrot->calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
+    this->addChild(carrot);
 
 
     gold = gold_2;//金币变量
     gold_label = input_gold();//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
+
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_1), 1.0f, 3, 3.0f); //第1波：生成4个怪物1
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_2), 1.0f, 4, 13.0f);//第2波：生成5个怪物1
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster2_1), 1.0f, 3, 23.0f);//第3波：生成4个怪物2
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster2_2), 1.0f, 4, 33.0f);//第2波：生成5个怪物2
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster3_1), 1.0f, 5, 43.0f);//第3波：生成6个怪物3
+
+    waitForConditionAndExecute(
+        [=]() {return (carrot->HP <= 0); },
+        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f); }
+    );
 
     map_three_flag = true;
 }
@@ -1481,6 +1388,793 @@ void Map_Two::game_begin()//游戏开始函数
 
 
 /*------------------------------地图三函数----------------------------------*/
+Map_Three::Map_Three()
+{
+    //初始化vacancy_spots
+    vacancy.clear();
+    for (int i = 0; i <= 43; i++)
+        vacancy.push_back({ i,0,0,nullptr });
+}
+
+void Map_Three::ShowPlantButton()
+{
+    //暗色cannon
+    plant_cannon = FrameBox::create("TI_1_unavailable.png");
+    this->addChild(plant_cannon); //z-value=0
+    plant_cannon->Spawn(60.0f, 550.0f, 1.0f);
+    plant_cannon->setTexture("TI_1_unavailable.png");
+    //暗色shit
+    plant_shit = FrameBox::create("TI_2_unavailable.png");
+    this->addChild(plant_shit); //z-value=0
+    plant_shit->Spawn(60.0f, 450.0f, 1.0f);
+    plant_shit->setTexture("TI_2_unavailable.png");
+    //暗色etower
+    plant_etower = FrameBox::create("TI_3_unavailable.png");
+    this->addChild(plant_etower); //z-value=0
+    plant_etower->Spawn(60.0f, 350.0f, 1.0f);
+    plant_etower->setTexture("TI_3_unavailable.png");
+    //暗色升级——注意升级.png需要缩放至×0.7
+    upgrade_frame = FrameBox::create("upgrade_grey.png");
+    this->addChild(upgrade_frame); //z-value=0
+    upgrade_frame->Spawn(60.0f, 250.0f, 0.7f);
+    upgrade_frame->setTexture("upgrade_grey.png");
+    //暗色移除——注意移除.png需要缩放至×0.7
+    delete_frame = FrameBox::create("delete_grey.png");
+    this->addChild(delete_frame); //z-value=0
+    delete_frame->Spawn(60.0f, 150.0f, 0.7f);
+    delete_frame->setTexture("delete_grey.png");
+}
+
+void Map_Three::input_listener()
+{
+    auto mouseListener_show_yellow_frame = EventListenerMouse::create();
+    mouseListener_show_yellow_frame->onMouseDown = CC_CALLBACK_1(Map_Three::onMouseDown_Show_Yellow, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener_show_yellow_frame, this);
+
+    auto mouseListener_for_planting = EventListenerMouse::create();
+    mouseListener_for_planting->onMouseDown = CC_CALLBACK_1(Map_Three::onMouseDown_Do_Plant, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener_for_planting, this);
+
+    yellow_frame = FrameBox::create("yellow_frame.png");
+    this->addChild(yellow_frame); //z-value=0
+    yellow_frame->setVisible(false);
+}
+
+void Map_Three::onMouseDown_Do_Plant(Event* event)
+{
+    EventMouse* e = dynamic_cast<EventMouse*>(event);
+    if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
+    {
+        float x = e->getCursorX(), y = e->getCursorY();
+        if (IsFramePlant(x, y, AllPlants_Lv3))
+        {
+            if (y <= 550.1 && y >= 549.9)//plant a cannon
+                WhichPlant = 1;
+            else if (y <= 450.1 && y >= 449.9)//plant a shit 
+                WhichPlant = 2;
+            else if (y <= 350.1 && y >= 349.9)//plant an etower
+                WhichPlant = 3;
+            else if (y <= 250.1 && y >= 249.9)//upgrade
+                WhichPlant = 4;
+            else if (y <= 150.1 && y >= 149.9)//delete
+                WhichPlant = 5;
+        }
+    }
+}
+
+void Map_Three::onMouseDown_Show_Yellow(Event* event)
+{
+    EventMouse* e = dynamic_cast<EventMouse*>(event);
+    if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
+    {
+        float x = e->getCursorX(), y = e->getCursorY();
+        if (IsFrame(x, y, AllFrames_Lv3))
+        {
+            yellow_frame->setVisible(true);
+            yellow_frame->Spawn(x, y, 0.5f);
+            yellow_frame->Shimmer();
+            singleclick._x = x, singleclick._y = y; //保存黄色框位置，准备种植
+            vacancyIndex = CheckBox(singleclick, AllFrames_Lv3);
+            if (vacancy[vacancyIndex].state == 0) //未种植
+            {
+                if (gold >= 160) //可以种植cannon和shit和etower
+                {
+                    plant_cannon->setTexture("TI_1_available.png");//亮色cannon设为可见
+                    plant_shit->setTexture("TI_2_available.png");//亮色shit设为可见
+                    plant_etower->setTexture("TI_3_available.png");//亮色etower设为可见
+
+                    //开始检测鼠标点击位置，以判断种植哪种炮塔，一直等
+                    waitForConditionAndExecute(
+                        [=]()
+                        {
+                            return WhichPlant == 1 || WhichPlant == 2 || WhichPlant == 3;
+                        },
+                        [=]()
+                        {
+                            if (WhichPlant == 1) //plant a cannon
+                            {
+                                //于目标点生成一级cannon
+                                cannon = FrameBox::create("cannon_Lv1.png");
+                                this->addChild(cannon);
+                                cannon->Spawn(AllFrames_Lv3[vacancyIndex].adjusted._x, AllFrames_Lv3[vacancyIndex].adjusted._y, 1.0f);
+                                vacancy[vacancyIndex].state = 1;        //state=1 放置了一级炮台
+                                vacancy[vacancyIndex].tower_type = 1;   //cannon
+                                vacancy[vacancyIndex].spr = cannon; //当前指针存入vacancy中
+                                WhichPlant = 0;
+                                gold -= 100;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                            else if (WhichPlant == 2) //plant a shit
+                            {
+                                //于目标点生成一级shit
+                                shit = FrameBox::create("shit_Lv1.png");
+                                this->addChild(shit);
+                                shit->Spawn(AllFrames_Lv3[vacancyIndex].adjusted._x, AllFrames_Lv3[vacancyIndex].adjusted._y, 1.0f);
+                                vacancy[vacancyIndex].state = 1;      //state=1 放置了一级炮台
+                                vacancy[vacancyIndex].tower_type = 2; //shit
+                                vacancy[vacancyIndex].spr = shit; //当前指针存入vacancy中
+                                WhichPlant = 0;
+                                gold -= 120;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                            else if (WhichPlant == 3) //plant an et
+                            {
+                                //于目标点生成一级et
+                                etower = FrameBox::create("etower_Lv1.png");
+                                this->addChild(etower);
+                                etower->Spawn(AllFrames_Lv3[vacancyIndex].adjusted._x, AllFrames_Lv3[vacancyIndex].adjusted._y, 1.0f);
+                                vacancy[vacancyIndex].state = 1;      //state=1 放置了一级炮台
+                                vacancy[vacancyIndex].tower_type = 3; //et
+                                vacancy[vacancyIndex].spr = etower; //当前指针存入vacancy中
+                                WhichPlant = 0;
+                                gold -= 160;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                        }
+                    );
+                }
+                else if (gold < 160 && gold >= 120) //能种植cannon和shit
+                {
+                    plant_cannon->setTexture("TI_1_available.png"); //亮色cannon设为可见
+                    plant_shit->setTexture("TI_2_available.png"); //亮色shit设为可见
+                    plant_etower->setTexture("TI_3_unavailable.png");      //暗色etower设为可见
+                    //开始检测鼠标点击位置，以判断种植哪种炮塔，一直等
+                    waitForConditionAndExecute(
+                        [=]()
+                        {
+                            return WhichPlant == 1 || WhichPlant == 2;
+                        },
+                        [=]()
+                        {
+                            if (WhichPlant == 1) //plant a cannon
+                            {
+                                //于目标点生成一级cannon
+                                cannon = FrameBox::create("cannon_Lv1.png");
+                                this->addChild(cannon);
+                                cannon->Spawn(AllFrames_Lv3[vacancyIndex].adjusted._x, AllFrames_Lv3[vacancyIndex].adjusted._y, 1.0f);
+                                vacancy[vacancyIndex].state = 1;      //state=1 放置了一级炮台
+                                vacancy[vacancyIndex].tower_type = 1; //cannon
+                                vacancy[vacancyIndex].spr = cannon; //当前指针存入vacancy中
+                                WhichPlant = 0;
+                                gold -= 100;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                            else if (WhichPlant == 2) //plant a shit
+                            {
+                                //于目标点生成一级shit
+                                shit = FrameBox::create("shit_Lv1.png");
+                                this->addChild(shit);
+                                shit->Spawn(AllFrames_Lv3[vacancyIndex].adjusted._x, AllFrames_Lv3[vacancyIndex].adjusted._y, 1.0f);
+                                vacancy[vacancyIndex].state = 1;      //state=1 放置了一级炮台
+                                vacancy[vacancyIndex].tower_type = 2; //cannon
+                                vacancy[vacancyIndex].spr = shit; //当前指针存入vacancy中
+                                WhichPlant = 0;
+                                gold -= 120;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                        }
+                    );
+                }
+                else if (gold < 120 && gold >= 100) //cannon only
+                {
+                    plant_cannon->setTexture("TI_1_available.png"); //亮色cannon设为可见
+                    plant_shit->setTexture("TI_2_unavailable.png");      //暗色shit设为可见
+                    plant_etower->setTexture("TI_3_unavailable.png");      //暗色etower设为可见
+                    //开始检测鼠标点击位置，以判断种植哪种炮塔，一直等
+                    waitForConditionAndExecute(
+                        [=]()
+                        {
+                            return WhichPlant == 1;
+                        },
+                        [=]()
+                        {
+                            if (WhichPlant == 1) //plant a cannon
+                            {
+                                //于目标点生成一级cannon
+                                cannon = FrameBox::create("cannon_Lv1.png");
+                                this->addChild(cannon);
+                                cannon->Spawn(AllFrames_Lv3[vacancyIndex].adjusted._x, AllFrames_Lv3[vacancyIndex].adjusted._y, 1.0f);
+                                vacancy[vacancyIndex].state = 1;      //state=1 放置了一级炮台
+                                vacancy[vacancyIndex].tower_type = 1; //cannon
+                                vacancy[vacancyIndex].spr = cannon; //当前指针存入vacancy中
+                                WhichPlant = 0;
+                                gold -= 100;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                        }
+                    );
+                }
+                else if (gold < 100 && gold >= 0)
+                {
+                    plant_cannon->setTexture("TI_1_unavailable.png");      //暗色cannon设为可见
+                    plant_shit->setTexture("TI_2_unavailable.png");        //暗色shit设为可见
+                    plant_etower->setTexture("TI_3_unavailable.png");      //暗色etower设为可见
+                }
+            }
+            else if (vacancy[vacancyIndex].state == 1) //种植1级
+            {
+                plant_cannon->setTexture("TI_1_unavailable.png");         //暗色cannon设为可见
+                plant_shit->setTexture("TI_2_unavailable.png");           //暗色shit设为可见
+                plant_etower->setTexture("TI_3_unavailable.png");         //暗色et设为可见
+
+                if (gold >= 320)  //可以对cannon和shit和et进行升级，也可以铲除cannon和shit和et
+                {
+                    upgrade_frame->setTexture("upgrade_ready.png");    //亮色升级设为可见
+                    delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
+                    waitForConditionAndExecute(
+                        [=]()
+                        {
+                            return WhichPlant == 4 || WhichPlant == 5;
+                        },
+                        [=]()
+                        {
+                            if (WhichPlant == 4) //upgrade
+                            {
+                                if (vacancy[vacancyIndex].tower_type == 1)//upgrade cannon
+                                {
+                                    cannon->setTexture("cannon_Lv2.png");
+                                    vacancy[vacancyIndex].state = 2;      //state=2 放置了二级炮台
+                                    WhichPlant = 0;
+                                    gold -= 180;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                                else if (vacancy[vacancyIndex].tower_type == 2)//upgrade shit
+                                {
+                                    shit->setTexture("shit_Lv2.png");
+                                    vacancy[vacancyIndex].state = 2;      //state=2 放置了二级炮台
+                                    WhichPlant = 0;
+                                    gold -= 220;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                                else if (vacancy[vacancyIndex].tower_type == 3)//upgrade et
+                                {
+                                    etower->setTexture("etower_Lv2.png");
+                                    vacancy[vacancyIndex].state = 2;      //state=2 放置了二级炮台
+                                    WhichPlant = 0;
+                                    gold -= 320;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                            }
+                            else if (WhichPlant == 5) //delete
+                            {
+                                if (vacancy[vacancyIndex].tower_type == 1)//delete cannon
+                                {
+                                    this->removeChild(vacancy[vacancyIndex].spr);
+                                    vacancy[vacancyIndex].state = 0; //void
+                                    vacancy[vacancyIndex].tower_type = 0; //void
+                                    vacancy[vacancyIndex].spr = nullptr;
+                                    WhichPlant = 0;
+                                    gold += 80;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                                else if (vacancy[vacancyIndex].tower_type == 2)//delete shit
+                                {
+                                    this->removeChild(vacancy[vacancyIndex].spr);
+                                    vacancy[vacancyIndex].state = 0; //void
+                                    vacancy[vacancyIndex].tower_type = 0; //void
+                                    vacancy[vacancyIndex].spr = nullptr;
+                                    WhichPlant = 0;
+                                    gold += 96;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                                else if (vacancy[vacancyIndex].tower_type == 3)//delete et
+                                {
+                                    this->removeChild(vacancy[vacancyIndex].spr);
+                                    vacancy[vacancyIndex].state = 0; //void
+                                    vacancy[vacancyIndex].tower_type = 0; //void
+                                    vacancy[vacancyIndex].spr = nullptr;
+                                    WhichPlant = 0;
+                                    gold += 128;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                            }
+                        }
+                    );
+                }
+                else if (gold < 320 && gold >= 220) //只能升级cannon和shit，或者铲除cannon和shit和et
+                {
+                    if (vacancy[vacancyIndex].tower_type == 1) //升级cannon或者铲除cannon
+                    {
+                        upgrade_frame->setTexture("upgrade_ready.png");    //亮色升级设为可见
+                        delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
+                        waitForConditionAndExecute(
+                            [=]()
+                            {
+                                return WhichPlant == 4 || WhichPlant == 5;
+                            },
+                            [=]()
+                            {
+                                if (WhichPlant == 4) //upgrade
+                                {
+                                    cannon->setTexture("cannon_Lv2.png");
+                                    vacancy[vacancyIndex].state = 2;        //state=2 放置了二级炮台
+                                    WhichPlant = 0;
+                                    gold -= 180;
+                                    gold_label->setString(calculate_gold(gold)); //更新金币
+                                }
+                                else if (WhichPlant == 5) //delete
+                                {
+                                    this->removeChild(vacancy[vacancyIndex].spr);
+                                    vacancy[vacancyIndex].state = 0; //void
+                                    vacancy[vacancyIndex].tower_type = 0; //void
+                                    vacancy[vacancyIndex].spr = nullptr;
+                                    WhichPlant = 0;
+                                    gold += 80;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                            }
+                        );
+                    }
+                    else if (vacancy[vacancyIndex].tower_type == 2) //升级或者铲除 shit
+                    {
+                        upgrade_frame->setTexture("upgrade_ready.png");    //亮色升级设为可见
+                        delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
+                        waitForConditionAndExecute(
+                            [=]()
+                            {
+                                return WhichPlant == 4 || WhichPlant == 5;
+                            },
+                            [=]()
+                            {
+                                if (WhichPlant == 4) //upgrade
+                                {
+                                    shit->setTexture("shit_Lv2.png");
+                                    vacancy[vacancyIndex].state = 2;        //state=2 放置了二级炮台
+                                    WhichPlant = 0;
+                                    gold -= 220;
+                                    gold_label->setString(calculate_gold(gold)); //更新金币
+                                }
+                                else if (WhichPlant == 5) //delete
+                                {
+                                    this->removeChild(vacancy[vacancyIndex].spr);
+                                    vacancy[vacancyIndex].state = 0;      //void
+                                    vacancy[vacancyIndex].tower_type = 0; //void
+                                    vacancy[vacancyIndex].spr = nullptr;
+                                    WhichPlant = 0;
+                                    gold += 96;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                            }
+                        );
+                    }
+                    else if (vacancy[vacancyIndex].tower_type == 3) //铲除et
+                    {
+                        delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
+                        upgrade_frame->setTexture("upgrade_grey.png");     //暗色升级设为可见
+                        waitForConditionAndExecute(
+                            [=]()
+                            {
+                                return WhichPlant == 5;
+                            },
+                            [=]()
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                                gold += 128;
+                                gold_label->setString(calculate_gold(gold));//更新金币   
+                            }
+                        );
+                    }
+                }
+                else if (gold < 220 && gold >= 180) //只能升级cannon，或者铲除cannon和shit和et
+                {
+                    if (vacancy[vacancyIndex].tower_type == 1) //升级cannon或者铲除cannon
+                    {
+                        upgrade_frame->setTexture("upgrade_ready.png");    //亮色升级设为可见
+                        delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
+                        waitForConditionAndExecute(
+                            [=]()
+                            {
+                                return WhichPlant == 4 || WhichPlant == 5;
+                            },
+                            [=]()
+                            {
+                                if (WhichPlant == 4) //upgrade
+                                {
+                                    cannon->setTexture("cannon_Lv2.png");
+                                    vacancy[vacancyIndex].state = 2;        //state=2 放置了二级炮台
+                                    WhichPlant = 0;
+                                    gold -= 180;
+                                    gold_label->setString(calculate_gold(gold)); //更新金币
+                                }
+                                else if (WhichPlant == 5) //delete
+                                {
+                                    this->removeChild(vacancy[vacancyIndex].spr);
+                                    vacancy[vacancyIndex].state = 0; //void
+                                    vacancy[vacancyIndex].tower_type = 0; //void
+                                    vacancy[vacancyIndex].spr = nullptr;
+                                    WhichPlant = 0;
+                                    gold += 80;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                            }
+                        );
+                    }
+                    else if (vacancy[vacancyIndex].tower_type == 2) 
+                    {
+                        delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
+                        upgrade_frame->setTexture("upgrade_grey.png");    //暗色升级设为可见
+                        waitForConditionAndExecute(
+                            [=]()
+                            {
+                                return WhichPlant == 5;
+                            },
+                            [=]()
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                                gold += 96;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                        );
+                    }
+                    else if (vacancy[vacancyIndex].tower_type == 3) //铲除et
+                    {
+                        delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
+                        upgrade_frame->setTexture("upgrade_grey.png");     //暗色升级设为可见
+
+                        waitForConditionAndExecute(
+                            [=]()
+                            {
+                                return WhichPlant == 5;
+                            },
+                            [=]()
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                                gold += 128;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                        );
+                    }
+                }
+                else if (gold < 180 && gold >= 0) //只能铲除cannon和shit和et
+                {
+                    upgrade_frame->setTexture("upgrade_grey.png");      //暗色升级设为可见
+                    delete_frame->setTexture("delete_ready.png");      //亮色删除设为可见
+                    waitForConditionAndExecute(
+                        [=]()
+                        {
+                            return WhichPlant == 5;
+                        },
+                        [=]()
+                        {
+                            if (vacancy[vacancyIndex].tower_type == 1)//delete cannon
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                                gold += 80;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                            else if (vacancy[vacancyIndex].tower_type == 2)//delete shit
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                                gold += 96;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                            else if (vacancy[vacancyIndex].tower_type == 3)//delete et
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                                gold += 128;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                        }
+                    );
+                }
+            }
+            else if (vacancy[vacancyIndex].state == 2)
+            {
+                plant_cannon->setTexture("TI_1_unavailable.png");       //暗色cannon设为可见
+                plant_shit->setTexture("TI_2_unavailable.png");         //暗色shit设为可见
+                plant_etower->setTexture("TI_3_unavailable.png");       //暗色etower设为可见
+
+                if (gold >= 480) //可以升级cannon和shit和etower，同时可以铲除cannon和shit和etower
+                {
+                    upgrade_frame->setTexture("upgrade_ready.png"); //亮色升级设为可见
+                    delete_frame->setTexture("delete_ready.png");  //亮色删除设为可见
+                    waitForConditionAndExecute(
+                        [=]()
+                        {
+                            return WhichPlant == 4 || WhichPlant == 5;
+                        },
+                        [=]()
+                        {
+                            if (WhichPlant == 4) //upgrade
+                            {
+                                if (vacancy[vacancyIndex].tower_type == 1)//upgrade cannon
+                                {
+                                    cannon->setTexture("cannon_Lv3.png");
+                                    vacancy[vacancyIndex].state = 3;      //state=3 放置了三级炮台
+                                    WhichPlant = 0;
+                                    gold -= 260;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                                else if (vacancy[vacancyIndex].tower_type == 2)//upgrade shit
+                                {
+                                    shit->setTexture("shit_Lv3.png");
+                                    vacancy[vacancyIndex].state = 3;      //state=3 放置了三级炮台
+                                    WhichPlant = 0;
+                                    gold -= 260;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                                else if (vacancy[vacancyIndex].tower_type == 3)//upgrade et
+                                {
+                                    etower->setTexture("etower_Lv3.png");
+                                    vacancy[vacancyIndex].state = 3;      //state=3 放置了三级炮台
+                                    WhichPlant = 0;
+                                    gold -= 480;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                            }
+                            else if (WhichPlant == 5) //delete
+                            {
+                                if (vacancy[vacancyIndex].tower_type == 1)//delete cannon
+                                {
+                                    this->removeChild(vacancy[vacancyIndex].spr);
+                                    vacancy[vacancyIndex].state = 0; //void
+                                    vacancy[vacancyIndex].tower_type = 0; //void
+                                    vacancy[vacancyIndex].spr = nullptr;
+                                    WhichPlant = 0;
+                                    gold += 234;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                                else if (vacancy[vacancyIndex].tower_type == 2)//delete shit
+                                {
+                                    this->removeChild(vacancy[vacancyIndex].spr);
+                                    vacancy[vacancyIndex].state = 0; //void
+                                    vacancy[vacancyIndex].tower_type = 0; //void
+                                    vacancy[vacancyIndex].spr = nullptr;
+                                    WhichPlant = 0;
+                                    gold += 272;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                                else if (vacancy[vacancyIndex].tower_type == 3)//delete et
+                                {
+                                    this->removeChild(vacancy[vacancyIndex].spr);
+                                    vacancy[vacancyIndex].state = 0; //void
+                                    vacancy[vacancyIndex].tower_type = 0; //void
+                                    vacancy[vacancyIndex].spr = nullptr;
+                                    WhichPlant = 0;
+                                    gold += 384;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                            }
+                        }
+                    );
+                }
+                else if (gold < 480 && gold >= 260) //可以升级cannon和shit，可以铲除cannon和shit和etower
+                {
+                    if (vacancy[vacancyIndex].tower_type == 1) //升级cannon或者铲除cannon
+                    {
+                        upgrade_frame->setTexture("upgrade_ready.png");    //亮色升级设为可见
+                        delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
+                        waitForConditionAndExecute(
+                            [=]()
+                            {
+                                return WhichPlant == 4 || WhichPlant == 5;
+                            },
+                            [=]()
+                            {
+                                if (WhichPlant == 4) //upgrade
+                                {
+                                    cannon->setTexture("cannon_Lv3.png");
+                                    vacancy[vacancyIndex].state = 3;        //state=3 放置了三级炮台
+                                    WhichPlant = 0;
+                                    gold -= 260;
+                                    gold_label->setString(calculate_gold(gold)); //更新金币
+                                }
+                                else if (WhichPlant == 5) //delete
+                                {
+                                    this->removeChild(vacancy[vacancyIndex].spr);
+                                    vacancy[vacancyIndex].state = 0; //void
+                                    vacancy[vacancyIndex].tower_type = 0; //void
+                                    vacancy[vacancyIndex].spr = nullptr;
+                                    WhichPlant = 0;
+                                    gold += 234;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                            }
+                        );
+                    }
+                    else if (vacancy[vacancyIndex].tower_type == 2) //升级或者铲除 shit
+                    {
+                        upgrade_frame->setTexture("upgrade_ready.png");    //亮色升级设为可见
+                        delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
+                        waitForConditionAndExecute(
+                            [=]()
+                            {
+                                return WhichPlant == 4 || WhichPlant == 5;
+                            },
+                            [=]()
+                            {
+                                if (WhichPlant == 4) //upgrade
+                                {
+                                    shit->setTexture("shit_Lv3.png");
+                                    vacancy[vacancyIndex].state = 3;        //state=3 放置了三级炮台
+                                    WhichPlant = 0;
+                                    gold -= 260;
+                                    gold_label->setString(calculate_gold(gold)); //更新金币
+                                }
+                                else if (WhichPlant == 5) //delete
+                                {
+                                    this->removeChild(vacancy[vacancyIndex].spr);
+                                    vacancy[vacancyIndex].state = 0;      //void
+                                    vacancy[vacancyIndex].tower_type = 0; //void
+                                    vacancy[vacancyIndex].spr = nullptr;
+                                    WhichPlant = 0;
+                                    gold += 272;
+                                    gold_label->setString(calculate_gold(gold));//更新金币
+                                }
+                            }
+                        );
+                    }
+                    else if (vacancy[vacancyIndex].tower_type == 3) //铲除et
+                    {
+                        delete_frame->setTexture("delete_ready.png");     //亮色删除设为可见
+                        upgrade_frame->setTexture("upgrade_grey.png");     //暗色升级设为可见
+                        waitForConditionAndExecute(
+                            [=]()
+                            {
+                                return WhichPlant == 5;
+                            },
+                            [=]()
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0;      //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                                gold += 384;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                        );
+                    }
+                }
+                else if (gold < 260 && gold >= 0) //只能铲除cannon和shit和etower
+                {
+                    delete_frame->setTexture("delete_ready.png");   //亮色删除设为可见
+                    upgrade_frame->setTexture("upgrade_grey.png");   //暗色升级设为可见
+                    waitForConditionAndExecute(
+                        [=]()
+                        {
+                            return WhichPlant == 5;
+                        },
+                        [=]()
+                        {
+                            if (vacancy[vacancyIndex].tower_type == 1)//delete cannon
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                                gold += 234;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                            else if (vacancy[vacancyIndex].tower_type == 2)//delete shit
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                                gold += 272;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                            else if (vacancy[vacancyIndex].tower_type == 3)//delete et
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                                gold += 384;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                        }
+                    );
+                }
+            }
+            else if (vacancy[vacancyIndex].state == 3)
+            {
+                plant_cannon->setTexture("TI_1_unavailable.png");       //暗色cannon设为可见
+                plant_shit->setTexture("TI_2_unavailable.png");         //暗色shit设为可见
+                plant_etower->setTexture("TI_3_unavailable.png");         //暗色et设为可见
+                delete_frame->setTexture("delete_ready.png");       //亮色删除设为可见
+                upgrade_frame->setTexture("upgrade_grey.png");       //暗色升级设为可见
+                //只能铲除cannon和shit和et
+                waitForConditionAndExecute(
+                    [=]() {
+                        return WhichPlant == 5;
+                    },
+                    [=]() {
+                        if (WhichPlant == 5) {
+                            if (vacancy[vacancyIndex].tower_type == 1)//delete cannon
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                                gold += 432;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                            else if (vacancy[vacancyIndex].tower_type == 2)//delete et
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                                gold += 480;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                            else if (vacancy[vacancyIndex].tower_type == 3)//delete et
+                            {
+                                this->removeChild(vacancy[vacancyIndex].spr);
+                                vacancy[vacancyIndex].state = 0; //void
+                                vacancy[vacancyIndex].tower_type = 0; //void
+                                vacancy[vacancyIndex].spr = nullptr;
+                                WhichPlant = 0;
+                                gold += 768;
+                                gold_label->setString(calculate_gold(gold));//更新金币
+                            }
+                        }
+                    }
+                );
+            }
+        }
+        else
+        {
+            yellow_frame->setVisible(false);
+            plant_cannon->setTexture("TI_1_unavailable.png");
+            plant_shit->setTexture("TI_2_unavailable.png");
+            plant_etower->setTexture("TI_3_unavailable.png");
+            upgrade_frame->setTexture("upgrade_grey.png");
+            delete_frame->setTexture("delete_grey.png");
+        }
+    }
+}
 
 void Map_Three::input_background()//生成背景图
 {
@@ -1532,17 +2226,31 @@ void Map_Three::game_begin()//游戏开始函数
 {
     float carrot_x = walk_way[walk_way.size() - 1][0];
     float carrot_y = walk_way[walk_way.size() - 1][1];//萝卜坐标
-    auto carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
-    this->addChild(carrot);
+    carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
     carrot->setPosition(carrot_x, carrot_y);
     //放置萝卜
-    auto carrot_HP = HP_display(carrot_x + 120, carrot_y);//生成萝卜血量
-    carrot_HP->setString(calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
-
+    carrot->HP = 1000;
+    carrot->level = 1;
+    carrot->change_tex();
+    carrot->HP_Label->setString(carrot->calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
+    this->addChild(carrot);
 
     gold = gold_3;//金币变量
-    auto gold_label = input_gold();;//生成标签
+    gold_label = input_gold();//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
+
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster2_1), 1.0f, 3, 3.0f); //第1波：生成4个怪物2
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster2_2), 1.0f, 4, 13.0f);//第2波：生成5个怪物2
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster3_1), 1.0f, 3, 23.0f);//第3波：生成4个怪物3
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster3_2), 1.0f, 4, 33.0f);//第2波：生成5个怪物3
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster4_1), 1.0f, 4, 43.0f);//第3波：生成5个怪物4
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster4_2), 1.0f, 5, 53.0f);//第3波：生成6个怪物4
+
+    waitForConditionAndExecute(
+        [=]() {return (carrot->HP <= 0); },
+        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f); }
+    );
+
 }
 
 /*------------------------------地图三函数----------------------------------*/
