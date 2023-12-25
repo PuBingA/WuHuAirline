@@ -27,7 +27,7 @@
 #define walk_way_begin_3_x 250
 #define walk_way_begin_3_y 600
 
-#define monster_texture_size 100						//规定怪物贴图大小均为100*100像素
+#define monster_texture_size 120						//规定怪物贴图大小均为monster_texture_size*monster_texture_size像素
 #define base_move_time 1.5f								//speed设为1时走一格花费的时间
 #define blink_duration 0.5f
 #define blink_time 3
@@ -43,17 +43,17 @@
 
 //怪兽属性
 #define mon1_vit 5
-#define mon1_atk 10
-#define mon1_spd 10
+#define mon1_atk 2
+#define mon1_spd 3
 #define mon2_vit 8
 #define mon2_atk 2
-#define mon2_spd 2
+#define mon2_spd 5
 #define mon3_vit 10
 #define mon3_atk 2
 #define mon3_spd 2
 #define mon4_vit 12
 #define mon4_atk 2
-#define mon4_spd 3
+#define mon4_spd 6
 
 #define type_cannon 1
 #define type_shit 2
@@ -72,3 +72,18 @@
 #define etower_upgrade_2to3 300
 
 #define delete_recover 100
+
+#define bullet_shoot_interval 2.0f
+#define bullet_fly_time 1.3f
+#define cannon1_atk 3
+#define cannon2_atk 5
+#define cannon3_atk 7
+#define shit1_atk 5
+#define shit2_atk 7
+#define shit3_atk 9
+#define etower1_atk 6
+#define etower2_atk 8
+#define etower3_atk 10
+#define bullet_range1 500
+#define bullet_range2 650
+#define bullet_range3 750

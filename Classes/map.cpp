@@ -38,9 +38,8 @@ void Map_father::spawnMonster1_1(float dt)
 {
     MonSprite* monster = MonSprite::create(1);
     monster->monster_spawn(walk_way);
-    this->addChild(monster);
-    monster_wave.push_back(monster);
-    monster->monster_attack_carrot(carrot, monster_wave);
+    monster_wave->addChild(monster);
+    monster->monster_attack_carrot(carrot);
 
 }
 
@@ -48,18 +47,16 @@ void Map_father::spawnMonster1_2(float dt)
 {
     MonSprite* monster = MonSprite::create(1);
     monster->monster_spawn(walk_way);
-    this->addChild(monster);
-    monster_wave.push_back(monster);
-    monster->monster_attack_carrot(carrot, monster_wave);
+    monster_wave->addChild(monster);
+    monster->monster_attack_carrot(carrot);
 }
 
 void Map_father::spawnMonster1_3(float dt)
 {
     MonSprite* monster = MonSprite::create(1);
     monster->monster_spawn(walk_way);
-    this->addChild(monster);
-    monster_wave.push_back(monster);
-    monster->monster_attack_carrot(carrot, monster_wave);
+    monster_wave->addChild(monster);
+    monster->monster_attack_carrot(carrot);
 }
 
 void Map_father::spawnMonster2_1(float dt)
@@ -67,8 +64,8 @@ void Map_father::spawnMonster2_1(float dt)
     MonSprite* monster = MonSprite::create(2);
     monster->monster_spawn(walk_way);
     this->addChild(monster);
-    monster_wave.push_back(monster);
-    monster->monster_attack_carrot(carrot, monster_wave);
+    monster_wave->addChild(monster);
+    monster->monster_attack_carrot(carrot);
 
 }
 
@@ -77,8 +74,8 @@ void Map_father::spawnMonster2_2(float dt)
     MonSprite* monster = MonSprite::create(2);
     monster->monster_spawn(walk_way);
     this->addChild(monster);
-    monster_wave.push_back(monster);
-    monster->monster_attack_carrot(carrot, monster_wave);
+    monster_wave->addChild(monster);
+    monster->monster_attack_carrot(carrot);
 }
 
 void Map_father::spawnMonster2_3(float dt)
@@ -86,8 +83,8 @@ void Map_father::spawnMonster2_3(float dt)
     MonSprite* monster = MonSprite::create(2);
     monster->monster_spawn(walk_way);
     this->addChild(monster);
-    monster_wave.push_back(monster);
-    monster->monster_attack_carrot(carrot, monster_wave);
+    monster_wave->addChild(monster);
+    monster->monster_attack_carrot(carrot);
 }
 
 void Map_father::spawnMonster3_1(float dt)
@@ -95,8 +92,8 @@ void Map_father::spawnMonster3_1(float dt)
     MonSprite* monster = MonSprite::create(3);
     monster->monster_spawn(walk_way);
     this->addChild(monster);
-    monster_wave.push_back(monster);
-    monster->monster_attack_carrot(carrot, monster_wave);
+    monster_wave->addChild(monster);
+    monster->monster_attack_carrot(carrot);
 
 }
 
@@ -105,8 +102,8 @@ void Map_father::spawnMonster3_2(float dt)
     MonSprite* monster = MonSprite::create(3);
     monster->monster_spawn(walk_way);
     this->addChild(monster);
-    monster_wave.push_back(monster);
-    monster->monster_attack_carrot(carrot, monster_wave);
+    monster_wave->addChild(monster);
+    monster->monster_attack_carrot(carrot);
 }
 
 void Map_father::spawnMonster3_3(float dt)
@@ -114,8 +111,8 @@ void Map_father::spawnMonster3_3(float dt)
     MonSprite* monster = MonSprite::create(3);
     monster->monster_spawn(walk_way);
     this->addChild(monster);
-    monster_wave.push_back(monster);
-    monster->monster_attack_carrot(carrot, monster_wave);
+    monster_wave->addChild(monster);
+    monster->monster_attack_carrot(carrot);
 }
 
 void Map_father::spawnMonster4_1(float dt)
@@ -123,8 +120,8 @@ void Map_father::spawnMonster4_1(float dt)
     MonSprite* monster = MonSprite::create(4);
     monster->monster_spawn(walk_way);
     this->addChild(monster);
-    monster_wave.push_back(monster);
-    monster->monster_attack_carrot(carrot, monster_wave);
+    monster_wave->addChild(monster);
+    monster->monster_attack_carrot(carrot);
 
 }
 
@@ -133,8 +130,8 @@ void Map_father::spawnMonster4_2(float dt)
     MonSprite* monster = MonSprite::create(4);
     monster->monster_spawn(walk_way);
     this->addChild(monster);
-    monster_wave.push_back(monster);
-    monster->monster_attack_carrot(carrot, monster_wave);
+    monster_wave->addChild(monster);
+    monster->monster_attack_carrot(carrot);
 }
 
 void Map_father::spawnMonster4_3(float dt)
@@ -142,8 +139,8 @@ void Map_father::spawnMonster4_3(float dt)
     MonSprite* monster = MonSprite::create(4);
     monster->monster_spawn(walk_way);
     this->addChild(monster);
-    monster_wave.push_back(monster);
-    monster->monster_attack_carrot(carrot, monster_wave);
+    monster_wave->addChild(monster);
+    monster->monster_attack_carrot(carrot);
 }
 
 bool Map_father::init()//父类创建场景总函数
@@ -164,7 +161,6 @@ bool Map_father::init()//父类创建场景总函数
     input_gold_item();//放置金币
     ShowPlantButton();
     input_listener();
-    //StartAttack();
     game_begin();//开始游戏
     return true;
 }
@@ -270,7 +266,8 @@ void Map_One::input_listener()
     mouseListener->onMouseDown = CC_CALLBACK_1(Map_One::onMouseDown_Do_Plant, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
     mouse_select_type = 0;
-    yellow_frame = FrameBox::create("yellow_frame.png");
+    yellow_frame = Sprite::create("yellow_frame.png");
+    yellow_frame->runAction(RepeatForever::create(Sequence::create(ScaleTo::create(0.3f, 0.7f), ScaleTo::create(0.3f, 0.5f), nullptr)));
     this->addChild(yellow_frame); //z-value=0
     yellow_frame->setVisible(false);
 }
@@ -287,9 +284,9 @@ void Map_One::onMouseDown_Do_Plant(Event* event)
             if (x <= 450.1 && x >= 449.9 && vacancy[vacancyIndex].level == 0 && gold >= cannon_build_cost)
             {
                 //于目标点生成一级cannon
-                cannon = FrameBox::create("cannon_Lv1.png");
+                cannon = Cannon::create("cannon_Lv1.png",monster_wave);
                 this->addChild(cannon);
-                cannon->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                cannon->setPosition(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y);
                 vacancy[vacancyIndex].level++;
                 vacancy[vacancyIndex].tower_type = type_cannon;
                 vacancy[vacancyIndex].spr = cannon; //当前指针存入vacancy中
@@ -301,9 +298,9 @@ void Map_One::onMouseDown_Do_Plant(Event* event)
             else if (x <= 550.1 && x >= 549.9 && vacancy[vacancyIndex].level == 0 && gold >= shit_build_cost)
             {
                 //于目标点生成一级shit
-                shit = FrameBox::create("shit_Lv1.png");
+                shit = Shit::create("shit_Lv1.png", monster_wave);
                 this->addChild(shit);
-                shit->Spawn(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y, 1.0f);
+                shit->setPosition(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y);
                 vacancy[vacancyIndex].level++;
                 vacancy[vacancyIndex].tower_type = type_shit;
                 vacancy[vacancyIndex].spr = shit; //当前指针存入vacancy中
@@ -363,8 +360,7 @@ void Map_One::onMouseDown_Do_Plant(Event* event)
         {
             mouse_select_type = 1;
             yellow_frame->setVisible(true);
-            yellow_frame->Spawn(x, y, 0.5f);
-            yellow_frame->Shimmer();
+            yellow_frame->setPosition(x, y);
             singleclick._x = x, singleclick._y = y; //保存黄色框位置，准备种植
             vacancyIndex = CheckBox(singleclick, AllFrames_Lv1);
             //查询选中位置种植状态
@@ -416,21 +412,23 @@ void Map_One::onMouseDown_Do_Plant(Event* event)
 void Map_One::ShowPlantButton()
 {
     //暗色cannon
-    plant_cannon = FrameBox::create("plant_cannon_unavailable.png");
+    plant_cannon = Sprite::create("plant_cannon_unavailable.png");
     this->addChild(plant_cannon); //z-value=0
-    plant_cannon->Spawn(450, 600, 1.0f);
+    plant_cannon->setPosition(450, 600);
     //暗色shit
-    plant_shit = FrameBox::create("plant_shit_unavailable.png");
+    plant_shit = Sprite::create("plant_shit_unavailable.png");
     this->addChild(plant_shit); //z-value=0
-    plant_shit->Spawn(550, 600, 1.0f);
+    plant_shit->setPosition(550, 600);
     //暗色升级——注意升级.png需要缩放至×0.7
-    upgrade_frame = FrameBox::create("upgrade_grey.png");
+    upgrade_frame = Sprite::create("upgrade_grey.png");
     this->addChild(upgrade_frame); //z-value=0
-    upgrade_frame->Spawn(650, 600, 0.7f);
+    upgrade_frame->setPosition(650, 600);
+    upgrade_frame->setScale(0.7f);
     //暗色移除——注意移除.png需要缩放至×0.7
-    delete_frame = FrameBox::create("delete_grey.png");
+    delete_frame = Sprite::create("delete_grey.png");
     this->addChild(delete_frame); //z-value=0
-    delete_frame->Spawn(750, 600, 0.7f);
+    delete_frame->setPosition(750, 600);
+    delete_frame->setScale(0.7f);
 }
 
 void Map_One::input_background()//放置背景图
@@ -486,6 +484,9 @@ void Map_One::game_begin()//游戏开始函数
     gold_label = input_gold();//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
 
+    this->addChild(monster_wave);
+    monster_wave->setVisible(1);
+
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_1), 1.0f, 2, 3.0f); //第1波：生成3个怪物1
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_2), 1.0f, 4, 13.0f);//第2波：生成5个怪物1
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_3), 1.0f, 5, 23.0f);//第3波：生成6个怪物1
@@ -511,7 +512,8 @@ void Map_Two::input_listener()
     mouseListener->onMouseDown = CC_CALLBACK_1(Map_Two::onMouseDown_Do_Plant, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
-    yellow_frame = FrameBox::create("yellow_frame.png");
+    yellow_frame = Sprite::create("yellow_frame.png");
+    yellow_frame->runAction(RepeatForever::create(Sequence::create(ScaleTo::create(0.3f, 0.7f), ScaleTo::create(0.3f, 0.5f), nullptr)));
     this->addChild(yellow_frame); //z-value=0
     yellow_frame->setVisible(false);
 }
@@ -519,24 +521,26 @@ void Map_Two::input_listener()
 void Map_Two::ShowPlantButton()
 {
     //暗色cannon
-    plant_cannon = FrameBox::create("plant_cannon_unavailable.png");
+    plant_cannon = Sprite::create("plant_cannon_unavailable.png");
     this->addChild(plant_cannon); //z-value=0
-    plant_cannon->Spawn(60.0f, 550.0f, 1.0f);
+    plant_cannon->setPosition(60.0f, 550.0f);
     plant_cannon->setTexture("plant_cannon_unavailable.png");
     //暗色etower
-    plant_etower = FrameBox::create("plant_etower_unavailable.png");
+    plant_etower = Sprite::create("plant_etower_unavailable.png");
     this->addChild(plant_etower); //z-value=0
-    plant_etower->Spawn(60.0f, 450.0f, 1.0f);
+    plant_etower->setPosition(60.0f, 450.0f);
     plant_etower->setTexture("plant_etower_unavailable.png");
     //暗色升级——注意升级.png需要缩放至×0.7
-    upgrade_frame = FrameBox::create("upgrade_grey.png");
+    upgrade_frame = Sprite::create("upgrade_grey.png");
     this->addChild(upgrade_frame); //z-value=0
-    upgrade_frame->Spawn(60.0f, 350.0f, 0.7f);
+    upgrade_frame->setScale(0.7f);
+    upgrade_frame->setPosition(60.0f, 350.0f);
     upgrade_frame->setTexture("upgrade_grey.png");
     //暗色移除——注意移除.png需要缩放至×0.7
-    delete_frame = FrameBox::create("delete_grey.png");
+    delete_frame = Sprite::create("delete_grey.png");
     this->addChild(delete_frame); //z-value=0
-    delete_frame->Spawn(60.0f, 250.0f, 0.7f);
+    delete_frame->setScale(0.7f);
+    delete_frame->setPosition(60.0f, 250.0f);
     delete_frame->setTexture("delete_grey.png");
 }
 
@@ -552,9 +556,9 @@ void Map_Two::onMouseDown_Do_Plant(Event* event)
             if (y <= 550.1 && y >= 549.9 && vacancy[vacancyIndex].level == 0 && gold >= cannon_build_cost)
             {
                 //于目标点生成一级cannon
-                cannon = FrameBox::create("cannon_Lv1.png");
+                cannon = Cannon::create("cannon_Lv1.png", monster_wave);
                 this->addChild(cannon);
-                cannon->Spawn(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y, 1.0f);
+                cannon->setPosition(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y);
                 vacancy[vacancyIndex].level++;
                 vacancy[vacancyIndex].tower_type = type_cannon;
                 vacancy[vacancyIndex].spr = cannon; //当前指针存入vacancy中
@@ -564,9 +568,9 @@ void Map_Two::onMouseDown_Do_Plant(Event* event)
             else if (y <= 450.1 && y >= 449.9 && vacancy[vacancyIndex].level == 0 && gold >= etower_build_cost)
             {
                 //于目标点生成一级etower
-                etower = FrameBox::create("etower_Lv1.png");
+                etower = Etower::create("etower_Lv1.png", monster_wave);
                 this->addChild(etower);
-                etower->Spawn(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y, 1.0f);
+                etower->setPosition(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y);
                 vacancy[vacancyIndex].level++;
                 vacancy[vacancyIndex].tower_type = type_etower;
                 vacancy[vacancyIndex].spr = etower; //当前指针存入vacancy中
@@ -624,8 +628,7 @@ void Map_Two::onMouseDown_Do_Plant(Event* event)
         {
             mouse_select_type = 1;
             yellow_frame->setVisible(true);
-            yellow_frame->Spawn(x, y, 0.5f);
-            yellow_frame->Shimmer();
+            yellow_frame->setPosition(x, y);
             singleclick._x = x, singleclick._y = y; //保存黄色框位置，准备种植
             vacancyIndex = CheckBox(singleclick, AllFrames_Lv2);
 
@@ -769,7 +772,8 @@ void Map_Three::input_listener()
     mouseListener->onMouseDown = CC_CALLBACK_1(Map_Three::onMouseDown_Do_Plant, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
 
-    yellow_frame = FrameBox::create("yellow_frame.png");
+    yellow_frame = Sprite::create("yellow_frame.png");
+    yellow_frame->runAction(RepeatForever::create(Sequence::create(ScaleTo::create(0.3f, 0.7f), ScaleTo::create(0.3f, 0.5f), nullptr)));
     this->addChild(yellow_frame); //z-value=0
     yellow_frame->setVisible(false);
 }
@@ -777,29 +781,31 @@ void Map_Three::input_listener()
 void Map_Three::ShowPlantButton()
 {
     //暗色cannon
-    plant_cannon = FrameBox::create("plant_cannon_unavailable.png");
+    plant_cannon = Sprite::create("plant_cannon_unavailable.png");
     this->addChild(plant_cannon); //z-value=0
-    plant_cannon->Spawn(60.0f, 550.0f, 1.0f);
+    plant_cannon->setPosition(60.0f, 550.0f);
     plant_cannon->setTexture("plant_cannon_unavailable.png");
     //暗色shit
-    plant_shit = FrameBox::create("plant_shit_unavailable.png");
+    plant_shit = Sprite::create("plant_shit_unavailable.png");
     this->addChild(plant_shit); //z-value=0
-    plant_shit->Spawn(60.0f, 450.0f, 1.0f);
+    plant_shit->setPosition(60.0f, 450.0f);
     plant_shit->setTexture("plant_shit_unavailable.png");
     //暗色etower
-    plant_etower = FrameBox::create("plant_etower_unavailable.png");
+    plant_etower = Sprite::create("plant_etower_unavailable.png");
     this->addChild(plant_etower); //z-value=0
-    plant_etower->Spawn(60.0f, 350.0f, 1.0f);
+    plant_etower->setPosition(60.0f, 350.0f);
     plant_etower->setTexture("plant_etower_unavailable.png");
     //暗色升级——注意升级.png需要缩放至×0.7
-    upgrade_frame = FrameBox::create("upgrade_grey.png");
+    upgrade_frame = Sprite::create("upgrade_grey.png");
     this->addChild(upgrade_frame); //z-value=0
-    upgrade_frame->Spawn(60.0f, 250.0f, 0.7f);
+    upgrade_frame->setPosition(60.0f, 250.0f);
+    upgrade_frame->setScale(0.7f);
     upgrade_frame->setTexture("upgrade_grey.png");
     //暗色移除——注意移除.png需要缩放至×0.7
-    delete_frame = FrameBox::create("delete_grey.png");
+    delete_frame = Sprite::create("delete_grey.png");
     this->addChild(delete_frame); //z-value=0
-    delete_frame->Spawn(60.0f, 150.0f, 0.7f);
+    delete_frame->setPosition(60.0f, 150.0f);
+    delete_frame->setScale(0.7f);
     delete_frame->setTexture("delete_grey.png");
 }
 
@@ -815,9 +821,9 @@ void Map_Three::onMouseDown_Do_Plant(Event* event)
             if (y <= 550.1 && y >= 549.9 && vacancy[vacancyIndex].level == 0 && gold >= cannon_build_cost)
             {
                 //于目标点生成一级cannon
-                cannon = FrameBox::create("cannon_Lv1.png");
+                cannon = Cannon::create("cannon_Lv1.png", monster_wave);
                 this->addChild(cannon);
-                cannon->Spawn(AllFrames_Lv3[vacancyIndex].adjusted._x, AllFrames_Lv3[vacancyIndex].adjusted._y, 1.0f);
+                cannon->setPosition(AllFrames_Lv3[vacancyIndex].adjusted._x, AllFrames_Lv3[vacancyIndex].adjusted._y);
                 vacancy[vacancyIndex].level++;
                 vacancy[vacancyIndex].tower_type = type_cannon;
                 vacancy[vacancyIndex].spr = cannon; //当前指针存入vacancy中
@@ -827,9 +833,9 @@ void Map_Three::onMouseDown_Do_Plant(Event* event)
             else if (y <= 450.1 && y >= 449.9 && vacancy[vacancyIndex].level == 0 && gold >= shit_build_cost)
             {
                 //于目标点生成一级shit
-                shit = FrameBox::create("shit_Lv1.png");
+                shit = Shit::create("shit_Lv1.png", monster_wave);
                 this->addChild(shit);
-                shit->Spawn(AllFrames_Lv3[vacancyIndex].adjusted._x, AllFrames_Lv3[vacancyIndex].adjusted._y, 1.0f);
+                shit->setPosition(AllFrames_Lv3[vacancyIndex].adjusted._x, AllFrames_Lv3[vacancyIndex].adjusted._y);
                 vacancy[vacancyIndex].level++;
                 vacancy[vacancyIndex].tower_type = type_shit;
                 vacancy[vacancyIndex].spr = shit; //当前指针存入vacancy中
@@ -839,9 +845,9 @@ void Map_Three::onMouseDown_Do_Plant(Event* event)
             else if (y <= 350.1 && y >= 349.9 && vacancy[vacancyIndex].level == 0 && gold >= etower_build_cost)
             {
                 //于目标点生成一级etower
-                etower = FrameBox::create("etower_Lv1.png");
+                etower = Etower::create("etower_Lv1.png", monster_wave);
                 this->addChild(etower);
-                etower->Spawn(AllFrames_Lv3[vacancyIndex].adjusted._x, AllFrames_Lv3[vacancyIndex].adjusted._y, 1.0f);
+                etower->setPosition(AllFrames_Lv3[vacancyIndex].adjusted._x, AllFrames_Lv3[vacancyIndex].adjusted._y);
                 vacancy[vacancyIndex].level++;
                 vacancy[vacancyIndex].tower_type = type_etower;
                 vacancy[vacancyIndex].spr = etower; //当前指针存入vacancy中
@@ -911,8 +917,7 @@ void Map_Three::onMouseDown_Do_Plant(Event* event)
         {
             mouse_select_type = 1;
             yellow_frame->setVisible(true);
-            yellow_frame->Spawn(x, y, 0.5f);
-            yellow_frame->Shimmer();
+            yellow_frame->setPosition(x, y);
             singleclick._x = x, singleclick._y = y; //保存黄色框位置，准备种植
             vacancyIndex = CheckBox(singleclick, AllFrames_Lv3);
 
@@ -1060,4 +1065,28 @@ int CheckBox(XY obj, const std::vector<FS>& table)
         if (it.adjusted._x == obj._x && it.adjusted._y == obj._y)
             return it.index;
     return -1;
+}
+
+bool IsFrame(float& x, float& y, const std::vector<FS>& allframes)
+{
+    for (auto& adjust_coord : allframes)
+        if (x > adjust_coord.left_up._x && x < adjust_coord.right_down._x && y > adjust_coord.right_down._y && y < adjust_coord.left_up._y)
+        {
+            x = adjust_coord.adjusted._x;
+            y = adjust_coord.adjusted._y;
+            return true;
+        }
+    return false;
+}
+
+bool IsFramePlant(float& x, float& y, const std::vector<FS>& allplants)
+{
+    for (auto& adjust_coord : allplants)
+        if (x > adjust_coord.left_up._x && x < adjust_coord.right_down._x && y > adjust_coord.right_down._y && y < adjust_coord.left_up._y)
+        {
+            x = adjust_coord.adjusted._x;
+            y = adjust_coord.adjusted._y;
+            return true;
+        }
+    return false;
 }

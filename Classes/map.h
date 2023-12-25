@@ -2,7 +2,7 @@
 #include "public_define.h"
 #include "cocos-ext.h"
 #include "Frames.h"
-#include "monster.h"
+#include "monster_towers.h"
 #include <string>
 #include <vector>
 USING_NS_CC;
@@ -16,26 +16,18 @@ typedef struct Vacancy_State
     Sprite* spr;
 }VS;
 
-//level=0 空 
-//level=1 放置了一级炮台
-//level=2 放置了二级炮台
-//level=3 放置了三级炮台
-//tower_type=1 加农炮
-//tower_type=2 屎
-//tower_type=3 电磁塔
-
 class Map_father :public cocos2d::Scene
 {
 protected:
-    FrameBox* yellow_frame = nullptr;
-    FrameBox* plant_cannon = nullptr;
-    FrameBox* plant_shit = nullptr;
-    FrameBox* plant_etower = nullptr;
-    FrameBox* cannon = nullptr;
-    FrameBox* shit = nullptr;
-    FrameBox* etower = nullptr;
-    FrameBox* upgrade_frame = nullptr;
-    FrameBox* delete_frame = nullptr;
+    Sprite* yellow_frame = nullptr;
+    Sprite* plant_cannon = nullptr;
+    Sprite* plant_shit = nullptr;
+    Sprite* plant_etower = nullptr;
+    Sprite* upgrade_frame = nullptr;
+    Sprite* delete_frame = nullptr;
+    Cannon* cannon = nullptr;
+    Shit* shit = nullptr;
+    Etower* etower = nullptr;
     Carrot* carrot = nullptr;
     bool mouse_select_type = 0;
     int WhichPlant = 0;
@@ -45,7 +37,7 @@ protected:
     int gold;                                       //当前金币数
     Label* gold_label;                              //金币标签
     std::vector<std::vector<float>>walk_way;        //存放怪物行进的x,y轴的向量
-    std::vector<MonSprite*>monster_wave;
+    Node* monster_wave = new Node;
 public:
     static cocos2d::Scene* createScene();
     virtual bool init();                              //创建场景类,被继承公有部分

@@ -17,37 +17,6 @@ typedef struct FrameSpot
 	XY adjusted;
 }FS;
 
-/*********************************************************
-* 防御塔的index对应不同的防御塔种类：
-* index=1 一级炮台 index=2 二级炮台 index=3 三级炮台
-* index=4 一级屎   index=5 二级屎   index=6 三级屎
-* index=7 一级电塔 index=8 二级电塔 index=9 三级电塔
-**********************************************************/
-typedef struct TowerInfo
-{
-	int index;
-	int upgrade_cost;
-	int destroy_cost;
-	int ATK_radius;
-	int ATK_damage;
-	int ATK_speed;
-}TI;
-
-//数值分别代表：炮台种类，升级花费，铲除返现，攻击范围，子弹伤害，攻速(单位ms)
-//建立炮台花费100
-const TI Cannon_1 = { 1, 180, 80, 75, 30, 500 };
-const TI Cannon_2 = { 2, 260, 234, 100, 40, 500 };
-const TI Cannon_3 = { 3, -1, 432, 125, 50, 500 };
-//建立屎花费120
-const TI Shit_1 = { 4, 220, 96, 75, 20, 500 };
-const TI Shit_2 = { 5, 260, 272, 100, 35, 500 };
-const TI Shit_3 = { 6, -1, 480, 125, 50, 500 };
-//建立电塔花费160
-const TI ETower_1 = { 7, 320, 128, 100, 50, 1000 };
-const TI ETower_2 = { 8, 480, 384, 125, 60, 1000 };
-const TI ETower_3 = { 9, -1, 768, 150, 70, 1000 };
-
-/**************************  LEVEL ONE ******************************/
 const std::vector<FS> AllFrames_Lv1 =
 {
 	{0,{291,591},{373,509},{332,550}} ,
@@ -93,8 +62,6 @@ const std::vector<FS> AllFrames_Lv1 =
 	{36,{291 - way_size * 2,263 + way_size * 3},{373 - way_size * 2,181 + way_size * 3},{332 - way_size * 2,222 + way_size * 3}},
 	{37,{291 - way_size * 2,263 + way_size * 4},{373 - way_size * 2,181 + way_size * 4},{332 - way_size * 2,222 + way_size * 4}}
 };
-
-/**************************  LEVEL TWO ******************************/
 const std::vector<FS> AllFrames_Lv2 =
 {
 	{0,{127,263},{209,181},{168,222}},
@@ -140,8 +107,6 @@ const std::vector<FS> AllFrames_Lv2 =
 	{40,{127 + way_size * 9,263 - way_size * 2},{209 + way_size * 9,181 - way_size * 2},{168 + way_size * 9,222 - way_size * 2}},
 	{41,{127 + way_size * 10,263 - way_size * 2},{209 + way_size * 10,181 - way_size * 2},{168 + way_size * 10,222 - way_size * 2}}
 };
-
-/*************************  LEVEL THREE *****************************/
 const std::vector<FS> AllFrames_Lv3 =
 {
 	{0,{209,559},{291,477},{250,600 - way_size * 1}},
@@ -204,7 +169,6 @@ const std::vector<FS> AllPlants_Lv2 =
 	{3,{25,385},{95,315},{60, 350}},
 	{4,{25,285},{95,215},{60, 250}}
 };
-
 const std::vector<FS> AllPlants_Lv3 =
 {
 	{1,{25,585},{95,515},{60, 550}},
@@ -217,12 +181,3 @@ const std::vector<FS> AllPlants_Lv3 =
 bool IsFrame(float&, float&, const std::vector<FS>&);
 bool IsFramePlant(float&, float&, const std::vector<FS>&);
 
-class FrameBox : public Sprite
-{
-public:
-	static FrameBox* create(const std::string& filename);
-	void Spawn(float x, float y, float scale); //在某个特定位置以特定大小显示某只精灵
-	void Shimmer();                            //自动呈现闪烁效果，直到下一次点击
-	void Disappear();                          //下一次点击后，框消失
-	void RotateAndLock();                      //旋转至攻击范围内最近的敌人，随后射击
-};
