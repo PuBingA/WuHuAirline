@@ -80,7 +80,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // create a scene. it's an autorelease object
     auto scene = Opening::createScene();//创建场景
-    auto opening_background_music = AudioEngine::play2d("background_music.mp3", true);//背景音乐植入
+    auto opening_background_music = AudioEngine::play2d("I Got Smoke.mp3", true);//背景音乐植入
     // run
    
     director->runWithScene(scene);//移动到开始场景

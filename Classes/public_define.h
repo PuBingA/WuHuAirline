@@ -28,7 +28,8 @@
 #define walk_way_begin_3_y 600
 
 #define monster_texture_size 120						//规定怪物贴图大小均为monster_texture_size*monster_texture_size像素
-#define boss_texture_size 250
+#define boss1_texture_size 250
+#define boss2_texture_size 300
 #define base_move_time 1.5f								//speed设为1时走一格花费的时间
 #define blink_duration 0.5f
 #define blink_time 3
@@ -41,15 +42,11 @@
 #define carrot_level2_cost 1000
 #define carrot_level3_cost 2000                         //萝卜升级花费
 
-
 #define boom_x 1170
 #define boom_y 630-4*70
 #define boom_hint_x 1170
 #define boom_hint_y  630-5*70              //作弊按钮相关坐标
 
-
-//第一关共有38个种植点位
-#define Level_One_Spots 38 
 
 //怪兽属性
 #define monster_basical_cost 60
@@ -68,6 +65,9 @@
 #define mon5_vit 150
 #define mon5_atk 20
 #define mon5_spd 1
+#define mon6_vit 175
+#define mon6_atk 20
+#define mon6_spd 1
 
 #define type_cannon 1
 #define type_shit 2

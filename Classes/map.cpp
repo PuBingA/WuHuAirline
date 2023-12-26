@@ -131,13 +131,26 @@ void Map_father::spawnMonster4_3(float dt)
     monster->monster_attack_carrot(carrot);
 }
 
-void Map_father::spawnBoss(float dt)
+void Map_father::spawnBoss_1(float dt)
 {
     AudioEngine::pauseAll();
     boss_music = AudioEngine::play2d("boss_background.mp3", false);
     boss_spawned = true;
     boss = MonSprite::create(5);
     boss->monster_spawn(walk_way);
+    boss->setGlobalZOrder(INT_MAX);
+    monster_wave->addChild(boss);
+    boss->monster_attack_carrot(carrot);
+}
+
+void Map_father::spawnBoss_2(float dt)
+{
+    AudioEngine::pauseAll();
+    boss_music = AudioEngine::play2d("boss_background.mp3", false);
+    boss_spawned = true;
+    boss = MonSprite::create(6);
+    boss->monster_spawn(walk_way);
+    boss->setGlobalZOrder(INT_MAX);
     monster_wave->addChild(boss);
     boss->monster_attack_carrot(carrot);
 }
@@ -468,7 +481,7 @@ void Map_father::input_boom_button()//放置作弊按钮
 
 void Map_father::boom_button_call_back(cocos2d::Ref* pSender)//作弊按钮回调
 {
-    auto boom_effect = AudioEngine::play2d("Boom.mp3", false);
+    auto boom_effect = AudioEngine::play2d("genji.mp3", false);
     auto fade_in = FadeIn::create(1.0f);
     boom_background->runAction(fade_in);//先淡入
     cocos2d::Vector<Node*> current_wave = monster_wave->getChildren();
@@ -492,6 +505,13 @@ void Map_father::input_brick(T x, T y ,int choice)//choice==1 放置怪物绿色
         auto walk_way = Sprite::create("way.png");
         this->addChild(walk_way);
         walk_way->setPosition(x, y);//背景图
+    }
+    else if (choice == 2)
+    {
+        auto cave = Sprite::create("cave_sign.png");
+        this->addChild(cave);
+        cave->setPosition(x, y);
+        cave->setScale(0.5f);
     }
 }
 
@@ -569,6 +589,7 @@ void Map_One::input_walk_way()//放置怪物行进路径
         walk_way.push_back(current);
     }//竖直向上5格
     //存放地板向量生成完毕
+    input_brick(walk_way_begin_1_x, walk_way_begin_1_y, 2); //放置怪物洞口牌子
     return;
 }
 
@@ -588,7 +609,7 @@ void Map_One::game_begin()//游戏开始函数
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_1), 1.0f, 2, 3.0f); //第1波：生成3个怪物1
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_2), 1.0f, 4, 13.0f);//第2波：生成5个怪物1
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_3), 1.0f, 5, 23.0f);//第3波：生成6个怪物1
-    scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::spawnBoss), 33.0f);//boss
+    scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::spawnBoss_1), 33.0f);//boss
 
     waitForConditionAndExecute
     (
@@ -704,6 +725,7 @@ void Map_Two::input_walk_way()//放置怪物路径
         walk_way.push_back(current);
     }//水平向右4格
      //存放地板向量生成完毕
+    input_brick(walk_way_begin_2_x, walk_way_begin_2_y, 2); //放置怪物洞口牌子
     return;
 }
 
@@ -728,7 +750,7 @@ void Map_Two::game_begin()//游戏开始函数
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster2_1), 1.0f, 3, 23.0f);//第3波：生成4个怪物2
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster2_2), 1.0f, 4, 33.0f);//第2波：生成5个怪物2
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster3_1), 1.0f, 5, 43.0f);//第3波：生成6个怪物3
-    scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::spawnBoss), 53.0f);//boss
+    scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::spawnBoss_2), 53.0f);//boss
 
 
     waitForConditionAndExecute
@@ -842,6 +864,7 @@ void Map_Three::input_walk_way()//放置怪物路径
         walk_way.push_back(current);//放好初始位置
     }//向右9格
     //存放地板向量生成完毕
+    input_brick(walk_way_begin_3_x, walk_way_begin_3_y, 2); //放置怪物洞口牌子
     return;
 }
 
@@ -867,7 +890,7 @@ void Map_Three::game_begin()//游戏开始函数
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster3_2), 1.0f, 4, 33.0f);//第2波：生成5个怪物3
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster4_1), 1.0f, 4, 43.0f);//第3波：生成5个怪物4
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster4_2), 1.0f, 5, 53.0f);//第3波：生成6个怪物4
-    scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::spawnBoss), 63.0f);//boss
+    scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::spawnBoss_2), 63.0f);//boss
 
 
     waitForConditionAndExecute

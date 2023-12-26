@@ -58,8 +58,8 @@ public:
     virtual void ShowPlantButton() {};
     virtual void input_listener() {};
     void onMouseDown_Do_Plant(Event* event);
-    std::string calculate_gold(int *gold);       //根据当前金币，得出字符串
-    void change_gold_label(float dt);   //更新金币储存
+    std::string calculate_gold(int *gold);            //根据当前金币，得出字符串
+    void change_gold_label(float dt);                 //更新金币储存
 
     virtual void game_begin() {};                     //游戏开始函数
     void game_over_success(float dt);                 //游戏胜利
@@ -85,7 +85,8 @@ public:
     void spawnMonster4_1(float dt);       //生成Type=4的怪物
     void spawnMonster4_2(float dt);       //生成Type=4的怪物
     void spawnMonster4_3(float dt);       //生成Type=4的怪物
-    void spawnBoss(float dt);             //生成Type=5的怪物
+    void spawnBoss_1(float dt);           //生成Type=5的怪物
+    void spawnBoss_2(float dt);           //生成Type=6的怪物
     void waitForConditionAndExecute(const std::function<bool()>& condition, const std::function<void()>& callback);
     CREATE_FUNC(Map_father);
 };

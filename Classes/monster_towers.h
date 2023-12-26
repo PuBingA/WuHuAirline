@@ -48,6 +48,11 @@ private:
 			monAttack = mon5_atk;
 			monSpeed = mon5_spd;
 			break;
+		case 6:
+			monVitality = mon6_vit;
+			monAttack = mon6_atk;
+			monSpeed = mon6_spd;
+			break;
 		}
         monCurrentLife = monVitality;
     }
@@ -60,8 +65,8 @@ public:
         {//给精灵增加血条
             monster_sprite->setType(type);
             monster_sprite->setOpacity(0);//先完全透明
-            monster_sprite->monLifeBar = cocos2d::ui::LoadingBar::create("life_bar.png");
-            monster_sprite->monLifeBar->setDirection(cocos2d::ui::LoadingBar::Direction::LEFT);
+            monster_sprite->monLifeBar = ui::LoadingBar::create("life_bar.png");
+            monster_sprite->monLifeBar->setDirection(ui::LoadingBar::Direction::LEFT);
             monster_sprite->monLifeBar->setPositionNormalized(Vec2(0.5, 0));
             monster_sprite->monLifeBar->setPercent(100);
             monster_sprite->addChild(monster_sprite->monLifeBar);
@@ -121,9 +126,16 @@ public:
 		else if (this->monType == 5)
 		{
 			animFrames.reserve(3);
-			animFrames.pushBack(SpriteFrame::create("monster5_1.png", Rect(0, 0, boss_texture_size, boss_texture_size)));
-			animFrames.pushBack(SpriteFrame::create("monster5_2.png", Rect(0, 0, boss_texture_size, boss_texture_size)));
-			animFrames.pushBack(SpriteFrame::create("monster5_3.png", Rect(0, 0, boss_texture_size, boss_texture_size)));
+			animFrames.pushBack(SpriteFrame::create("monster5_1.png", Rect(0, 0, boss1_texture_size, boss1_texture_size)));
+			animFrames.pushBack(SpriteFrame::create("monster5_2.png", Rect(0, 0, boss1_texture_size, boss1_texture_size)));
+			animFrames.pushBack(SpriteFrame::create("monster5_3.png", Rect(0, 0, boss1_texture_size, boss1_texture_size)));
+		}
+		else if (this->monType == 6)
+		{
+			animFrames.reserve(3);
+			animFrames.pushBack(SpriteFrame::create("monster6_1.png", Rect(0, 0, boss2_texture_size, boss2_texture_size)));
+			animFrames.pushBack(SpriteFrame::create("monster6_2.png", Rect(0, 0, boss2_texture_size, boss2_texture_size)));
+			animFrames.pushBack(SpriteFrame::create("monster6_3.png", Rect(0, 0, boss2_texture_size, boss2_texture_size)));
 		}
 		Animation* animation = Animation::createWithSpriteFrames(animFrames, animate_duration);
         Animate* animate = Animate::create(animation);
@@ -179,7 +191,7 @@ public:
 };
 
 
-class Tower : public cocos2d::Sprite
+class Tower : public Sprite
 {
 public:
 	int distance = 0;//攻击距离
