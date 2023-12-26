@@ -6,7 +6,8 @@ USING_NS_CC;
 
 
 //用于保存是否通关前面关卡的旗帜
-int clear_stage = 1;
+bool map_two_flag = true;
+bool map_three_flag = true;
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(1235, 694);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);

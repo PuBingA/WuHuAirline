@@ -5,7 +5,8 @@
 #include<vector>
 USING_NS_CC;
 
-extern int clear_stage;
+extern bool map_two_flag;
+extern bool map_three_flag;
 
 cocos2d::Scene* choose_map::createScene()
 {
@@ -48,7 +49,7 @@ bool choose_map::init()//场景布局函数,重要函数
     map_1_menu->setPosition(background_wide / 2-300, background_high / 2);
     this->addChild(map_1_menu);//生成地图1选择菜单
 
-    if (clear_stage>=2)//通关第1关才生成按钮
+    if (map_two_flag==true)//通关第1关才生成按钮
     {
         auto choose_map_2 = MenuItemImage::create("choose_map_2.png", "choose_map_2_selected.png", CC_CALLBACK_1(choose_map::menuCallback, this, map2));
         auto map_2_menu = Menu::create(choose_map_2, NULL);
@@ -68,7 +69,7 @@ bool choose_map::init()//场景布局函数,重要函数
         this->addChild(disable_label);//放置标签
     }
 
-    if (clear_stage>=3)//通关第2关才生成按钮
+    if (map_three_flag==true)//通关第2关才生成按钮
     {
         auto choose_map_3 = MenuItemImage::create("choose_map_3.png", "choose_map_3_selected.png", CC_CALLBACK_1(choose_map::menuCallback, this, map3));
         auto map_3_menu = Menu::create(choose_map_3, NULL);

@@ -11,7 +11,7 @@
 #define pause_y 630-70-70								//暂停键坐标
 
 #define gold_max 9990  //金币上限
-#define gold_1   1500  //第一关初始金币
+#define gold_1   5000  //第一关初始金币
 #define gold_2   7000  //第二关初始金币
 #define gold_3   9000  //第三关初始金币
 
@@ -46,6 +46,7 @@
 #define Level_One_Spots 38 
 
 //怪兽属性
+#define monster_basical_cost 60
 #define mon1_vit 5
 #define mon1_atk 2
 #define mon1_spd 3
@@ -59,7 +60,7 @@
 #define mon4_atk 5
 #define mon4_spd 6
 #define mon5_vit 150
-#define mon5_atk 150
+#define mon5_atk 15
 #define mon5_spd 1
 
 #define type_cannon 1

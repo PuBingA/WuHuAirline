@@ -9,6 +9,7 @@ USING_NS_CC;
 
 class MonSprite : public Sprite//怪物类
 {
+	friend class Map_father;
 private:
     int monType = 1;
     int monVitality = 1;//生命
@@ -137,27 +138,28 @@ public:
     }
 
     //怪物去世
-    void monster_die()
+    int monster_die()
     {
+		int award = monster_basical_cost;
+		for (int i = 1; i < monType; i++)
+			award += 20;//不同种类，不同奖励。
+		this->monCurrentLife = 0;//怪物生命修正
 		this->removeAllChildren();
 		Node* wave = this->getParent();
 		if (wave)
 			wave->removeChild(this);//怪似了
+		return award;
     }
 
     //怪物受伤
     bool monster_hurt(int hit_point)
     {
         monCurrentLife -= hit_point;
-        if (monCurrentLife < 0)
-            monCurrentLife = 0;
         if (monCurrentLife <= 0)
         {
-            monster_die();//死亡
             return 1;
         }
 		monLifeBar->setPercent(static_cast<float>(monCurrentLife) / monVitality * 100);
-        runAction(Blink::create(blink_duration, blink_time));
         return 0;
     }
 
@@ -168,7 +170,7 @@ public:
 			[=]()
 			{
 				carrot->hurt(this->monAttack);
-				carrot->hurt(this->monAttack);
+				carrot->hurt(1);
 				this->monster_die();//怪物死
 			});
     }
@@ -188,21 +190,21 @@ public:
 class Cannon : public Tower
 {
 public:
-	static Cannon* create(const std::string& filename, Node* monwave)//初始化精灵
+	static Cannon* create(const std::string& filename, Node* monwave, int * gold)//初始化精灵
 	{
 		Cannon* cannon_sprite = new Cannon();
 		if (cannon_sprite && cannon_sprite->initWithFile(filename))
 		{
 			cannon_sprite->monster_wave = monwave;
 			cannon_sprite->level = 1;
-			cannon_sprite->guard();
+			cannon_sprite->guard(gold);
 			return cannon_sprite;
 		}
 		CC_SAFE_DELETE(cannon_sprite);
 		return nullptr;
 	}
 
-	void guard()
+	void guard(int*gold)
 	{
 		switch (level)
 		{
@@ -249,7 +251,8 @@ public:
 								if (lock_target)
 								{
 									lock_target->removeChild(bullet, 1);
-									lock_target->monster_hurt(bullet_atk);
+									if (lock_target->monster_hurt(bullet_atk))
+										*gold += lock_target->monster_die();//爆金币
 								}
 							}, bullet_fly_time, "CannonBulletTag");
 
@@ -262,21 +265,21 @@ public:
 class Shit : public Tower
 {
 public:
-	static Shit* create(const std::string& filename, Node* monwave)//初始化精灵
+	static Shit* create(const std::string& filename, Node* monwave,int*gold)//初始化精灵
 	{
 		Shit* shit_sprite = new Shit();
 		if (shit_sprite && shit_sprite->initWithFile(filename))
 		{
 			shit_sprite->monster_wave = monwave;
 			shit_sprite->level = 1;
-			shit_sprite->guard();
+			shit_sprite->guard(gold);
 			return shit_sprite;
 		}
 		CC_SAFE_DELETE(shit_sprite);
 		return nullptr;
 	}
 
-	void guard()
+	void guard(int* gold)
 	{
 		switch (level)
 		{
@@ -311,7 +314,8 @@ public:
 								if (lock_target)
 								{
 									lock_target->removeChild(bullet, 1);
-									lock_target->monster_hurt(bullet_atk);
+										if (lock_target->monster_hurt(bullet_atk))
+										*gold += lock_target->monster_die();//爆金币
 								}
 							}, bullet_fly_time, "ShitBulletTag");
 
@@ -324,21 +328,21 @@ public:
 class Etower : public Tower
 {
 public:
-	static Etower* create(const std::string& filename, Node* monwave)//初始化精灵
+	static Etower* create(const std::string& filename, Node* monwave, int*gold)//初始化精灵
 	{
 		Etower* etower_sprite = new Etower();
 		if (etower_sprite && etower_sprite->initWithFile(filename))
 		{
 			etower_sprite->monster_wave = monwave;
 			etower_sprite->level = 1;
-			etower_sprite->guard();
+			etower_sprite->guard(gold);
 			etower_sprite->autorelease();
 			return etower_sprite;
 		}
 		CC_SAFE_DELETE(etower_sprite);
 		return nullptr;
 	}
-	void guard()
+	void guard(int* gold)
 	{
 		switch (level)
 		{
@@ -372,7 +376,8 @@ public:
 								if (lock_target)
 								{
 									lock_target->removeChild(bullet, 1);
-									lock_target->monster_hurt(bullet_atk);
+									if (lock_target->monster_hurt(bullet_atk))
+										*gold += lock_target->monster_die();//爆金币
 								}
 							}, bullet_fly_time, "EtowerBulletTag");
 

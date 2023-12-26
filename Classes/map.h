@@ -36,12 +36,13 @@ protected:
     XY singleclick;                                 //存储点击的位置
     int vacancyIndex = -1;                          //点位索引
     std::vector<VS> vacancy;                        //vacancy存放每个可放置位置的信息
-    int gold;                                       //当前金币数
+    int gold_content[1];                           //当前金币数数组
+    int* gold=gold_content;                                       //当前金币数指针
     Label* gold_label;                              //金币标签
     std::vector<std::vector<float>>walk_way;        //存放怪物行进的x,y轴的向量
     Node* monster_wave = new Node;
     MonSprite* boss = nullptr;
-    bool boss_spawned = 0;
+    bool boss_spawned = false;
 public:
     static cocos2d::Scene* createScene();
     virtual bool init();                              //创建场景类,被继承公有部分
@@ -54,8 +55,9 @@ public:
     virtual void ShowPlantButton() {};
     virtual void input_listener() {};
     void onMouseDown_Do_Plant(Event* event);
-    cocos2d::Label* input_gold();                     //生成金币标签
-    std::string calculate_gold(const int gold);       //根据当前金币，得出字符串
+    std::string calculate_gold(int *gold);       //根据当前金币，得出字符串
+    void change_gold_label(float dt);   //更新金币储存
+
     virtual void game_begin() {};                     //游戏开始函数
     void game_over_success(float dt);                 //游戏胜利
     void game_over_failure(float dt);                 //游戏失败
@@ -84,6 +86,10 @@ public:
 class Map_One :public Map_father
 {
 public:
+    Map_One()
+    {
+        *gold = gold_1;
+    }//构造函数
     virtual void ShowPlantButton();
     virtual void input_listener();
     virtual void input_background();
@@ -95,6 +101,10 @@ public:
 class Map_Two :public Map_father
 {
 public:
+    Map_Two()
+    {
+        *gold = gold_2;
+    }//构造函数
     virtual void ShowPlantButton();
     virtual void input_listener();
     virtual void input_background();
@@ -106,6 +116,10 @@ public:
 class Map_Three :public Map_father
 {
 public:
+    Map_Three()
+    {
+        *gold = gold_3;
+    }//构造函数
     virtual void ShowPlantButton();
     virtual void input_listener();
     virtual void input_background();

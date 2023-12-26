@@ -3,7 +3,8 @@
 #include "settlement_interface.h"
 USING_NS_CC;
 
-extern int clear_stage;
+extern bool map_two_flag;
+extern bool map_three_flag;
 
 int CheckBox(XY obj, const std::vector<FS>& table);
 
@@ -132,11 +133,11 @@ void Map_father::spawnMonster4_3(float dt)
 
 void Map_father::spawnBoss(float dt)
 {
-    MonSprite* monster = MonSprite::create(5);
-    monster->monster_spawn(walk_way);
-    monster_wave->addChild(monster);
-    boss_spawned = 1;
-    monster->monster_attack_carrot(carrot);
+    boss_spawned = true;
+    boss = MonSprite::create(5);
+    boss->monster_spawn(walk_way);
+    monster_wave->addChild(boss);
+    boss->monster_attack_carrot(carrot);
 }
 
 bool Map_father::init()//父类创建场景总函数
@@ -150,7 +151,6 @@ bool Map_father::init()//父类创建场景总函数
     vacancy.clear();
     for (int i = 0; i <= 50; i++)
         vacancy.push_back({ i,0,nullptr });
-
     input_background();//放置背景图
     input_walk_way();//放置地板
     input_return_pause();//放置返回，暂停键
@@ -184,30 +184,33 @@ void Map_father::input_gold_item()//放置阳光图标
     auto gold_item = Sprite::create("gold.png");//生成阳光图标
     this->addChild(gold_item);
     gold_item->setPosition(gold_x - 90, gold_y);
-    //放好阳光图标
-}
-
-cocos2d::Label* Map_father::input_gold()//生成金币标签
-{
-    auto gold_label = Label::createWithTTF("", "fonts\\Marker Felt.ttf", 56);
+    gold_label = Label::createWithTTF("", "fonts\\Marker Felt.ttf", 56);
     Color3B gold_color(255, 233, 0);
     gold_label->setColor(gold_color);//调成黄色
     this->addChild(gold_label);
     gold_label->setPosition(gold_x, gold_y);
-    return gold_label;
+    gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
+    //放好阳光图标
 }
 
-std::string Map_father::calculate_gold(const int gold)
+
+
+std::string Map_father::calculate_gold(int *gold)
 {
     int digit = 1000;//千位
     std::string figure;
     for (int i = 0; i < 4; i++)
     {
-        int k = (gold / digit) % 10;
+        int k = (*gold / digit) % 10;
         digit /= 10;
         figure.push_back(k + '0');
     }//计算出每一位的数字，放入字符串中
     return figure;
+}
+
+void Map_father::change_gold_label(float dt)
+{
+    gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
 }
 
 void Map_father::buttonCallback(cocos2d::Ref* pSender)//暂停键触发函数
@@ -222,8 +225,8 @@ void Map_father::menuCallback(cocos2d::Ref* pSender)//返回键触发函数
 
 void Map_father::game_over_success(float dt)
 {
-    auto scene = settlement_success::createScene();
-    Director::getInstance()->replaceScene(TransitionCrossFade::create(2.0f, scene));
+        auto scene = settlement_success::createScene();
+        Director::getInstance()->replaceScene(TransitionCrossFade::create(2.0f, scene));
 }
 
 void Map_father::game_over_failure(float dt)
@@ -241,44 +244,44 @@ void Map_father::onMouseDown_Do_Plant(Event* event)
         if (IsFramePlant(x, y, AllPlants) && mouse_select_type)//选中种植功能
         {
             //plant a cannon
-            if (IsFramePlant(x, y, AllPlants) == 1 && vacancy[vacancyIndex].spr == nullptr && gold >= cannon_build_cost)
+            if (IsFramePlant(x, y, AllPlants) == 1 && vacancy[vacancyIndex].spr == nullptr && *gold >= cannon_build_cost)
             {
                 //于目标点生成一级cannon
-                cannon = Cannon::create("cannon_Lv1.png",monster_wave);
+                cannon = Cannon::create("cannon_Lv1.png",monster_wave,gold);
                 this->addChild(cannon);
                 cannon->setPosition(AllFrames[vacancyIndex].adjusted._x, AllFrames[vacancyIndex].adjusted._y);
                 cannon->level = 1;
                 vacancy[vacancyIndex].tower_type = type_cannon;
                 vacancy[vacancyIndex].spr = cannon; //当前指针存入vacancy中
-                gold -= cannon_build_cost;
+                *gold -= cannon_build_cost;
                 upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
                 delete_frame->setTexture("delete_ready.png");//删除按钮有效
             }
             //plant a shit
-            else if (IsFramePlant(x, y, AllPlants) == 2 && vacancy[vacancyIndex].spr == nullptr && gold >= shit_build_cost)
+            else if (IsFramePlant(x, y, AllPlants) == 2 && vacancy[vacancyIndex].spr == nullptr && *gold >= shit_build_cost)
             {
                 //于目标点生成一级shit
-                shit = Shit::create("shit_Lv1.png", monster_wave);
+                shit = Shit::create("shit_Lv1.png", monster_wave, gold);
                 this->addChild(shit);
                 shit->setPosition(AllFrames[vacancyIndex].adjusted._x, AllFrames[vacancyIndex].adjusted._y);
                 shit->level = 1;
                 vacancy[vacancyIndex].tower_type = type_shit;
                 vacancy[vacancyIndex].spr = shit; //当前指针存入vacancy中
-                gold -= shit_build_cost;
+               * gold -= shit_build_cost;
                 upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
                 delete_frame->setTexture("delete_ready.png");//删除按钮有效
             }
             //plant a etower
-            else if (IsFramePlant(x, y, AllPlants) == 3 && vacancy[vacancyIndex].spr == nullptr && gold >= etower_build_cost)
+            else if (IsFramePlant(x, y, AllPlants) == 3 && vacancy[vacancyIndex].spr == nullptr && *gold >= etower_build_cost)
             {
                 //于目标点生成一级etower
-                etower = Etower::create("etower_Lv1.png", monster_wave);
+                etower = Etower::create("etower_Lv1.png", monster_wave, gold);
                 this->addChild(etower);
                 etower->setPosition(AllFrames[vacancyIndex].adjusted._x, AllFrames[vacancyIndex].adjusted._y);
                 etower->level = 1;
                 vacancy[vacancyIndex].tower_type = type_etower;
                 vacancy[vacancyIndex].spr = etower; //当前指针存入vacancy中
-                gold -= etower_build_cost;
+               * gold -= etower_build_cost;
                 upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
                 delete_frame->setTexture("delete_ready.png");//删除按钮有效
             }
@@ -288,45 +291,45 @@ void Map_father::onMouseDown_Do_Plant(Event* event)
                 //1级升2级
                 if (vacancy[vacancyIndex].spr->level == 1)
                 {
-                    if (vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_1to2)//upgrade cannon
+                    if (vacancy[vacancyIndex].tower_type == type_cannon && *gold >= cannon_upgrade_1to2)//upgrade cannon
                     {
                         cannon->setTexture("cannon_Lv2.png");
                         cannon->level++;
-                        gold -= cannon_upgrade_1to2;
+                       * gold -= cannon_upgrade_1to2;
                     }
-                    else if (vacancy[vacancyIndex].tower_type == type_shit && gold >= shit_upgrade_1to2)//upgrade shit
+                    else if (vacancy[vacancyIndex].tower_type == type_shit && *gold >= shit_upgrade_1to2)//upgrade shit
                     {
                         shit->setTexture("shit_Lv2.png");
                         shit->level++;
-                        gold -= shit_upgrade_1to2;
+                       * gold -= shit_upgrade_1to2;
                     }
-                    else if (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_1to2)//upgrade etower
+                    else if (vacancy[vacancyIndex].tower_type == type_etower && *gold >= etower_upgrade_1to2)//upgrade etower
                     {
                         etower->setTexture("etower_Lv2.png");
                         etower->level++;
-                        gold -= etower_upgrade_1to2;
+                        *gold -= etower_upgrade_1to2;
                     }
                 }
                 //2级升3级
                 else if (vacancy[vacancyIndex].spr->level == 2)
                 {
-                    if (vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_2to3)//upgrade cannon
+                    if (vacancy[vacancyIndex].tower_type == type_cannon && *gold >= cannon_upgrade_2to3)//upgrade cannon
                     {
                         cannon->setTexture("cannon_Lv3.png");
                         cannon->level++;
-                        gold -= cannon_upgrade_2to3;
+                        *gold -= cannon_upgrade_2to3;
                     }
-                    else if (vacancy[vacancyIndex].tower_type == type_shit && gold >= shit_upgrade_2to3)//upgrade shit
+                    else if (vacancy[vacancyIndex].tower_type == type_shit && * gold >= shit_upgrade_2to3)//upgrade shit
                     {
                         shit->setTexture("shit_Lv3.png");
                         shit->level++;
-                        gold -= shit_upgrade_2to3;
+                        *gold -= shit_upgrade_2to3;
                     }
-                    else if (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_2to3)//upgrade etower
+                    else if (vacancy[vacancyIndex].tower_type == type_etower && *gold >= etower_upgrade_2to3)//upgrade etower
                     {
                         etower->setTexture("etower_Lv3.png");
                         etower->level++;
-                        gold -= etower_upgrade_2to3;
+                        *gold -= etower_upgrade_2to3;
                     }
                 }
             }
@@ -336,10 +339,9 @@ void Map_father::onMouseDown_Do_Plant(Event* event)
                 this->removeChild(vacancy[vacancyIndex].spr);
                 vacancy[vacancyIndex].tower_type = 0;
                 vacancy[vacancyIndex].spr = nullptr;
-                gold += delete_recover;
+                *gold += delete_recover;
             }
             
-            gold_label->setString(calculate_gold(gold));//更新金币
         }
         else if (IsFrame(x, y, AllFrames))//选中空地
         {
@@ -353,11 +355,11 @@ void Map_father::onMouseDown_Do_Plant(Event* event)
             {
                 upgrade_frame->setTexture("upgrade_grey.png");//升级按钮无效
                 delete_frame->setTexture("delete_grey.png");//删除按钮无效
-                if (gold >= cannon_build_cost && plant_cannon)
+                if (*gold >= cannon_build_cost && plant_cannon)
                     plant_cannon->setTexture("plant_cannon_available.png");//种植cannon按钮有效
-                if (gold >= shit_build_cost && plant_shit)
+                if (*gold >= shit_build_cost && plant_shit)
                     plant_shit->setTexture("plant_shit_available.png");//种植shit按钮有效
-                if (gold >= etower_build_cost && plant_etower)
+                if (*gold >= etower_build_cost && plant_etower)
                     plant_etower->setTexture("plant_etower_available.png");//种植etower按钮有效
             }
             else
@@ -370,9 +372,9 @@ void Map_father::onMouseDown_Do_Plant(Event* event)
                     plant_etower->setTexture("plant_etower_unavailable.png");//种植etower按钮失效
                 delete_frame->setTexture("delete_ready.png");//删除按钮有效
                 if ((vacancy[vacancyIndex].spr->level == 1
-                    && ((vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_1to2) || (vacancy[vacancyIndex].tower_type == type_shit && gold >= shit_upgrade_1to2) || (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_1to2)))
+                    && ((vacancy[vacancyIndex].tower_type == type_cannon && *gold >= cannon_upgrade_1to2) || (vacancy[vacancyIndex].tower_type == type_shit && *gold >= shit_upgrade_1to2) || (vacancy[vacancyIndex].tower_type == type_etower && *gold >= etower_upgrade_1to2)))
                     || (vacancy[vacancyIndex].spr->level == 2
-                    && ((vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_2to3) || (vacancy[vacancyIndex].tower_type == type_shit && gold >= shit_upgrade_2to3) || (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_2to3))))
+                    && ((vacancy[vacancyIndex].tower_type == type_cannon && *gold >= cannon_upgrade_2to3) || (vacancy[vacancyIndex].tower_type == type_shit && *gold >= shit_upgrade_2to3) || (vacancy[vacancyIndex].tower_type == type_etower && *gold >= etower_upgrade_2to3))))
                     upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
             }
         }
@@ -403,10 +405,9 @@ void Map_father::input_carrot_level_button()//放置萝卜升级按钮
 void Map_father::carrot_level_button_call_back(cocos2d::Ref* pSender)//萝卜升级按钮触发
 {
     if (carrot->level == 1)
-        gold -= carrot_level2_cost;
+        *gold -= carrot_level2_cost;
     if (carrot->level == 2)
-        gold -= carrot_level3_cost;
-    gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
+        *gold -= carrot_level3_cost;
     carrot->level++;
     carrot->HP += 10;//萝卜属性更新
     carrot->change_tex();//萝卜外貌更新
@@ -424,12 +425,12 @@ void Map_father::change_carrot_level_button(float dt)//检测萝卜是否可以�
     }
     else
     {
-        if (carrot->level == 1 && gold < carrot_level2_cost)
+        if (carrot->level == 1 && *gold < carrot_level2_cost)
         {
             carrot_level_button->setTouchEnabled(false);
             carrot_level_button->setBright(false);
         }
-        if (carrot->level == 2 && gold < carrot_level3_cost)
+        if (carrot->level == 2 && *gold < carrot_level3_cost)
         {
             carrot_level_button->setTouchEnabled(false);
             carrot_level_button->setBright(false);
@@ -532,35 +533,35 @@ void Map_One::game_begin()//游戏开始函数
     carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
     carrot->setPosition(carrot_x, carrot_y);
     //放置萝卜
-    carrot->HP = 10;
-    carrot->level = 1;
     carrot->change_tex();
     carrot->HP_Label->setString(carrot->calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
     this->addChild(carrot);
-
-    gold = gold_1;
-    gold_label = input_gold();//初始化金币标签
-    gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
-
+   
     this->addChild(monster_wave);
     monster_wave->setVisible(1);
-    boss_spawned = 0;
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_1), 1.0f, 2, 3.0f); //第1波：生成3个怪物1
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_2), 1.0f, 4, 13.0f);//第2波：生成5个怪物1
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_3), 1.0f, 5, 23.0f);//第3波：生成6个怪物1
     scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::spawnBoss), 33.0f);//boss
 
-    waitForConditionAndExecute(
-        [=](){return (carrot->HP <= 0);},
-        [=](){this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 0.1f);}
-        );
+    waitForConditionAndExecute
+    (
+        [=](){return (carrot->HP <= 0||(boss_spawned == true && boss->monCurrentLife == 0));},
+        [=]()
+        {if(carrot->HP<=0)
+            this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 0.1f);
+        else
+    {
+        map_two_flag = true; 
+        this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_success), 0.1f);
+    }
+        }
+   );//游戏结束判断
 
-    waitForConditionAndExecute(
-        [=]() {return (boss_spawned && boss == nullptr); },
-        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_success), 0.1f); clear_stage++;}
-    );
 
-    schedule(CC_SCHEDULE_SELECTOR(Map_father::change_carrot_level_button), 0.1f);//测试，检测萝卜能否升级
+
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::change_gold_label), 0.1f);//检测金币变化
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::change_carrot_level_button), 0.1f);//检测萝卜能否升级
 
 }
 
@@ -667,8 +668,6 @@ void Map_Two::game_begin()//游戏开始函数
     carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
     carrot->setPosition(carrot_x, carrot_y);
     //放置萝卜
-    carrot->HP = 10;
-    carrot->level = 1;
     carrot->change_tex();
     carrot->HP_Label->setString(carrot->calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
     this->addChild(carrot);
@@ -676,9 +675,7 @@ void Map_Two::game_begin()//游戏开始函数
     this->addChild(monster_wave);
     monster_wave->setVisible(1);
 
-    gold = gold_2;//金币变量
-    gold_label = input_gold();//生成标签
-    gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
+ 
 
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_1), 1.0f, 3, 3.0f); //第1波：生成4个怪物1
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_2), 1.0f, 4, 13.0f);//第2波：生成5个怪物1
@@ -687,15 +684,23 @@ void Map_Two::game_begin()//游戏开始函数
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster3_1), 1.0f, 5, 43.0f);//第3波：生成6个怪物3
     scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::spawnBoss), 53.0f);//boss
 
-    waitForConditionAndExecute(
-        [=]() {return (carrot->HP <= 0); },
-        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 0.1f); }
-    );
 
-    waitForConditionAndExecute(
-        [=]() {return (boss_spawned && boss == nullptr); },
-        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_success), 0.1f); clear_stage++; }
-    );
+    waitForConditionAndExecute
+    (
+        [=]() {return (carrot->HP <= 0 || (boss_spawned == true && boss->monCurrentLife == 0)); },
+        [=]()
+        {if (carrot->HP <= 0)
+        this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 0.1f);
+        else
+    {
+        map_two_flag = true;
+        this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_success), 0.1f);
+    }
+        }
+    );//游戏结束判断
+
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::change_gold_label), 0.1f);//检测金币变化
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::change_carrot_level_button), 0.1f);//检测萝卜能否升级
 }
 
 
@@ -801,8 +806,6 @@ void Map_Three::game_begin()//游戏开始函数
     carrot = Carrot::create("carrot_level1_1.png");//萝卜精灵变量
     carrot->setPosition(carrot_x, carrot_y);
     //放置萝卜
-    carrot->HP = 1000;
-    carrot->level = 1;
     carrot->change_tex();
     carrot->HP_Label->setString(carrot->calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
     this->addChild(carrot);
@@ -810,9 +813,7 @@ void Map_Three::game_begin()//游戏开始函数
     this->addChild(monster_wave);
     monster_wave->setVisible(1);
 
-    gold = gold_3;//金币变量
-    gold_label = input_gold();//生成标签
-    gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
+
 
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster2_1), 1.0f, 3, 3.0f); //第1波：生成4个怪物2
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster2_2), 1.0f, 4, 13.0f);//第2波：生成5个怪物2
@@ -822,15 +823,24 @@ void Map_Three::game_begin()//游戏开始函数
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster4_2), 1.0f, 5, 53.0f);//第3波：生成6个怪物4
     scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::spawnBoss), 63.0f);//boss
 
-    waitForConditionAndExecute(
-        [=]() {return (carrot->HP <= 0); },
-        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 0.1f); }
-    );
 
-    waitForConditionAndExecute(
-        [=]() {return (boss && boss->monCurrentLife <= 10); },
-        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_success), 0.1f); }
-    );
+    waitForConditionAndExecute
+    (
+        [=]() {return (carrot->HP <= 0 || (boss_spawned == true && boss->monCurrentLife == 0)); },
+        [=]()
+        {if (carrot->HP <= 0)
+        this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 0.1f);
+        else
+    {
+        map_two_flag = true;
+        this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_success), 0.1f);
+    }
+        }
+    );//游戏结束判断
+
+
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::change_gold_label), 0.1f);//检测金币变化
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::change_carrot_level_button), 0.1f);//检测萝卜能否升级
 
 }
 
