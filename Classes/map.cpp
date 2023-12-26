@@ -204,16 +204,7 @@ std::string Map_father::calculate_gold(const int gold)
 
 void Map_father::buttonCallback(cocos2d::Ref* pSender)//暂停键触发函数
 {
-    if (!Director::getInstance()->isPaused())
-    {
-        Director::getInstance()->pause();
-        AudioEngine::pauseAll();
-    }//暂停
-    else
-    {
-        Director::getInstance()->resume();
-        AudioEngine::resumeAll();
-    }//继续
+    Director::getInstance()->pushScene(settlement_pause::create());
 }
 
 void Map_father::menuCallback(cocos2d::Ref* pSender)//返回键触发函数

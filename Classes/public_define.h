@@ -46,7 +46,7 @@
 
 //π÷ ﬁ Ù–‘
 #define mon1_vit 5
-#define mon1_atk 2
+#define mon1_atk 10
 #define mon1_spd 3
 #define mon2_vit 8
 #define mon2_atk 2
