@@ -30,6 +30,7 @@ protected:
     Etower* etower = nullptr;
     Carrot* carrot = nullptr;
     ui::Button* carrot_level_button = nullptr;      //存放萝卜升级按钮
+    ui::Button* boom_button = nullptr;              //存放爆炸（作弊）按钮
     std::vector<FS> AllPlants;
     std::vector<FS> AllFrames;
     bool mouse_select_type = 0;
@@ -39,6 +40,7 @@ protected:
     int gold_content[1];                           //当前金币数数组
     int* gold=gold_content;                                       //当前金币数指针
     Label* gold_label;                              //金币标签
+    int boss_music;  //存放boss关音乐
     std::vector<std::vector<float>>walk_way;        //存放怪物行进的x,y轴的向量
     Node* monster_wave = new Node;
     MonSprite* boss = nullptr;

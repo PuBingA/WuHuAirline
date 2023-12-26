@@ -60,7 +60,7 @@
 #define mon4_atk 5
 #define mon4_spd 6
 #define mon5_vit 150
-#define mon5_atk 15
+#define mon5_atk 20
 #define mon5_spd 1
 
 #define type_cannon 1
@@ -79,7 +79,7 @@
 #define etower_upgrade_1to2 260
 #define etower_upgrade_2to3 300
 
-#define delete_recover 100
+#define delete_recover 80
 
 #define bullet_shoot_interval 2.0f
 #define bullet_fly_time 0.2f

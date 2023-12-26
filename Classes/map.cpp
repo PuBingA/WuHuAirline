@@ -133,6 +133,8 @@ void Map_father::spawnMonster4_3(float dt)
 
 void Map_father::spawnBoss(float dt)
 {
+    AudioEngine::pauseAll();
+    boss_music = AudioEngine::play2d("boss_background.mp3", false);
     boss_spawned = true;
     boss = MonSprite::create(5);
     boss->monster_spawn(walk_way);
@@ -225,12 +227,15 @@ void Map_father::menuCallback(cocos2d::Ref* pSender)//返回键触发函数
 
 void Map_father::game_over_success(float dt)
 {
+    AudioEngine::stop(boss_music);
         auto scene = settlement_success::createScene();
         Director::getInstance()->replaceScene(TransitionCrossFade::create(2.0f, scene));
 }
 
 void Map_father::game_over_failure(float dt)
 {
+    if(boss_spawned)
+        AudioEngine::stop(boss_music);
     auto scene = settlement_failure::createScene();
     Director::getInstance()->replaceScene(TransitionCrossFade::create(2.0f, scene));
 }
@@ -296,18 +301,21 @@ void Map_father::onMouseDown_Do_Plant(Event* event)
                         cannon->setTexture("cannon_Lv2.png");
                         cannon->level++;
                        * gold -= cannon_upgrade_1to2;
+                       auto evolution_effect = AudioEngine::play2d("evolution_effect.mp3",false);
                     }
                     else if (vacancy[vacancyIndex].tower_type == type_shit && *gold >= shit_upgrade_1to2)//upgrade shit
                     {
                         shit->setTexture("shit_Lv2.png");
                         shit->level++;
                        * gold -= shit_upgrade_1to2;
+                       auto evolution_effect = AudioEngine::play2d("evolution_effect.mp3", false);
                     }
                     else if (vacancy[vacancyIndex].tower_type == type_etower && *gold >= etower_upgrade_1to2)//upgrade etower
                     {
                         etower->setTexture("etower_Lv2.png");
                         etower->level++;
                         *gold -= etower_upgrade_1to2;
+                        auto evolution_effect = AudioEngine::play2d("evolution_effect.mp3", false);
                     }
                 }
                 //2级升3级
@@ -318,18 +326,21 @@ void Map_father::onMouseDown_Do_Plant(Event* event)
                         cannon->setTexture("cannon_Lv3.png");
                         cannon->level++;
                         *gold -= cannon_upgrade_2to3;
+                        auto evolution_effect = AudioEngine::play2d("evolution_effect.mp3", false);
                     }
                     else if (vacancy[vacancyIndex].tower_type == type_shit && * gold >= shit_upgrade_2to3)//upgrade shit
                     {
                         shit->setTexture("shit_Lv3.png");
                         shit->level++;
                         *gold -= shit_upgrade_2to3;
+                        auto evolution_effect = AudioEngine::play2d("evolution_effect.mp3", false);
                     }
                     else if (vacancy[vacancyIndex].tower_type == type_etower && *gold >= etower_upgrade_2to3)//upgrade etower
                     {
                         etower->setTexture("etower_Lv3.png");
                         etower->level++;
                         *gold -= etower_upgrade_2to3;
+                        auto evolution_effect = AudioEngine::play2d("evolution_effect.mp3", false);
                     }
                 }
             }
@@ -340,6 +351,7 @@ void Map_father::onMouseDown_Do_Plant(Event* event)
                 vacancy[vacancyIndex].tower_type = 0;
                 vacancy[vacancyIndex].spr = nullptr;
                 *gold += delete_recover;
+                auto delete_effect = AudioEngine::play2d("delete_effect.mp3", false);
             }
             
         }
@@ -408,6 +420,7 @@ void Map_father::carrot_level_button_call_back(cocos2d::Ref* pSender)//萝卜升
         *gold -= carrot_level2_cost;
     if (carrot->level == 2)
         *gold -= carrot_level3_cost;
+    auto evolution_effect = AudioEngine::play2d("success_scream.mp3", false);
     carrot->level++;
     carrot->HP += 10;//萝卜属性更新
     carrot->change_tex();//萝卜外貌更新
@@ -693,7 +706,7 @@ void Map_Two::game_begin()//游戏开始函数
         this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 0.1f);
         else
     {
-        map_two_flag = true;
+        map_three_flag = true;
         this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_success), 0.1f);
     }
         }

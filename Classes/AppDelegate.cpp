@@ -6,8 +6,8 @@ USING_NS_CC;
 
 
 //用于保存是否通关前面关卡的旗帜
-bool map_two_flag = true;
-bool map_three_flag = true;
+bool map_two_flag = false;
+bool map_three_flag = false;
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(1235, 694);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
@@ -80,7 +80,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // create a scene. it's an autorelease object
     auto scene = Opening::createScene();//创建场景
-    auto opening_background_music = AudioEngine::play2d("I Got Smoke.mp3", true);//背景音乐植入
+    auto opening_background_music = AudioEngine::play2d("background_music.mp3", true);//背景音乐植入
     // run
    
     director->runWithScene(scene);//移动到开始场景

@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include"AudioEngine.h"
 USING_NS_CC;
 
 class MonSprite : public Sprite//怪物类
@@ -140,6 +141,7 @@ public:
     //怪物去世
     int monster_die()
     {
+		auto die_effect= AudioEngine::play2d("monster_die.mp3", false);
 		int award = monster_basical_cost;
 		for (int i = 1; i < monType; i++)
 			award += 20;//不同种类，不同奖励。
@@ -193,6 +195,7 @@ public:
 	static Cannon* create(const std::string& filename, Node* monwave, int * gold)//初始化精灵
 	{
 		Cannon* cannon_sprite = new Cannon();
+		auto plant_effect = AudioEngine::play2d("plant_effect.mp3", false);
 		if (cannon_sprite && cannon_sprite->initWithFile(filename))
 		{
 			cannon_sprite->monster_wave = monwave;
@@ -234,6 +237,7 @@ public:
 						lock_target->addChild(bullet);
 						auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size / 2, monster_texture_size / 2));
 						bullet->runAction(bullet_fly);
+						auto bullet_effect = AudioEngine::play2d("shoot.mp3", false);
 						switch (level)
 						{
 							case 1:
@@ -268,6 +272,7 @@ public:
 	static Shit* create(const std::string& filename, Node* monwave,int*gold)//初始化精灵
 	{
 		Shit* shit_sprite = new Shit();
+		auto plant_effect = AudioEngine::play2d("plant_effect.mp3", false);
 		if (shit_sprite && shit_sprite->initWithFile(filename))
 		{
 			shit_sprite->monster_wave = monwave;
@@ -309,6 +314,7 @@ public:
 						lock_target->addChild(bullet);
 						auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size / 2, monster_texture_size / 2));
 						bullet->runAction(bullet_fly);
+						auto bullet_effect = AudioEngine::play2d("shoot.mp3", false);
 						scheduleOnce([=](float dt)
 							{
 								if (lock_target)
@@ -331,6 +337,7 @@ public:
 	static Etower* create(const std::string& filename, Node* monwave, int*gold)//初始化精灵
 	{
 		Etower* etower_sprite = new Etower();
+		auto plant_effect = AudioEngine::play2d("plant_effect.mp3", false);
 		if (etower_sprite && etower_sprite->initWithFile(filename))
 		{
 			etower_sprite->monster_wave = monwave;
@@ -371,6 +378,7 @@ public:
 						lock_target->addChild(bullet);
 						auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size / 2, monster_texture_size / 2));
 						bullet->runAction(bullet_fly);
+						auto bullet_effect = AudioEngine::play2d("shoot.mp3", false);
 						scheduleOnce([=](float dt)
 							{
 								if (lock_target)
