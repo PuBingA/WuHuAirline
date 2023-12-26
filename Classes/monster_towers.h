@@ -212,7 +212,6 @@ public:
 			tower->monster_wave = monwave;
 			tower->level = 1;
 			tower->guard();
-			tower->autorelease();
 			return tower;
 		}
 		CC_SAFE_DELETE(tower);
@@ -245,10 +244,12 @@ public:
 		}
 		scheduleOnce([=](float dt)
 			{
-				this->removeChild(bullet,1);
 				if (lock_target)
+				{
+					lock_target->removeChild(bullet,1);
 					lock_target->monster_hurt(bullet_atk);
-			}, bullet_fly_time, "bulletFlyTag");
+				}
+			}, bullet_fly_time, "CannonBulletTag");
 	}
 };
 
@@ -262,7 +263,7 @@ public:
 		{
 			tower->monster_wave = monwave;
 			tower->level = 1;
-			tower->autorelease();
+			tower->guard();
 			return tower;
 		}
 		CC_SAFE_DELETE(tower);
@@ -272,7 +273,8 @@ public:
 	virtual void shoot_bullet(float dt)
 	{
 		auto bullet = Sprite::create("shit_bullet.png");
-		bullet->setPosition(this->getPosition() - lock_target->getPosition());
+		auto relative_position = lock_target->getPosition() - this->getPosition();
+		bullet->setPosition(-relative_position);
 		lock_target->addChild(bullet);
 		auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size / 2, monster_texture_size / 2));
 		bullet->runAction(bullet_fly);
@@ -291,8 +293,11 @@ public:
 		scheduleOnce([=](float dt)
 			{
 				if (lock_target)
+				{
+					lock_target->removeChild(bullet, 1);
 					lock_target->monster_hurt(bullet_atk);
-			}, bullet_fly_time, "bulletFlyTag");
+				}
+			}, bullet_fly_time, "ShitBulletTag");
 	}
 };
 
@@ -306,6 +311,7 @@ public:
 		{
 			tower->monster_wave = monwave;
 			tower->level = 1;
+			tower->guard();
 			tower->autorelease();
 			return tower;
 		}
@@ -316,7 +322,8 @@ public:
 	virtual void shoot_bullet(float dt)
 	{
 		auto bullet = Sprite::create("etower_bullet.png");
-		bullet->setPosition(this->getPosition() - lock_target->getPosition());
+		auto relative_position = lock_target->getPosition() - this->getPosition();
+		bullet->setPosition(-relative_position);
 		lock_target->addChild(bullet);
 		auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size / 2, monster_texture_size / 2));
 		bullet->runAction(bullet_fly);
@@ -335,7 +342,10 @@ public:
 		scheduleOnce([=](float dt)
 			{
 				if (lock_target)
+				{
+					lock_target->removeChild(bullet, 1);
 					lock_target->monster_hurt(bullet_atk);
-			}, bullet_fly_time, "bulletFlyTag");
+				}
+			}, bullet_fly_time, "EtowerBulletTag");
 	}
 };

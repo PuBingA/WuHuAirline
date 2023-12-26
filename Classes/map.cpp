@@ -63,7 +63,6 @@ void Map_father::spawnMonster2_1(float dt)
 {
     MonSprite* monster = MonSprite::create(2);
     monster->monster_spawn(walk_way);
-    this->addChild(monster);
     monster_wave->addChild(monster);
     monster->monster_attack_carrot(carrot);
 
@@ -73,7 +72,6 @@ void Map_father::spawnMonster2_2(float dt)
 {
     MonSprite* monster = MonSprite::create(2);
     monster->monster_spawn(walk_way);
-    this->addChild(monster);
     monster_wave->addChild(monster);
     monster->monster_attack_carrot(carrot);
 }
@@ -82,7 +80,6 @@ void Map_father::spawnMonster2_3(float dt)
 {
     MonSprite* monster = MonSprite::create(2);
     monster->monster_spawn(walk_way);
-    this->addChild(monster);
     monster_wave->addChild(monster);
     monster->monster_attack_carrot(carrot);
 }
@@ -91,17 +88,14 @@ void Map_father::spawnMonster3_1(float dt)
 {
     MonSprite* monster = MonSprite::create(3);
     monster->monster_spawn(walk_way);
-    this->addChild(monster);
     monster_wave->addChild(monster);
     monster->monster_attack_carrot(carrot);
-
 }
 
 void Map_father::spawnMonster3_2(float dt)
 {
     MonSprite* monster = MonSprite::create(3);
     monster->monster_spawn(walk_way);
-    this->addChild(monster);
     monster_wave->addChild(monster);
     monster->monster_attack_carrot(carrot);
 }
@@ -110,7 +104,6 @@ void Map_father::spawnMonster3_3(float dt)
 {
     MonSprite* monster = MonSprite::create(3);
     monster->monster_spawn(walk_way);
-    this->addChild(monster);
     monster_wave->addChild(monster);
     monster->monster_attack_carrot(carrot);
 }
@@ -119,17 +112,14 @@ void Map_father::spawnMonster4_1(float dt)
 {
     MonSprite* monster = MonSprite::create(4);
     monster->monster_spawn(walk_way);
-    this->addChild(monster);
     monster_wave->addChild(monster);
     monster->monster_attack_carrot(carrot);
-
 }
 
 void Map_father::spawnMonster4_2(float dt)
 {
     MonSprite* monster = MonSprite::create(4);
     monster->monster_spawn(walk_way);
-    this->addChild(monster);
     monster_wave->addChild(monster);
     monster->monster_attack_carrot(carrot);
 }
@@ -138,7 +128,6 @@ void Map_father::spawnMonster4_3(float dt)
 {
     MonSprite* monster = MonSprite::create(4);
     monster->monster_spawn(walk_way);
-    this->addChild(monster);
     monster_wave->addChild(monster);
     monster->monster_attack_carrot(carrot);
 }
@@ -152,8 +141,8 @@ bool Map_father::init()//父类创建场景总函数
     Vec2 origin = Director::getInstance()->getVisibleOrigin();//获取opengl起点
     
     vacancy.clear();
-    for (int i = 0; i <= 37; i++)
-        vacancy.push_back({ i,0,0,nullptr });
+    for (int i = 0; i <= 50; i++)
+        vacancy.push_back({ i,0,nullptr });
 
     input_background();//放置背景图
     input_walk_way();//放置地板
@@ -244,6 +233,166 @@ void Map_father::game_over_failure(float dt)
     Director::getInstance()->replaceScene(TransitionCrossFade::create(2.0f, scene));
 }
 
+void Map_father::onMouseDown_Do_Plant(Event* event)
+{
+    EventMouse* e = dynamic_cast<EventMouse*>(event);
+    if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
+    {
+        float x = e->getCursorX(), y = e->getCursorY();
+        if (IsFramePlant(x, y, AllPlants) && mouse_select_type)//选中种植功能
+        {
+            //plant a cannon
+            if (IsFramePlant(x, y, AllPlants) == 1 && vacancy[vacancyIndex].spr == nullptr && gold >= cannon_build_cost)
+            {
+                //于目标点生成一级cannon
+                cannon = Cannon::create("cannon_Lv1.png",monster_wave);
+                this->addChild(cannon);
+                cannon->setPosition(AllFrames[vacancyIndex].adjusted._x, AllFrames[vacancyIndex].adjusted._y);
+                cannon->level = 1;
+                vacancy[vacancyIndex].tower_type = type_cannon;
+                vacancy[vacancyIndex].spr = cannon; //当前指针存入vacancy中
+                gold -= cannon_build_cost;
+                upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
+                delete_frame->setTexture("delete_ready.png");//删除按钮有效
+            }
+            //plant a shit
+            else if (IsFramePlant(x, y, AllPlants) == 2 && vacancy[vacancyIndex].spr == nullptr && gold >= shit_build_cost)
+            {
+                //于目标点生成一级shit
+                shit = Shit::create("shit_Lv1.png", monster_wave);
+                this->addChild(shit);
+                shit->setPosition(AllFrames[vacancyIndex].adjusted._x, AllFrames[vacancyIndex].adjusted._y);
+                shit->level = 1;
+                vacancy[vacancyIndex].tower_type = type_shit;
+                vacancy[vacancyIndex].spr = shit; //当前指针存入vacancy中
+                gold -= shit_build_cost;
+                upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
+                delete_frame->setTexture("delete_ready.png");//删除按钮有效
+            }
+            //plant a etower
+            else if (IsFramePlant(x, y, AllPlants) == 3 && vacancy[vacancyIndex].spr == nullptr && gold >= etower_build_cost)
+            {
+                //于目标点生成一级shit
+                etower = Etower::create("etower_Lv1.png", monster_wave);
+                this->addChild(etower);
+                etower->setPosition(AllFrames[vacancyIndex].adjusted._x, AllFrames[vacancyIndex].adjusted._y);
+                etower->level = 1;
+                vacancy[vacancyIndex].tower_type = type_etower;
+                vacancy[vacancyIndex].spr = etower; //当前指针存入vacancy中
+                gold -= etower_build_cost;
+                upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
+                delete_frame->setTexture("delete_ready.png");//删除按钮有效
+            }
+            //upgrade
+            else if (IsFramePlant(x, y, AllPlants) == 4 && vacancy[vacancyIndex].spr)
+            {
+                //1级升2级
+                if (vacancy[vacancyIndex].spr->level == 1)
+                {
+                    if (vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_1to2)//upgrade cannon
+                    {
+                        cannon->setTexture("cannon_Lv2.png");
+                        cannon->level++;
+                        gold -= cannon_upgrade_1to2;
+                    }
+                    else if (vacancy[vacancyIndex].tower_type == type_shit && gold >= shit_upgrade_1to2)//upgrade shit
+                    {
+                        shit->setTexture("shit_Lv2.png");
+                        shit->level++;
+                        gold -= shit_upgrade_1to2;
+                    }
+                    else if (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_1to2)//upgrade etower
+                    {
+                        etower->setTexture("etower_Lv2.png");
+                        etower->level++;
+                        gold -= etower_upgrade_1to2;
+                    }
+                }
+                //2级升3级
+                else if (vacancy[vacancyIndex].spr->level == 2)
+                {
+                    if (vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_2to3)//upgrade cannon
+                    {
+                        cannon->setTexture("cannon_Lv3.png");
+                        cannon->level++;
+                        gold -= cannon_upgrade_2to3;
+                    }
+                    else if (vacancy[vacancyIndex].tower_type == type_shit && gold >= shit_upgrade_2to3)//upgrade shit
+                    {
+                        shit->setTexture("shit_Lv3.png");
+                        shit->level++;
+                        gold -= shit_upgrade_2to3;
+                    }
+                    else if (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_2to3)//upgrade etower
+                    {
+                        etower->setTexture("etower_Lv3.png");
+                        etower->level++;
+                        gold -= etower_upgrade_2to3;
+                    }
+                }
+            }
+            //delete
+            else if (IsFramePlant(x, y, AllPlants) == 5 && vacancy[vacancyIndex].spr)
+            {
+                this->removeChild(vacancy[vacancyIndex].spr);
+                vacancy[vacancyIndex].tower_type = 0;
+                vacancy[vacancyIndex].spr = nullptr;
+                gold += delete_recover;
+            }
+            
+            gold_label->setString(calculate_gold(gold));//更新金币
+        }
+        else if (IsFrame(x, y, AllFrames))//选中空地
+        {
+            mouse_select_type = 1;
+            yellow_frame->setVisible(true);
+            yellow_frame->setPosition(x, y);
+            singleclick._x = x, singleclick._y = y; //保存黄色框位置，准备种植
+            vacancyIndex = CheckBox(singleclick, AllFrames);
+            //查询选中位置种植状态
+            if (vacancy[vacancyIndex].spr == nullptr)
+            {
+                upgrade_frame->setTexture("upgrade_grey.png");//升级按钮无效
+                delete_frame->setTexture("delete_grey.png");//删除按钮无效
+                if (gold >= cannon_build_cost && plant_cannon)
+                    plant_cannon->setTexture("plant_cannon_available.png");//种植cannon按钮有效
+                if (gold >= shit_build_cost && plant_shit)
+                    plant_shit->setTexture("plant_shit_available.png");//种植shit按钮有效
+                if (gold >= etower_build_cost && plant_etower)
+                    plant_etower->setTexture("plant_etower_available.png");//种植etower按钮有效
+            }
+            else
+            {
+                if (plant_cannon)
+                    plant_cannon->setTexture("plant_cannon_unavailable.png");//种植cannon按钮失效
+                if (plant_shit)
+                    plant_shit->setTexture("plant_shit_unavailable.png");//种植shit按钮失效
+                if (plant_etower)
+                    plant_etower->setTexture("plant_etower_unavailable.png");//种植etower按钮失效
+                delete_frame->setTexture("delete_ready.png");//删除按钮有效
+                if ((vacancy[vacancyIndex].spr->level == 1
+                    && ((vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_1to2) || (vacancy[vacancyIndex].tower_type == type_shit && gold >= shit_upgrade_1to2) || (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_1to2)))
+                    || (vacancy[vacancyIndex].spr->level == 2
+                    && ((vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_2to3) || (vacancy[vacancyIndex].tower_type == type_shit && gold >= shit_upgrade_2to3) || (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_2to3))))
+                    upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
+            }
+        }
+        else
+        {
+            mouse_select_type = 0;
+            yellow_frame->setVisible(false);
+            if (plant_cannon)
+                plant_cannon->setTexture("plant_cannon_unavailable.png");//种植cannon按钮失效
+            if (plant_shit)
+                plant_shit->setTexture("plant_shit_unavailable.png");//种植shit按钮失效
+            if (plant_etower)
+                plant_etower->setTexture("plant_etower_unavailable.png");//种植etower按钮失效
+            upgrade_frame->setTexture("upgrade_grey.png");
+            delete_frame->setTexture("delete_grey.png");
+        }
+    }
+}
+
 template<typename T>
 void Map_father::input_brick(T x, T y ,int choice)//choice==1 放置怪物绿色地板
 {
@@ -262,6 +411,8 @@ void Map_father::input_brick(T x, T y ,int choice)//choice==1 放置怪物绿色
 /*------------------------------地图一函数----------------------------------*/
 void Map_One::input_listener()
 {
+    AllFrames = AllFrames_Lv1;
+    AllPlants = AllPlants_Lv1;
     auto mouseListener = EventListenerMouse::create();
     mouseListener->onMouseDown = CC_CALLBACK_1(Map_One::onMouseDown_Do_Plant, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
@@ -272,142 +423,6 @@ void Map_One::input_listener()
     yellow_frame->setVisible(false);
 }
 
-void Map_One::onMouseDown_Do_Plant(Event* event)
-{
-    EventMouse* e = dynamic_cast<EventMouse*>(event);
-    if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
-    {
-        float x = e->getCursorX(), y = e->getCursorY();
-        if (IsFramePlant(x, y, AllPlants_Lv1) && mouse_select_type)//选中种植功能
-        {
-            //plant a cannon
-            if (x <= 450.1 && x >= 449.9 && vacancy[vacancyIndex].level == 0 && gold >= cannon_build_cost)
-            {
-                //于目标点生成一级cannon
-                cannon = Cannon::create("cannon_Lv1.png",monster_wave);
-                this->addChild(cannon);
-                cannon->setPosition(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y);
-                vacancy[vacancyIndex].level++;
-                vacancy[vacancyIndex].tower_type = type_cannon;
-                vacancy[vacancyIndex].spr = cannon; //当前指针存入vacancy中
-                gold -= cannon_build_cost;
-                upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
-                delete_frame->setTexture("delete_ready.png");//删除按钮有效
-            }
-            //plant a shit
-            else if (x <= 550.1 && x >= 549.9 && vacancy[vacancyIndex].level == 0 && gold >= shit_build_cost)
-            {
-                //于目标点生成一级shit
-                shit = Shit::create("shit_Lv1.png", monster_wave);
-                this->addChild(shit);
-                shit->setPosition(AllFrames_Lv1[vacancyIndex].adjusted._x, AllFrames_Lv1[vacancyIndex].adjusted._y);
-                vacancy[vacancyIndex].level++;
-                vacancy[vacancyIndex].tower_type = type_shit;
-                vacancy[vacancyIndex].spr = shit; //当前指针存入vacancy中
-                gold -= shit_build_cost;
-                upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
-                delete_frame->setTexture("delete_ready.png");//删除按钮有效
-            }
-            //upgrade
-            else if (x <= 650.1 && x >= 649.9)
-            {
-                //1级升2级
-                if (vacancy[vacancyIndex].level == 1)
-                {
-                    if (vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_1to2)//upgrade cannon
-                    {
-                        cannon->setTexture("cannon_Lv2.png");
-                        vacancy[vacancyIndex].level++;
-                        gold -= cannon_upgrade_1to2;
-                    }
-                    else if (vacancy[vacancyIndex].tower_type == type_shit && gold >= shit_upgrade_1to2)//upgrade shit
-                    {
-                        shit->setTexture("shit_Lv2.png");
-                        vacancy[vacancyIndex].level++;
-                        gold -= shit_upgrade_1to2;
-                    }
-                }
-                //2级升3级
-                else if (vacancy[vacancyIndex].level == 2)
-                {
-                    if (vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_2to3)//upgrade cannon
-                    {
-                        cannon->setTexture("cannon_Lv3.png");
-                        vacancy[vacancyIndex].level++;
-                        gold -= cannon_upgrade_2to3;
-                    }
-                    else if (vacancy[vacancyIndex].tower_type == type_shit && gold >= shit_upgrade_2to3)//upgrade shit
-                    {
-                        shit->setTexture("shit_Lv3.png");
-                        vacancy[vacancyIndex].level++;
-                        gold -= shit_upgrade_2to3;
-                    }
-                }
-            }
-            //delete
-            else if (x <= 750.1 && x >= 749.9 && vacancy[vacancyIndex].level)
-            {
-                this->removeChild(vacancy[vacancyIndex].spr);
-                vacancy[vacancyIndex].level = 0;
-                vacancy[vacancyIndex].tower_type = 0;
-                vacancy[vacancyIndex].spr = nullptr;
-                gold += delete_recover;
-            }
-            
-            gold_label->setString(calculate_gold(gold));//更新金币
-        }
-        else if (IsFrame(x, y, AllFrames_Lv1))//选中空地
-        {
-            mouse_select_type = 1;
-            yellow_frame->setVisible(true);
-            yellow_frame->setPosition(x, y);
-            singleclick._x = x, singleclick._y = y; //保存黄色框位置，准备种植
-            vacancyIndex = CheckBox(singleclick, AllFrames_Lv1);
-            //查询选中位置种植状态
-            switch (vacancy[vacancyIndex].level)
-            {
-                case 0://未种植
-                    upgrade_frame->setTexture("upgrade_grey.png");//升级按钮无效
-                    delete_frame->setTexture("delete_grey.png");//删除按钮无效
-                    if (gold >= cannon_build_cost)
-                        plant_cannon->setTexture("plant_cannon_available.png");//种植cannon按钮有效
-                    if (gold >= shit_build_cost)
-                        plant_shit->setTexture("plant_shit_available.png");//种植shit按钮有效
-                    break;
-                case 1://种植了1级炮台
-                    plant_cannon->setTexture("plant_cannon_unavailable.png");//种植cannon按钮失效
-                    plant_shit->setTexture("plant_shit_unavailable.png");//种植shit按钮失效
-                    delete_frame->setTexture("delete_ready.png");//删除按钮有效
-                    if (vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_1to2)
-                        upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
-                    if (vacancy[vacancyIndex].tower_type == type_shit && gold >= shit_upgrade_1to2)
-                        upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
-                    break;
-                case 2:
-                    plant_cannon->setTexture("plant_cannon_unavailable.png");//种植cannon按钮失效
-                    plant_shit->setTexture("plant_shit_unavailable.png");//种植shit按钮失效
-                    delete_frame->setTexture("delete_ready.png");//删除按钮有效
-                    if ((vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_2to3) || (vacancy[vacancyIndex].tower_type == type_shit && gold >= shit_upgrade_2to3))
-                        upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
-                    break;
-                case 3:
-                    plant_cannon->setTexture("plant_cannon_unavailable.png");//种植cannon按钮失效
-                    plant_shit->setTexture("plant_shit_unavailable.png");//种植shit按钮失效
-                    delete_frame->setTexture("delete_ready.png");//删除按钮有效
-                    break;
-            }
-        }
-        else
-        {
-            mouse_select_type = 0;
-            yellow_frame->setVisible(false);
-            plant_cannon->setTexture("plant_cannon_unavailable.png");
-            plant_shit->setTexture("plant_shit_unavailable.png");
-            upgrade_frame->setTexture("upgrade_grey.png");
-            delete_frame->setTexture("delete_grey.png");
-        }
-    }
-}
 
 void Map_One::ShowPlantButton()
 {
@@ -508,6 +523,8 @@ void Map_One::game_begin()//游戏开始函数
 
 void Map_Two::input_listener()
 {
+    AllFrames = AllFrames_Lv2;
+    AllPlants = AllPlants_Lv2;
     auto mouseListener = EventListenerMouse::create();
     mouseListener->onMouseDown = CC_CALLBACK_1(Map_Two::onMouseDown_Do_Plant, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
@@ -542,141 +559,6 @@ void Map_Two::ShowPlantButton()
     delete_frame->setScale(0.7f);
     delete_frame->setPosition(60.0f, 250.0f);
     delete_frame->setTexture("delete_grey.png");
-}
-
-void Map_Two::onMouseDown_Do_Plant(Event* event)
-{
-    EventMouse* e = dynamic_cast<EventMouse*>(event);
-    if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
-    {
-        float x = e->getCursorX(), y = e->getCursorY();
-        if (IsFramePlant(x, y, AllPlants_Lv2) && mouse_select_type)//选中种植功能
-        {
-            //plant a cannon
-            if (y <= 550.1 && y >= 549.9 && vacancy[vacancyIndex].level == 0 && gold >= cannon_build_cost)
-            {
-                //于目标点生成一级cannon
-                cannon = Cannon::create("cannon_Lv1.png", monster_wave);
-                this->addChild(cannon);
-                cannon->setPosition(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y);
-                vacancy[vacancyIndex].level++;
-                vacancy[vacancyIndex].tower_type = type_cannon;
-                vacancy[vacancyIndex].spr = cannon; //当前指针存入vacancy中
-                gold -= cannon_build_cost;
-            }
-            //plant a etower
-            else if (y <= 450.1 && y >= 449.9 && vacancy[vacancyIndex].level == 0 && gold >= etower_build_cost)
-            {
-                //于目标点生成一级etower
-                etower = Etower::create("etower_Lv1.png", monster_wave);
-                this->addChild(etower);
-                etower->setPosition(AllFrames_Lv2[vacancyIndex].adjusted._x, AllFrames_Lv2[vacancyIndex].adjusted._y);
-                vacancy[vacancyIndex].level++;
-                vacancy[vacancyIndex].tower_type = type_etower;
-                vacancy[vacancyIndex].spr = etower; //当前指针存入vacancy中
-                gold -= etower_build_cost;
-            }
-            //upgrade
-            else if (y <= 350.1 && y >= 349.9)
-            {
-                //1级升2级
-                if (vacancy[vacancyIndex].level == 1)
-                {
-                    if (vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_1to2)//upgrade cannon
-                    {
-                        cannon->setTexture("cannon_Lv2.png");
-                        vacancy[vacancyIndex].level++;
-                        gold -= cannon_upgrade_1to2;
-                    }
-                    else if (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_1to2)//upgrade etower
-                    {
-                        etower->setTexture("etower_Lv2.png");
-                        vacancy[vacancyIndex].level++;
-                        gold -= etower_upgrade_1to2;
-                    }
-                }
-                //2级升3级
-                else if (vacancy[vacancyIndex].level == 2)
-                {
-                    if (vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_2to3)//upgrade cannon
-                    {
-                        cannon->setTexture("cannon_Lv3.png");
-                        vacancy[vacancyIndex].level++;
-                        gold -= cannon_upgrade_2to3;
-                    }
-                    else if (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_2to3)//upgrade etower
-                    {
-                        etower->setTexture("etower_Lv3.png");
-                        vacancy[vacancyIndex].level++;
-                        gold -= etower_upgrade_2to3;
-                    }
-                }
-            }
-            //delete
-            else if (y <= 250.1 && y >= 249.9 && vacancy[vacancyIndex].level)
-            {
-                this->removeChild(vacancy[vacancyIndex].spr);
-                vacancy[vacancyIndex].level = 0;
-                vacancy[vacancyIndex].tower_type = 0;
-                vacancy[vacancyIndex].spr = nullptr;
-                gold += delete_recover;
-            }
-
-            gold_label->setString(calculate_gold(gold));//更新金币
-        }
-        else if (IsFrame(x, y, AllFrames_Lv2))//选中空地
-        {
-            mouse_select_type = 1;
-            yellow_frame->setVisible(true);
-            yellow_frame->setPosition(x, y);
-            singleclick._x = x, singleclick._y = y; //保存黄色框位置，准备种植
-            vacancyIndex = CheckBox(singleclick, AllFrames_Lv2);
-
-            //查询选中位置种植状态
-            switch (vacancy[vacancyIndex].level)
-            {
-                case 0://未种植
-                    upgrade_frame->setTexture("upgrade_grey.png");//升级按钮无效
-                    delete_frame->setTexture("delete_grey.png");//删除按钮无效
-                    if (gold >= cannon_build_cost)
-                        plant_cannon->setTexture("plant_cannon_available.png");//种植cannon按钮有效
-                    if (gold >= etower_build_cost)
-                        plant_etower->setTexture("plant_etower_available.png");//种植etower按钮有效
-                    break;
-                case 1://种植了1级炮台
-                    plant_cannon->setTexture("plant_cannon_unavailable.png");//种植cannon按钮失效
-                    plant_etower->setTexture("plant_etower_unavailable.png");//种植etower按钮失效
-                    delete_frame->setTexture("delete_ready.png");//删除按钮有效
-                    if (vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_1to2)
-                        upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
-                    if (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_1to2)
-                        upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
-                    break;
-                case 2:
-                    plant_cannon->setTexture("plant_cannon_unavailable.png");//种植cannon按钮失效
-                    plant_etower->setTexture("plant_etower_unavailable.png");//种植etower按钮失效
-                    delete_frame->setTexture("delete_ready.png");//删除按钮有效
-                    if ((vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_2to3) || (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_2to3))
-                        upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
-                    break;
-                case 3:
-                    plant_cannon->setTexture("plant_cannon_unavailable.png");//种植cannon按钮失效
-                    plant_etower->setTexture("plant_etower_unavailable.png");//种植etower按钮失效
-                    delete_frame->setTexture("delete_ready.png");//删除按钮有效
-                    break;
-            }
-        }
-        else
-        {
-            mouse_select_type = 0;
-            yellow_frame->setVisible(false);
-            plant_cannon->setTexture("plant_cannon_unavailable.png");
-            plant_etower->setTexture("plant_etower_unavailable.png");
-            upgrade_frame->setTexture("upgrade_grey.png");
-            delete_frame->setTexture("delete_grey.png");
-        }
-    }
-
 }
 
 void Map_Two::input_background()//放置背景图
@@ -768,6 +650,8 @@ void Map_Two::game_begin()//游戏开始函数
 /*------------------------------地图三函数----------------------------------*/
 void Map_Three::input_listener()
 {
+    AllFrames = AllFrames_Lv3;
+    AllPlants = AllPlants_Lv3;
     auto mouseListener = EventListenerMouse::create();
     mouseListener->onMouseDown = CC_CALLBACK_1(Map_Three::onMouseDown_Do_Plant, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
@@ -807,173 +691,6 @@ void Map_Three::ShowPlantButton()
     delete_frame->setPosition(60.0f, 150.0f);
     delete_frame->setScale(0.7f);
     delete_frame->setTexture("delete_grey.png");
-}
-
-void Map_Three::onMouseDown_Do_Plant(Event* event)
-{
-    EventMouse* e = dynamic_cast<EventMouse*>(event);
-    if (e->getMouseButton() == EventMouse::MouseButton::BUTTON_LEFT)
-    {
-        float x = e->getCursorX(), y = e->getCursorY();
-        if (IsFramePlant(x, y, AllPlants_Lv3) && mouse_select_type)//选中种植功能
-        {
-            //plant a cannon
-            if (y <= 550.1 && y >= 549.9 && vacancy[vacancyIndex].level == 0 && gold >= cannon_build_cost)
-            {
-                //于目标点生成一级cannon
-                cannon = Cannon::create("cannon_Lv1.png", monster_wave);
-                this->addChild(cannon);
-                cannon->setPosition(AllFrames_Lv3[vacancyIndex].adjusted._x, AllFrames_Lv3[vacancyIndex].adjusted._y);
-                vacancy[vacancyIndex].level++;
-                vacancy[vacancyIndex].tower_type = type_cannon;
-                vacancy[vacancyIndex].spr = cannon; //当前指针存入vacancy中
-                gold -= cannon_build_cost;
-            }
-            //plant a shit
-            else if (y <= 450.1 && y >= 449.9 && vacancy[vacancyIndex].level == 0 && gold >= shit_build_cost)
-            {
-                //于目标点生成一级shit
-                shit = Shit::create("shit_Lv1.png", monster_wave);
-                this->addChild(shit);
-                shit->setPosition(AllFrames_Lv3[vacancyIndex].adjusted._x, AllFrames_Lv3[vacancyIndex].adjusted._y);
-                vacancy[vacancyIndex].level++;
-                vacancy[vacancyIndex].tower_type = type_shit;
-                vacancy[vacancyIndex].spr = shit; //当前指针存入vacancy中
-                gold -= shit_build_cost;
-            }
-            //plant a etower
-            else if (y <= 350.1 && y >= 349.9 && vacancy[vacancyIndex].level == 0 && gold >= etower_build_cost)
-            {
-                //于目标点生成一级etower
-                etower = Etower::create("etower_Lv1.png", monster_wave);
-                this->addChild(etower);
-                etower->setPosition(AllFrames_Lv3[vacancyIndex].adjusted._x, AllFrames_Lv3[vacancyIndex].adjusted._y);
-                vacancy[vacancyIndex].level++;
-                vacancy[vacancyIndex].tower_type = type_etower;
-                vacancy[vacancyIndex].spr = etower; //当前指针存入vacancy中
-                gold -= etower_build_cost;
-            }
-            //upgrade
-            else if (y <= 250.1 && y >= 249.9)
-            {
-                //1级升2级
-                if (vacancy[vacancyIndex].level == 1)
-                {
-                    if (vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_1to2)//upgrade cannon
-                    {
-                        cannon->setTexture("cannon_Lv2.png");
-                        vacancy[vacancyIndex].level++;
-                        gold -= cannon_upgrade_1to2;
-                    }
-                    else if (vacancy[vacancyIndex].tower_type == type_shit && gold >= shit_upgrade_1to2)//upgrade shit
-                    {
-                        shit->setTexture("shit_Lv2.png");
-                        vacancy[vacancyIndex].level++;
-                        gold -= shit_upgrade_1to2;
-                    }
-                    else if (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_1to2)//upgrade etower
-                    {
-                        etower->setTexture("etower_Lv2.png");
-                        vacancy[vacancyIndex].level++;
-                        gold -= etower_upgrade_1to2;
-                    }
-                }
-                //2级升3级
-                else if (vacancy[vacancyIndex].level == 2)
-                {
-                    if (vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_2to3)//upgrade cannon
-                    {
-                        cannon->setTexture("cannon_Lv3.png");
-                        vacancy[vacancyIndex].level++;
-                        gold -= cannon_upgrade_2to3;
-                    }
-                    else if (vacancy[vacancyIndex].tower_type == type_shit && gold >= shit_upgrade_2to3)//upgrade shit
-                    {
-                        shit->setTexture("shit_Lv3.png");
-                        vacancy[vacancyIndex].level++;
-                        gold -= shit_upgrade_2to3;
-                    }
-                    else if (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_2to3)//upgrade etower
-                    {
-                        etower->setTexture("etower_Lv3.png");
-                        vacancy[vacancyIndex].level++;
-                        gold -= etower_upgrade_2to3;
-                    }
-                }
-            }
-            //delete
-            else if (y <= 150.1 && y >= 149.9 && vacancy[vacancyIndex].level)
-            {
-                this->removeChild(vacancy[vacancyIndex].spr);
-                vacancy[vacancyIndex].level = 0;
-                vacancy[vacancyIndex].tower_type = 0;
-                vacancy[vacancyIndex].spr = nullptr;
-                gold += delete_recover;
-            }
-
-            gold_label->setString(calculate_gold(gold));//更新金币
-        }
-        else if (IsFrame(x, y, AllFrames_Lv3))//选中空地
-        {
-            mouse_select_type = 1;
-            yellow_frame->setVisible(true);
-            yellow_frame->setPosition(x, y);
-            singleclick._x = x, singleclick._y = y; //保存黄色框位置，准备种植
-            vacancyIndex = CheckBox(singleclick, AllFrames_Lv3);
-
-            //查询选中位置种植状态
-            switch (vacancy[vacancyIndex].level)
-            {
-                case 0://未种植
-                    upgrade_frame->setTexture("upgrade_grey.png");//升级按钮无效
-                    delete_frame->setTexture("delete_grey.png");//删除按钮无效
-                    if (gold >= cannon_build_cost)
-                        plant_cannon->setTexture("plant_cannon_available.png");//种植cannon按钮有效
-                    if (gold >= shit_build_cost)
-                        plant_shit->setTexture("plant_shit_available.png");//种植shit按钮有效
-                    if (gold >= etower_build_cost)
-                        plant_etower->setTexture("plant_etower_available.png");//种植etower按钮有效
-                    break;
-                case 1://种植了1级炮台
-                    plant_cannon->setTexture("plant_cannon_unavailable.png");//种植cannon按钮失效
-                    plant_shit->setTexture("plant_shit_unavailable.png");//种植shit按钮失效
-                    plant_etower->setTexture("plant_etower_unavailable.png");//种植etower按钮失效
-                    delete_frame->setTexture("delete_ready.png");//删除按钮有效
-                    if (vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_1to2)
-                        upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
-                    if (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_1to2)
-                        upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
-                    break;
-                case 2:
-                    plant_cannon->setTexture("plant_cannon_unavailable.png");//种植cannon按钮失效
-                    plant_shit->setTexture("plant_shit_unavailable.png");//种植shit按钮失效
-                    plant_etower->setTexture("plant_etower_unavailable.png");//种植etower按钮失效
-                    delete_frame->setTexture("delete_ready.png");//删除按钮有效
-                    if ((vacancy[vacancyIndex].tower_type == type_cannon && gold >= cannon_upgrade_2to3)
-                        || (vacancy[vacancyIndex].tower_type == type_shit && gold >= shit_upgrade_2to3)
-                        || (vacancy[vacancyIndex].tower_type == type_etower && gold >= etower_upgrade_2to3))
-                        upgrade_frame->setTexture("upgrade_ready.png");//升级按钮有效
-                    break;
-                case 3:
-                    plant_cannon->setTexture("plant_cannon_unavailable.png");//种植cannon按钮失效
-                    plant_shit->setTexture("plant_shit_unavailable.png");//种植shit按钮失效
-                    plant_etower->setTexture("plant_etower_unavailable.png");//种植etower按钮失效
-                    delete_frame->setTexture("delete_ready.png");//删除按钮有效
-                    break;
-            }
-        }
-        else
-        {
-            mouse_select_type = 0;
-            yellow_frame->setVisible(false);
-            plant_cannon->setTexture("plant_cannon_unavailable.png");
-            plant_shit->setTexture("plant_shit_unavailable.png");
-            plant_etower->setTexture("plant_etower_unavailable.png");
-            upgrade_frame->setTexture("upgrade_grey.png");
-            delete_frame->setTexture("delete_grey.png");
-        }
-    }
-
 }
 
 void Map_Three::input_background()//生成背景图
@@ -1074,19 +791,19 @@ bool IsFrame(float& x, float& y, const std::vector<FS>& allframes)
         {
             x = adjust_coord.adjusted._x;
             y = adjust_coord.adjusted._y;
-            return true;
+            return 1;
         }
-    return false;
+    return 0;
 }
 
-bool IsFramePlant(float& x, float& y, const std::vector<FS>& allplants)
+int IsFramePlant(float& x, float& y, const std::vector<FS>& allplants)
 {
     for (auto& adjust_coord : allplants)
         if (x > adjust_coord.left_up._x && x < adjust_coord.right_down._x && y > adjust_coord.right_down._y && y < adjust_coord.left_up._y)
         {
             x = adjust_coord.adjusted._x;
             y = adjust_coord.adjusted._y;
-            return true;
+            return adjust_coord.index;
         }
-    return false;
+    return 0;
 }

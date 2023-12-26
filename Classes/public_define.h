@@ -84,6 +84,6 @@
 #define etower1_atk 6
 #define etower2_atk 8
 #define etower3_atk 10
-#define bullet_range1 500
-#define bullet_range2 650
-#define bullet_range3 750
+#define bullet_range1 200
+#define bullet_range2 300
+#define bullet_range3 350

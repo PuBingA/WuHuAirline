@@ -11,9 +11,8 @@ USING_NS_CC;
 typedef struct Vacancy_State
 {
     int index;
-    int level;
     int tower_type;
-    Sprite* spr;
+    Tower* spr;
 }VS;
 
 class Map_father :public cocos2d::Scene
@@ -29,8 +28,9 @@ protected:
     Shit* shit = nullptr;
     Etower* etower = nullptr;
     Carrot* carrot = nullptr;
+    std::vector<FS> AllPlants;
+    std::vector<FS> AllFrames;
     bool mouse_select_type = 0;
-    int WhichPlant = 0;
     XY singleclick;                                 //存储点击的位置
     int vacancyIndex = -1;                          //点位索引
     std::vector<VS> vacancy;                        //vacancy存放每个可放置位置的信息
@@ -49,6 +49,7 @@ public:
     void input_gold_item();                           //放置金币UI
     virtual void ShowPlantButton() {};
     virtual void input_listener() {};
+    void onMouseDown_Do_Plant(Event* event);
     cocos2d::Label* input_gold();                     //生成金币标签
     std::string calculate_gold(const int gold);       //根据当前金币，得出字符串
     virtual void game_begin() {};                     //游戏开始函数
@@ -77,7 +78,6 @@ class Map_One :public Map_father
 public:
     virtual void ShowPlantButton();
     virtual void input_listener();
-    void onMouseDown_Do_Plant(Event* event);
     void StartAttack();
     virtual void input_background();
     virtual void input_walk_way();
@@ -90,8 +90,6 @@ class Map_Two :public Map_father
 public:
     virtual void ShowPlantButton();
     virtual void input_listener();
-    void onMouseDown_Do_Plant(Event* event);
-
     virtual void input_background();
     virtual void input_walk_way();
     virtual void game_begin();      //游戏开始函数
@@ -103,8 +101,6 @@ class Map_Three :public Map_father
 public:
     virtual void ShowPlantButton();
     virtual void input_listener();
-    void onMouseDown_Do_Plant(Event* event);
-
     virtual void input_background();
     virtual void input_walk_way();
     virtual void game_begin();      //游戏开始函数
