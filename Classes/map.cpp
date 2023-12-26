@@ -1,6 +1,5 @@
 ﻿#include "map.h"
 #include "choose_map.h"
-#include "ui/CocosGUI.h"
 #include "settlement_interface.h"
 USING_NS_CC;
 
@@ -148,6 +147,7 @@ bool Map_father::init()//父类创建场景总函数
     input_walk_way();//放置地板
     input_return_pause();//放置返回，暂停键
     input_gold_item();//放置金币
+    input_carrot_level_button();
     ShowPlantButton();
     input_listener();
     game_begin();//开始游戏
@@ -393,6 +393,53 @@ void Map_father::onMouseDown_Do_Plant(Event* event)
     }
 }
 
+void Map_father::input_carrot_level_button()//放置萝卜升级按钮
+{
+    carrot_level_button = ui::Button::create("carrot_level_up.png", "carrot_level_up_selected.png", "carrot_level_up_disabled.png");
+    carrot_level_button->setPosition(Point(carrot_level_x, carrot_level_y));
+    this->addChild(carrot_level_button);
+    carrot_level_button->addClickEventListener(CC_CALLBACK_1(Map_father::carrot_level_button_call_back, this));
+}
+
+void Map_father::carrot_level_button_call_back(cocos2d::Ref* pSender)//萝卜升级按钮触发
+{
+    if (carrot->level == 1)
+        gold -= carrot_level2_cost;
+    if (carrot->level == 2)
+        gold -= carrot_level3_cost;
+    gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
+    carrot->level++;
+    carrot->HP += 10;//萝卜属性更新
+    carrot->change_tex();//萝卜外貌更新
+    carrot->HP_Label->setString(carrot->calculate_HP(carrot->HP));//萝卜血条更新
+}
+
+void Map_father::change_carrot_level_button(float dt)//检测萝卜是否可以升级
+{
+    carrot_level_button->setTouchEnabled(true);
+    carrot_level_button->setBright(true);//先设置可点击
+    if (carrot->level == 3)
+    {
+        carrot_level_button->setTouchEnabled(false);
+        carrot_level_button->setBright(false);
+    }
+    else
+    {
+        if (carrot->level == 1 && gold < carrot_level2_cost)
+        {
+            carrot_level_button->setTouchEnabled(false);
+            carrot_level_button->setBright(false);
+        }
+        if (carrot->level == 2 && gold < carrot_level3_cost)
+        {
+            carrot_level_button->setTouchEnabled(false);
+            carrot_level_button->setBright(false);
+        }
+    }//对不可点击情况进行分析
+}
+
+
+
 template<typename T>
 void Map_father::input_brick(T x, T y ,int choice)//choice==1 放置怪物绿色地板
 {
@@ -495,8 +542,8 @@ void Map_One::game_begin()//游戏开始函数
     carrot->HP_Label->setString(carrot->calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
     this->addChild(carrot);
 
-    gold = gold_1;//金币变量
-    gold_label = input_gold();//生成标签
+    gold = gold_1;
+    gold_label = input_gold();//初始化金币标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
 
     this->addChild(monster_wave);
@@ -510,6 +557,8 @@ void Map_One::game_begin()//游戏开始函数
         [=](){return (carrot->HP <= 0);},
         [=](){this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f);}
         );
+
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::change_carrot_level_button), 0.1f);//测试，检测萝卜能否升级
 
     map_two_flag = true;
 

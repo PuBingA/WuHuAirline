@@ -1,6 +1,7 @@
 #include "cocos2d.h"
 #include "public_define.h"
 #include "cocos-ext.h"
+#include "ui/CocosGUI.h"
 #include "Frames.h"
 #include "monster_towers.h"
 #include <string>
@@ -28,6 +29,7 @@ protected:
     Shit* shit = nullptr;
     Etower* etower = nullptr;
     Carrot* carrot = nullptr;
+    ui::Button* carrot_level_button = nullptr;      //存放萝卜升级按钮
     std::vector<FS> AllPlants;
     std::vector<FS> AllFrames;
     bool mouse_select_type = 0;
@@ -55,6 +57,9 @@ public:
     virtual void game_begin() {};                     //游戏开始函数
     void game_over_success(float dt);                 //游戏胜利
     void game_over_failure(float dt);                 //游戏失败
+    void input_carrot_level_button();;                //放置萝卜升级按钮
+    void carrot_level_button_call_back(cocos2d::Ref* pSender);     //萝卜升级回调函数
+    void change_carrot_level_button(float dt);                //检测当前是否可以进行萝卜升级,使萝卜按钮失效/有效（金币变化，萝卜等级改变时需要调用！）
     template<typename T>
     void input_brick(T x,T y ,int choice);            //放置地板
     void spawnMonster1_1(float dt);       //生成Type=1的怪物

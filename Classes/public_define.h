@@ -11,7 +11,7 @@
 #define pause_y 630-70-70								//暂停键坐标
 
 #define gold_max 9990  //金币上限
-#define gold_1   4000  //第一关初始金币
+#define gold_1   1500  //第一关初始金币
 #define gold_2   7000  //第二关初始金币
 #define gold_3   9000  //第三关初始金币
 
@@ -34,9 +34,12 @@
 #define fade_time 0.7f
 #define animate_duration 0.3f
 
-//升级费用
-#define carrot_level_2 1000
-#define carrot_level_3 1500
+#define carrot_level_x 1170
+#define carrot_level_y 630-3*70                        //萝卜升级按钮坐标
+
+#define carrot_level2_cost 1000
+#define carrot_level3_cost 2000                         //萝卜升级花费
+
 
 //第一关共有38个种植点位
 #define Level_One_Spots 38 
@@ -87,3 +90,4 @@
 #define bullet_range1 200
 #define bullet_range2 300
 #define bullet_range3 350
+
