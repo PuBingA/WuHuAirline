@@ -5,6 +5,7 @@
 #include "monster.h"
 #include <string>
 #include <vector>
+#include "ui/CocosGUI.h"
 USING_NS_CC;
 
 //VS包含每个种植位的所有信息：统一编排的序号+位置状态+防御塔种类+现有的精灵指针
@@ -46,6 +47,8 @@ protected:
     Label* gold_label;                              //金币标签
     std::vector<std::vector<float>>walk_way;        //存放怪物行进的x,y轴的向量
     std::vector<MonSprite*>monster_wave;
+    ui::Button *carrot_level_button = nullptr;      //存放萝卜升级按钮
+
 public:
     static cocos2d::Scene* createScene();
     virtual bool init();                              //创建场景类,被继承公有部分
@@ -55,6 +58,9 @@ public:
     void input_return_pause();                        //放置返回，以及暂停键 
     void buttonCallback(cocos2d::Ref* pSender);       //暂停响应函数
     void input_gold_item();                           //放置金币UI
+    void input_carrot_level_button();;                //放置萝卜升级按钮
+    void carrot_level_button_call_back(cocos2d::Ref* pSender);     //萝卜升级回调函数
+    void change_carrot_level_button(float dt);                //检测当前是否可以进行萝卜升级,使萝卜按钮失效/有效（金币变化，萝卜等级改变时需要调用！）
     virtual void ShowPlantButton() {};
     virtual void input_listener() {};
     cocos2d::Label* input_gold();                     //生成金币标签
@@ -82,6 +88,7 @@ public:
 
 class Map_One :public Map_father
 {
+
 public:
     virtual void ShowPlantButton();
     virtual void input_listener();
@@ -95,6 +102,7 @@ public:
 
 class Map_Two :public Map_father
 {
+
 public:
     virtual void ShowPlantButton();
     virtual void input_listener();
@@ -108,6 +116,7 @@ public:
 
 class Map_Three :public Map_father
 {
+
 public:
     virtual void ShowPlantButton();
     virtual void input_listener();
