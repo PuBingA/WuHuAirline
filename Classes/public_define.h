@@ -74,7 +74,7 @@
 #define delete_recover 100
 
 #define bullet_shoot_interval 2.0f
-#define bullet_fly_time 1.3f
+#define bullet_fly_time 0.2f
 #define cannon1_atk 3
 #define cannon2_atk 5
 #define cannon3_atk 7

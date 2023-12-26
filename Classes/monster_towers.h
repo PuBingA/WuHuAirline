@@ -221,11 +221,12 @@ public:
 
 	virtual void shoot_bullet()
 	{
-		setRotation(lock_target->getPosition().getAngle(Vec2(0,0)));
+		auto relative_position = lock_target->getPosition() - this->getPosition();
+		setRotation(relative_position.getAngle(Vec2(0, 1)) * 180 / 3.14);
 		auto bullet = Sprite::create();
+		bullet->setPosition(-relative_position);
 		lock_target->addChild(bullet);
-		bullet->setPosition(this->getPosition() - lock_target->getPosition());
-		auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size / 2, monster_texture_size / 2));
+		auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size/2,monster_texture_size/2));
 		bullet->runAction(bullet_fly);
 		switch (level)
 		{
@@ -244,6 +245,7 @@ public:
 		}
 		scheduleOnce([=](float dt)
 			{
+				this->removeChild(bullet,1);
 				if (lock_target)
 					lock_target->monster_hurt(bullet_atk);
 			}, bullet_fly_time, "bulletFlyTag");
