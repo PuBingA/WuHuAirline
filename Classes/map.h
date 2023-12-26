@@ -40,6 +40,8 @@ protected:
     Label* gold_label;                              //金币标签
     std::vector<std::vector<float>>walk_way;        //存放怪物行进的x,y轴的向量
     Node* monster_wave = new Node;
+    MonSprite* boss = nullptr;
+    bool boss_spawned = 0;
 public:
     static cocos2d::Scene* createScene();
     virtual bool init();                              //创建场景类,被继承公有部分
@@ -74,6 +76,7 @@ public:
     void spawnMonster4_1(float dt);       //生成Type=4的怪物
     void spawnMonster4_2(float dt);       //生成Type=4的怪物
     void spawnMonster4_3(float dt);       //生成Type=4的怪物
+    void spawnBoss(float dt);             //生成Type=5的怪物
     void waitForConditionAndExecute(const std::function<bool()>& condition, const std::function<void()>& callback);
     CREATE_FUNC(Map_father);
 };
@@ -83,7 +86,6 @@ class Map_One :public Map_father
 public:
     virtual void ShowPlantButton();
     virtual void input_listener();
-    void StartAttack();
     virtual void input_background();
     virtual void input_walk_way();
     virtual void game_begin();      //游戏开始函数

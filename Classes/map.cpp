@@ -3,8 +3,7 @@
 #include "settlement_interface.h"
 USING_NS_CC;
 
-extern bool map_two_flag;
-extern bool map_three_flag;
+extern int clear_stage;
 
 int CheckBox(XY obj, const std::vector<FS>& table);
 
@@ -128,6 +127,15 @@ void Map_father::spawnMonster4_3(float dt)
     MonSprite* monster = MonSprite::create(4);
     monster->monster_spawn(walk_way);
     monster_wave->addChild(monster);
+    monster->monster_attack_carrot(carrot);
+}
+
+void Map_father::spawnBoss(float dt)
+{
+    MonSprite* monster = MonSprite::create(5);
+    monster->monster_spawn(walk_way);
+    monster_wave->addChild(monster);
+    boss_spawned = 1;
     monster->monster_attack_carrot(carrot);
 }
 
@@ -263,7 +271,7 @@ void Map_father::onMouseDown_Do_Plant(Event* event)
             //plant a etower
             else if (IsFramePlant(x, y, AllPlants) == 3 && vacancy[vacancyIndex].spr == nullptr && gold >= etower_build_cost)
             {
-                //于目标点生成一级shit
+                //于目标点生成一级etower
                 etower = Etower::create("etower_Lv1.png", monster_wave);
                 this->addChild(etower);
                 etower->setPosition(AllFrames[vacancyIndex].adjusted._x, AllFrames[vacancyIndex].adjusted._y);
@@ -429,8 +437,6 @@ void Map_father::change_carrot_level_button(float dt)//检测萝卜是否可以�
     }//对不可点击情况进行分析
 }
 
-
-
 template<typename T>
 void Map_father::input_brick(T x, T y ,int choice)//choice==1 放置怪物绿色地板
 {
@@ -460,7 +466,6 @@ void Map_One::input_listener()
     this->addChild(yellow_frame); //z-value=0
     yellow_frame->setVisible(false);
 }
-
 
 void Map_One::ShowPlantButton()
 {
@@ -539,19 +544,23 @@ void Map_One::game_begin()//游戏开始函数
 
     this->addChild(monster_wave);
     monster_wave->setVisible(1);
-
+    boss_spawned = 0;
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_1), 1.0f, 2, 3.0f); //第1波：生成3个怪物1
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_2), 1.0f, 4, 13.0f);//第2波：生成5个怪物1
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster1_3), 1.0f, 5, 23.0f);//第3波：生成6个怪物1
+    scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::spawnBoss), 33.0f);//boss
 
     waitForConditionAndExecute(
         [=](){return (carrot->HP <= 0);},
-        [=](){this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f);}
+        [=](){this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 0.1f);}
         );
 
-    schedule(CC_SCHEDULE_SELECTOR(Map_father::change_carrot_level_button), 0.1f);//测试，检测萝卜能否升级
+    waitForConditionAndExecute(
+        [=]() {return (boss_spawned && boss == nullptr); },
+        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_success), 0.1f); clear_stage++;}
+    );
 
-    map_two_flag = true;
+    schedule(CC_SCHEDULE_SELECTOR(Map_father::change_carrot_level_button), 0.1f);//测试，检测萝卜能否升级
 
 }
 
@@ -580,24 +589,24 @@ void Map_Two::ShowPlantButton()
     //暗色cannon
     plant_cannon = Sprite::create("plant_cannon_unavailable.png");
     this->addChild(plant_cannon); //z-value=0
-    plant_cannon->setPosition(60.0f, 550.0f);
+    plant_cannon->setPosition(60, 550);
     plant_cannon->setTexture("plant_cannon_unavailable.png");
     //暗色etower
     plant_etower = Sprite::create("plant_etower_unavailable.png");
     this->addChild(plant_etower); //z-value=0
-    plant_etower->setPosition(60.0f, 450.0f);
+    plant_etower->setPosition(60, 450);
     plant_etower->setTexture("plant_etower_unavailable.png");
     //暗色升级——注意升级.png需要缩放至×0.7
     upgrade_frame = Sprite::create("upgrade_grey.png");
     this->addChild(upgrade_frame); //z-value=0
     upgrade_frame->setScale(0.7f);
-    upgrade_frame->setPosition(60.0f, 350.0f);
+    upgrade_frame->setPosition(60, 350);
     upgrade_frame->setTexture("upgrade_grey.png");
     //暗色移除——注意移除.png需要缩放至×0.7
     delete_frame = Sprite::create("delete_grey.png");
     this->addChild(delete_frame); //z-value=0
     delete_frame->setScale(0.7f);
-    delete_frame->setPosition(60.0f, 250.0f);
+    delete_frame->setPosition(60, 250);
     delete_frame->setTexture("delete_grey.png");
 }
 
@@ -664,6 +673,8 @@ void Map_Two::game_begin()//游戏开始函数
     carrot->HP_Label->setString(carrot->calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
     this->addChild(carrot);
 
+    this->addChild(monster_wave);
+    monster_wave->setVisible(1);
 
     gold = gold_2;//金币变量
     gold_label = input_gold();//生成标签
@@ -674,13 +685,17 @@ void Map_Two::game_begin()//游戏开始函数
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster2_1), 1.0f, 3, 23.0f);//第3波：生成4个怪物2
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster2_2), 1.0f, 4, 33.0f);//第2波：生成5个怪物2
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster3_1), 1.0f, 5, 43.0f);//第3波：生成6个怪物3
+    scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::spawnBoss), 53.0f);//boss
 
     waitForConditionAndExecute(
         [=]() {return (carrot->HP <= 0); },
-        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f); }
+        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 0.1f); }
     );
 
-    map_three_flag = true;
+    waitForConditionAndExecute(
+        [=]() {return (boss_spawned && boss == nullptr); },
+        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_success), 0.1f); clear_stage++; }
+    );
 }
 
 
@@ -792,6 +807,9 @@ void Map_Three::game_begin()//游戏开始函数
     carrot->HP_Label->setString(carrot->calculate_HP(carrot->HP));//根据当前血量更新字体，（注：增加、消耗血量时，记得用这个语句更新面板）
     this->addChild(carrot);
 
+    this->addChild(monster_wave);
+    monster_wave->setVisible(1);
+
     gold = gold_3;//金币变量
     gold_label = input_gold();//生成标签
     gold_label->setString(calculate_gold(gold));//更新字体，（注：增加、消耗金币时，记得用这个语句更新面板）
@@ -802,10 +820,16 @@ void Map_Three::game_begin()//游戏开始函数
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster3_2), 1.0f, 4, 33.0f);//第2波：生成5个怪物3
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster4_1), 1.0f, 4, 43.0f);//第3波：生成5个怪物4
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster4_2), 1.0f, 5, 53.0f);//第3波：生成6个怪物4
+    scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::spawnBoss), 63.0f);//boss
 
     waitForConditionAndExecute(
         [=]() {return (carrot->HP <= 0); },
-        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 1.0f); }
+        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_failure), 0.1f); }
+    );
+
+    waitForConditionAndExecute(
+        [=]() {return (boss && boss->monCurrentLife <= 10); },
+        [=]() {this->scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::game_over_success), 0.1f); }
     );
 
 }

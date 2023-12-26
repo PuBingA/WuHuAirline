@@ -14,7 +14,6 @@ private:
     int monVitality = 1;//生命
     int monAttack = 1;//攻击力
     int monSpeed = 1;//速度
-    int monCurrentLife = 1;
     ui::LoadingBar* monLifeBar = NULL;
 
     void setType(int type)//设置数值
@@ -42,11 +41,16 @@ private:
             monAttack = mon4_atk;
             monSpeed = mon4_spd;
             break;
-        }
+		case 5:
+			monVitality = mon5_vit;
+			monAttack = mon5_atk;
+			monSpeed = mon5_spd;
+			break;
+		}
         monCurrentLife = monVitality;
     }
-
 public:
+    int monCurrentLife = 1;
     static MonSprite* create(int type = 0)
     {
         MonSprite* monster_sprite = new MonSprite();
@@ -112,7 +116,14 @@ public:
             animFrames.pushBack(SpriteFrame::create("monster4_2.png", Rect(0, 0, monster_texture_size, monster_texture_size)));
             animFrames.pushBack(SpriteFrame::create("monster4_3.png", Rect(0, 0, monster_texture_size, monster_texture_size)));
         }
-        Animation* animation = Animation::createWithSpriteFrames(animFrames, animate_duration);
+		else if (this->monType == 5)
+		{
+			animFrames.reserve(3);
+			animFrames.pushBack(SpriteFrame::create("monster5_1.png", Rect(0, 0, boss_texture_size, boss_texture_size)));
+			animFrames.pushBack(SpriteFrame::create("monster5_2.png", Rect(0, 0, boss_texture_size, boss_texture_size)));
+			animFrames.pushBack(SpriteFrame::create("monster5_3.png", Rect(0, 0, boss_texture_size, boss_texture_size)));
+		}
+		Animation* animation = Animation::createWithSpriteFrames(animFrames, animate_duration);
         Animate* animate = Animate::create(animation);
         this->runAction(RepeatForever::create(animate));//不停扭动
 
@@ -130,7 +141,7 @@ public:
     {
 		this->removeAllChildren();
 		Node* wave = this->getParent();
-		if(wave)
+		if (wave)
 			wave->removeChild(this);//怪似了
     }
 
@@ -157,6 +168,7 @@ public:
 			[=]()
 			{
 				carrot->hurt(this->monAttack);
+				carrot->hurt(this->monAttack);
 				this->monster_die();//怪物死
 			});
     }
@@ -171,6 +183,24 @@ public:
 	int bullet_atk = 0;
 	MonSprite* lock_target = nullptr;
 	Node* monster_wave = nullptr;
+};
+
+class Cannon : public Tower
+{
+public:
+	static Cannon* create(const std::string& filename, Node* monwave)//初始化精灵
+	{
+		Cannon* cannon_sprite = new Cannon();
+		if (cannon_sprite && cannon_sprite->initWithFile(filename))
+		{
+			cannon_sprite->monster_wave = monwave;
+			cannon_sprite->level = 1;
+			cannon_sprite->guard();
+			return cannon_sprite;
+		}
+		CC_SAFE_DELETE(cannon_sprite);
+		return nullptr;
+	}
 
 	void guard()
 	{
@@ -178,12 +208,15 @@ public:
 		{
 			case 1:
 				distance = bullet_range1;
+				bullet_atk = cannon1_atk;
 				break;
 			case 2:
 				distance = bullet_range2;
+				bullet_atk = cannon2_atk;
 				break;
 			case 3:
 				distance = bullet_range3;
+				bullet_atk = cannon3_atk;
 				break;
 		}
 		schedule([=](float dt)
@@ -192,64 +225,37 @@ public:
 					if (this->getPosition().distance(target->getPosition()) <= distance)
 					{
 						lock_target = (MonSprite*)(target);
-						shoot_bullet();
+						auto relative_position = lock_target->getPosition() - this->getPosition();
+						setRotation(relative_position.getAngle(Vec2(0, 1)) * 180 / 3.14);
+						auto bullet = Sprite::create();
+						bullet->setPosition(-relative_position);
+						lock_target->addChild(bullet);
+						auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size / 2, monster_texture_size / 2));
+						bullet->runAction(bullet_fly);
+						switch (level)
+						{
+							case 1:
+								bullet->setTexture("cannon_bullet_1.png");
+								break;
+							case 2:
+								bullet->setTexture("cannon_bullet_2.png");
+								break;
+							case 3:
+								bullet->setTexture("cannon_bullet_3.png");
+								break;
+						}
+						scheduleOnce([=](float dt)
+							{
+								if (lock_target)
+								{
+									lock_target->removeChild(bullet, 1);
+									lock_target->monster_hurt(bullet_atk);
+								}
+							}, bullet_fly_time, "CannonBulletTag");
+
 						break;
 					}
-			}, bullet_shoot_interval, "waitForConditionTag");
-	}
-
-	virtual void shoot_bullet() {}
-};
-
-class Cannon : public Tower
-{
-public:
-	static Cannon* create(const std::string& filename, Node* monwave)//初始化精灵
-	{
-		Cannon* tower = new Cannon();
-		if (tower && tower->initWithFile(filename))
-		{
-			tower->monster_wave = monwave;
-			tower->level = 1;
-			tower->guard();
-			return tower;
-		}
-		CC_SAFE_DELETE(tower);
-		return nullptr;
-	}
-
-	virtual void shoot_bullet()
-	{
-		auto relative_position = lock_target->getPosition() - this->getPosition();
-		setRotation(relative_position.getAngle(Vec2(0, 1)) * 180 / 3.14);
-		auto bullet = Sprite::create();
-		bullet->setPosition(-relative_position);
-		lock_target->addChild(bullet);
-		auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size/2,monster_texture_size/2));
-		bullet->runAction(bullet_fly);
-		switch (level)
-		{
-			case 1:
-				bullet->setTexture("cannon_bullet_1.png");
-				bullet_atk = cannon1_atk;
-				break;
-			case 2:
-				bullet->setTexture("cannon_bullet_2.png");
-				bullet_atk = cannon2_atk;
-				break;
-			case 3:
-				bullet->setTexture("cannon_bullet_3.png");
-				bullet_atk = cannon3_atk;
-				break;
-		}
-		scheduleOnce([=](float dt)
-			{
-				if (lock_target)
-				{
-					lock_target->removeChild(bullet,1);
-					lock_target->monster_hurt(bullet_atk);
-				}
-			}, bullet_fly_time, "CannonBulletTag");
+			}, bullet_shoot_interval, "CannonGuardTag");
 	}
 };
 
@@ -258,46 +264,60 @@ class Shit : public Tower
 public:
 	static Shit* create(const std::string& filename, Node* monwave)//初始化精灵
 	{
-		Shit* tower = new Shit();
-		if (tower && tower->initWithFile(filename))
+		Shit* shit_sprite = new Shit();
+		if (shit_sprite && shit_sprite->initWithFile(filename))
 		{
-			tower->monster_wave = monwave;
-			tower->level = 1;
-			tower->guard();
-			return tower;
+			shit_sprite->monster_wave = monwave;
+			shit_sprite->level = 1;
+			shit_sprite->guard();
+			return shit_sprite;
 		}
-		CC_SAFE_DELETE(tower);
+		CC_SAFE_DELETE(shit_sprite);
 		return nullptr;
 	}
 
-	virtual void shoot_bullet(float dt)
+	void guard()
 	{
-		auto bullet = Sprite::create("shit_bullet.png");
-		auto relative_position = lock_target->getPosition() - this->getPosition();
-		bullet->setPosition(-relative_position);
-		lock_target->addChild(bullet);
-		auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size / 2, monster_texture_size / 2));
-		bullet->runAction(bullet_fly);
 		switch (level)
 		{
 			case 1:
+				distance = bullet_range1;
 				bullet_atk = shit1_atk;
 				break;
 			case 2:
+				distance = bullet_range2;
 				bullet_atk = shit2_atk;
 				break;
 			case 3:
+				distance = bullet_range3;
 				bullet_atk = shit3_atk;
 				break;
 		}
-		scheduleOnce([=](float dt)
+		schedule([=](float dt)
 			{
-				if (lock_target)
-				{
-					lock_target->removeChild(bullet, 1);
-					lock_target->monster_hurt(bullet_atk);
-				}
-			}, bullet_fly_time, "ShitBulletTag");
+				for (auto& target : monster_wave->getChildren())
+					if (this->getPosition().distance(target->getPosition()) <= distance)
+					{
+						lock_target = (MonSprite*)(target);
+						auto relative_position = lock_target->getPosition() - this->getPosition();
+						setRotation(relative_position.getAngle(Vec2(0, 1)) * 180 / 3.14);
+						auto bullet = Sprite::create("shit_bullet.png");
+						bullet->setPosition(-relative_position);
+						lock_target->addChild(bullet);
+						auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size / 2, monster_texture_size / 2));
+						bullet->runAction(bullet_fly);
+						scheduleOnce([=](float dt)
+							{
+								if (lock_target)
+								{
+									lock_target->removeChild(bullet, 1);
+									lock_target->monster_hurt(bullet_atk);
+								}
+							}, bullet_fly_time, "ShitBulletTag");
+
+						break;
+					}
+			}, bullet_shoot_interval, "ShitGuardTag");
 	}
 };
 
@@ -306,46 +326,58 @@ class Etower : public Tower
 public:
 	static Etower* create(const std::string& filename, Node* monwave)//初始化精灵
 	{
-		Etower* tower = new Etower();
-		if (tower && tower->initWithFile(filename))
+		Etower* etower_sprite = new Etower();
+		if (etower_sprite && etower_sprite->initWithFile(filename))
 		{
-			tower->monster_wave = monwave;
-			tower->level = 1;
-			tower->guard();
-			tower->autorelease();
-			return tower;
+			etower_sprite->monster_wave = monwave;
+			etower_sprite->level = 1;
+			etower_sprite->guard();
+			etower_sprite->autorelease();
+			return etower_sprite;
 		}
-		CC_SAFE_DELETE(tower);
+		CC_SAFE_DELETE(etower_sprite);
 		return nullptr;
 	}
-
-	virtual void shoot_bullet(float dt)
+	void guard()
 	{
-		auto bullet = Sprite::create("etower_bullet.png");
-		auto relative_position = lock_target->getPosition() - this->getPosition();
-		bullet->setPosition(-relative_position);
-		lock_target->addChild(bullet);
-		auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size / 2, monster_texture_size / 2));
-		bullet->runAction(bullet_fly);
 		switch (level)
 		{
 			case 1:
+				distance = bullet_range1;
 				bullet_atk = etower1_atk;
 				break;
 			case 2:
+				distance = bullet_range2;
 				bullet_atk = etower2_atk;
 				break;
 			case 3:
+				distance = bullet_range3;
 				bullet_atk = etower3_atk;
 				break;
 		}
-		scheduleOnce([=](float dt)
+		schedule([=](float dt)
 			{
-				if (lock_target)
-				{
-					lock_target->removeChild(bullet, 1);
-					lock_target->monster_hurt(bullet_atk);
-				}
-			}, bullet_fly_time, "EtowerBulletTag");
+				for (auto& target : monster_wave->getChildren())
+					if (this->getPosition().distance(target->getPosition()) <= distance)
+					{
+						lock_target = (MonSprite*)(target);
+						auto relative_position = lock_target->getPosition() - this->getPosition();
+						auto bullet = Sprite::create("etower_bullet.png");
+						bullet->setPosition(-relative_position);
+						lock_target->addChild(bullet);
+						auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size / 2, monster_texture_size / 2));
+						bullet->runAction(bullet_fly);
+						scheduleOnce([=](float dt)
+							{
+								if (lock_target)
+								{
+									lock_target->removeChild(bullet, 1);
+									lock_target->monster_hurt(bullet_atk);
+								}
+							}, bullet_fly_time, "EtowerBulletTag");
+
+						break;
+					}
+			}, bullet_shoot_interval, "EtowerGuardTag");
 	}
 };
