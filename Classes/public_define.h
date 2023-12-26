@@ -42,6 +42,12 @@
 #define carrot_level3_cost 2000                         //萝卜升级花费
 
 
+#define boom_x 1170
+#define boom_y 630-4*70
+#define boom_hint_x 1170
+#define boom_hint_y  630-5*70              //作弊按钮相关坐标
+
+
 //第一关共有38个种植点位
 #define Level_One_Spots 38 
 

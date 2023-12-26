@@ -157,7 +157,8 @@ bool Map_father::init()//父类创建场景总函数
     input_walk_way();//放置地板
     input_return_pause();//放置返回，暂停键
     input_gold_item();//放置金币
-    input_carrot_level_button();
+    input_carrot_level_button();//放置萝卜升级按钮
+    input_boom_button();//放置作弊按钮
     ShowPlantButton();
     input_listener();
     game_begin();//开始游戏
@@ -449,6 +450,38 @@ void Map_father::change_carrot_level_button(float dt)//检测萝卜是否可以�
             carrot_level_button->setBright(false);
         }
     }//对不可点击情况进行分析
+}
+
+void Map_father::input_boom_button()//放置作弊按钮
+{
+    boom_button = ui::Button::create("Boom.png", "Boom_selected.png");
+    boom_button->setPosition(Point(boom_x, boom_y));
+    this->addChild(boom_button);
+    boom_button->addClickEventListener(CC_CALLBACK_1(Map_father::boom_button_call_back, this));
+    auto boom_hint = Sprite::create("boom_hint.png");
+    boom_hint->setPosition(Point(boom_hint_x, boom_hint_y));
+    this->addChild(boom_hint);
+    boom_background->setPosition(background_wide/2, background_high/2);
+    this->addChild(boom_background,3);
+    boom_background->setOpacity(0);//先完全透明
+}
+
+void Map_father::boom_button_call_back(cocos2d::Ref* pSender)//作弊按钮回调
+{
+    auto boom_effect = AudioEngine::play2d("Boom.mp3", false);
+    auto fade_in = FadeIn::create(1.0f);
+    boom_background->runAction(fade_in);//先淡入
+    cocos2d::Vector<Node*> current_wave = monster_wave->getChildren();
+    for (auto& mon : current_wave)
+        ((MonSprite*)mon)->monster_die();//杀死所有怪物
+
+    scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::boom_fade), 1.1f);//h后淡出
+}
+
+void Map_father::boom_fade(float dt)//爆炸淡出
+{
+    auto fade_out = FadeOut::create(1.5f);
+    boom_background->runAction(fade_out);
 }
 
 template<typename T>

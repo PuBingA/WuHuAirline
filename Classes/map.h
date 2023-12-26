@@ -45,6 +45,7 @@ protected:
     Node* monster_wave = new Node;
     MonSprite* boss = nullptr;
     bool boss_spawned = false;
+    Sprite* boom_background = Sprite::create("boom_effect.png");
 public:
     static cocos2d::Scene* createScene();
     virtual bool init();                              //创建场景类,被继承公有部分
@@ -66,6 +67,10 @@ public:
     void input_carrot_level_button();;                //放置萝卜升级按钮
     void carrot_level_button_call_back(cocos2d::Ref* pSender);     //萝卜升级回调函数
     void change_carrot_level_button(float dt);                //检测当前是否可以进行萝卜升级,使萝卜按钮失效/有效（金币变化，萝卜等级改变时需要调用！）
+    void input_boom_button();                        //放置作弊按钮
+    void boom_button_call_back(cocos2d::Ref* pSender); //作弊回调函数
+    void boom_fade(float dt);//爆炸淡出
+
     template<typename T>
     void input_brick(T x,T y ,int choice);            //放置地板
     void spawnMonster1_1(float dt);       //生成Type=1的怪物
