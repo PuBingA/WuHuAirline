@@ -53,6 +53,11 @@ private:
 			monAttack = mon6_atk;
 			monSpeed = mon6_spd;
 			break;
+		case 7:
+			monVitality = mon7_vit;
+			monAttack = mon7_atk;
+			monSpeed = mon7_spd;
+			break;
 		}
         monCurrentLife = monVitality;
     }
@@ -130,7 +135,7 @@ public:
 			animFrames.pushBack(SpriteFrame::create("monster5_2.png", Rect(0, 0, boss1_texture_size, boss1_texture_size)));
 			animFrames.pushBack(SpriteFrame::create("monster5_3.png", Rect(0, 0, boss1_texture_size, boss1_texture_size)));
 		}
-		else if (this->monType == 6)
+		else if (this->monType == 6||this->monType==7)
 		{
 			animFrames.reserve(3);
 			animFrames.pushBack(SpriteFrame::create("monster6_1.png", Rect(0, 0, boss2_texture_size, boss2_texture_size)));

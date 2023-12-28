@@ -131,7 +131,7 @@ void Map_father::spawnMonster4_3(float dt)
     monster->monster_attack_carrot(carrot);
 }
 
-void Map_father::spawnBoss_1(float dt)
+void Map_father::spawnBoss_1(float dt)//生成boss1
 {
     AudioEngine::pauseAll();
     boss_music = AudioEngine::play2d("boss_background.mp3", false);
@@ -143,12 +143,24 @@ void Map_father::spawnBoss_1(float dt)
     boss->monster_attack_carrot(carrot);
 }
 
-void Map_father::spawnBoss_2(float dt)
+void Map_father::spawnBoss_2(float dt)//生成boss2
 {
     AudioEngine::pauseAll();
     boss_music = AudioEngine::play2d("boss_background.mp3", false);
     boss_spawned = true;
     boss = MonSprite::create(6);
+    boss->monster_spawn(walk_way);
+    boss->setGlobalZOrder(INT_MAX);
+    monster_wave->addChild(boss);
+    boss->monster_attack_carrot(carrot);
+}
+
+void Map_father::spawnBoss_3(float dt)//生成boss3
+{
+    AudioEngine::pauseAll();
+    boss_music = AudioEngine::play2d("boss_background.mp3", false);
+    boss_spawned = true;
+    boss = MonSprite::create(7);
     boss->monster_spawn(walk_way);
     boss->setGlobalZOrder(INT_MAX);
     monster_wave->addChild(boss);
@@ -312,22 +324,22 @@ void Map_father::onMouseDown_Do_Plant(Event* event)
                 {
                     if (vacancy[vacancyIndex].tower_type == type_cannon && *gold >= cannon_upgrade_1to2)//upgrade cannon
                     {
-                        cannon->setTexture("cannon_Lv2.png");
-                        cannon->level++;
+                        vacancy[vacancyIndex].spr->setTexture("cannon_Lv2.png");
+                        vacancy[vacancyIndex].spr->level++;
                        * gold -= cannon_upgrade_1to2;
                        auto evolution_effect = AudioEngine::play2d("evolution_effect.mp3",false);
                     }
                     else if (vacancy[vacancyIndex].tower_type == type_shit && *gold >= shit_upgrade_1to2)//upgrade shit
                     {
-                        shit->setTexture("shit_Lv2.png");
-                        shit->level++;
+                        vacancy[vacancyIndex].spr->setTexture("shit_Lv2.png");
+                        vacancy[vacancyIndex].spr->level++;
                        * gold -= shit_upgrade_1to2;
                        auto evolution_effect = AudioEngine::play2d("evolution_effect.mp3", false);
                     }
                     else if (vacancy[vacancyIndex].tower_type == type_etower && *gold >= etower_upgrade_1to2)//upgrade etower
                     {
-                        etower->setTexture("etower_Lv2.png");
-                        etower->level++;
+                        vacancy[vacancyIndex].spr->setTexture("etower_Lv2.png");
+                        vacancy[vacancyIndex].spr->level++;
                         *gold -= etower_upgrade_1to2;
                         auto evolution_effect = AudioEngine::play2d("evolution_effect.mp3", false);
                     }
@@ -337,22 +349,22 @@ void Map_father::onMouseDown_Do_Plant(Event* event)
                 {
                     if (vacancy[vacancyIndex].tower_type == type_cannon && *gold >= cannon_upgrade_2to3)//upgrade cannon
                     {
-                        cannon->setTexture("cannon_Lv3.png");
-                        cannon->level++;
+                        vacancy[vacancyIndex].spr->setTexture("cannon_Lv3.png");
+                        vacancy[vacancyIndex].spr->level++;
                         *gold -= cannon_upgrade_2to3;
                         auto evolution_effect = AudioEngine::play2d("evolution_effect.mp3", false);
                     }
                     else if (vacancy[vacancyIndex].tower_type == type_shit && * gold >= shit_upgrade_2to3)//upgrade shit
                     {
-                        shit->setTexture("shit_Lv3.png");
-                        shit->level++;
+                        vacancy[vacancyIndex].spr->setTexture("shit_Lv3.png");
+                        vacancy[vacancyIndex].spr->level++;
                         *gold -= shit_upgrade_2to3;
                         auto evolution_effect = AudioEngine::play2d("evolution_effect.mp3", false);
                     }
                     else if (vacancy[vacancyIndex].tower_type == type_etower && *gold >= etower_upgrade_2to3)//upgrade etower
                     {
-                        etower->setTexture("etower_Lv3.png");
-                        etower->level++;
+                        vacancy[vacancyIndex].spr->setTexture("etower_Lv3.png");
+                        vacancy[vacancyIndex].spr->level++;
                         *gold -= etower_upgrade_2to3;
                         auto evolution_effect = AudioEngine::play2d("evolution_effect.mp3", false);
                     }
@@ -890,7 +902,7 @@ void Map_Three::game_begin()//游戏开始函数
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster3_2), 1.0f, 4, 33.0f);//第2波：生成5个怪物3
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster4_1), 1.0f, 4, 43.0f);//第3波：生成5个怪物4
     schedule(CC_SCHEDULE_SELECTOR(Map_father::spawnMonster4_2), 1.0f, 5, 53.0f);//第3波：生成6个怪物4
-    scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::spawnBoss_2), 63.0f);//boss
+    scheduleOnce(CC_SCHEDULE_SELECTOR(Map_father::spawnBoss_3), 63.0f);//boss
 
 
     waitForConditionAndExecute

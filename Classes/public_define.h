@@ -65,9 +65,13 @@
 #define mon5_vit 150
 #define mon5_atk 20
 #define mon5_spd 1
-#define mon6_vit 175
+#define mon6_vit 300
 #define mon6_atk 20
 #define mon6_spd 1
+#define mon7_vit 5000
+#define mon7_atk 20
+#define mon7_spd 50
+
 
 #define type_cannon 1
 #define type_shit 2

@@ -87,6 +87,7 @@ public:
     void spawnMonster4_3(float dt);       //生成Type=4的怪物
     void spawnBoss_1(float dt);           //生成Type=5的怪物
     void spawnBoss_2(float dt);           //生成Type=6的怪物
+    void spawnBoss_3(float dt);           //生成Type=7的怪物         
     void waitForConditionAndExecute(const std::function<bool()>& condition, const std::function<void()>& callback);
     CREATE_FUNC(Map_father);
 };
