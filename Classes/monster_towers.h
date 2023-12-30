@@ -11,11 +11,13 @@ USING_NS_CC;
 class MonSprite : public Sprite//怪物类
 {
 	friend class Map_father;
+	friend class Shit;
 private:
     int monType = 1;
     int monVitality = 1;//生命
     int monAttack = 1;//攻击力
     int monSpeed = 1;//速度
+    int if_broken = 0;//是否易损分等级，高等级覆盖低等级buff
     ui::LoadingBar* monLifeBar = NULL;
 
     void setType(int type)//设置数值
@@ -173,7 +175,7 @@ public:
     //怪物受伤
     bool monster_hurt(int hit_point)
     {
-        monCurrentLife -= hit_point;
+        monCurrentLife -= (hit_point+if_broken);//加上易损buff伤害
         if (monCurrentLife <= 0)
         {
             return 1;
@@ -181,6 +183,17 @@ public:
 		monLifeBar->setPercent(static_cast<float>(monCurrentLife) / monVitality * 100);
         return 0;
     }
+
+	//怪物易损buff
+	void monster_broken_down(const int buff_level)
+	{
+		if (buff_level>if_broken)
+		{
+			Color3B slow_down_buff(255, 0, 0);
+			this->setColor(slow_down_buff);
+			if_broken = buff_level;
+		}
+	}
 
     //攻击萝卜，返回伤害
     void monster_attack_carrot(Carrot* carrot)
@@ -244,7 +257,7 @@ public:
 		schedule([=](float dt)
 			{
 				for (auto& target : monster_wave->getChildren())
-					if (this->getPosition().distance(target->getPosition()) <= distance)
+					if (this->getPosition().distance(target->getPosition()) <= distance)//在攻击范围内
 					{
 						lock_target = (MonSprite*)(target);
 						auto relative_position = lock_target->getPosition() - this->getPosition();
@@ -254,7 +267,7 @@ public:
 						lock_target->addChild(bullet);
 						auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size / 2, monster_texture_size / 2));
 						bullet->runAction(bullet_fly);
-						auto bullet_effect = AudioEngine::play2d("shoot.mp3", false);
+						auto bullet_effect = AudioEngine::play2d("shoot.mp3", false);//子弹飞出
 						switch (level)
 						{
 							case 1:
@@ -331,13 +344,14 @@ public:
 						lock_target->addChild(bullet);
 						auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size / 2, monster_texture_size / 2));
 						bullet->runAction(bullet_fly);
-						auto bullet_effect = AudioEngine::play2d("shoot.mp3", false);
+						auto bullet_effect = AudioEngine::play2d("shoot.mp3", false);//子弹飞出
 						scheduleOnce([=](float dt)
 							{
 								if (lock_target)
 								{
 									lock_target->removeChild(bullet, 1);
-										if (lock_target->monster_hurt(bullet_atk))
+									lock_target->monster_broken_down(this->level);//特殊技能，加上易损buff
+									if (lock_target->monster_hurt(bullet_atk))
 										*gold += lock_target->monster_die();//爆金币
 								}
 							}, bullet_fly_time, "ShitBulletTag");
@@ -386,28 +400,28 @@ public:
 		schedule([=](float dt)
 			{
 				for (auto& target : monster_wave->getChildren())
-					if (this->getPosition().distance(target->getPosition()) <= distance)
-					{
-						lock_target = (MonSprite*)(target);
-						auto relative_position = lock_target->getPosition() - this->getPosition();
-						auto bullet = Sprite::create("etower_bullet.png");
-						bullet->setPosition(-relative_position);
-						lock_target->addChild(bullet);
-						auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size / 2, monster_texture_size / 2));
-						bullet->runAction(bullet_fly);
-						auto bullet_effect = AudioEngine::play2d("shoot.mp3", false);
-						scheduleOnce([=](float dt)
+				if (this->getPosition().distance(target->getPosition()) <= distance)
+				{
+					lock_target = (MonSprite*)(target);
+					auto relative_position = lock_target->getPosition() - this->getPosition();
+					auto bullet = Sprite::create("etower_bullet.png");
+					bullet->setPosition(-relative_position);
+					lock_target->addChild(bullet);
+					auto bullet_fly = MoveTo::create(bullet_fly_time, Vec2(monster_texture_size / 2, monster_texture_size / 2));
+					bullet->runAction(bullet_fly);
+					auto bullet_effect = AudioEngine::play2d("shoot.mp3", false);
+					scheduleOnce([=](float dt)
+						{
+							if (lock_target)
 							{
-								if (lock_target)
-								{
-									lock_target->removeChild(bullet, 1);
-									if (lock_target->monster_hurt(bullet_atk))
-										*gold += lock_target->monster_die();//爆金币
-								}
-							}, bullet_fly_time, "EtowerBulletTag");
+								lock_target->removeChild(bullet, 1);
+								if (lock_target->monster_hurt(bullet_atk))
+									*gold += lock_target->monster_die();//爆金币
+							}
+						}, bullet_fly_time, "EtowerBulletTag");
 
-						break;
-					}
+					break;
+				}
 			}, bullet_shoot_interval, "EtowerGuardTag");
 	}
 };

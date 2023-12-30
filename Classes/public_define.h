@@ -64,10 +64,10 @@
 #define mon4_spd 6
 #define mon5_vit 150
 #define mon5_atk 20
-#define mon5_spd 1
-#define mon6_vit 300
+#define mon5_spd 2
+#define mon6_vit 200
 #define mon6_atk 20
-#define mon6_spd 1
+#define mon6_spd 2
 #define mon7_vit 5000
 #define mon7_atk 20
 #define mon7_spd 50
@@ -96,13 +96,14 @@
 #define cannon1_atk 3
 #define cannon2_atk 5
 #define cannon3_atk 7
-#define shit1_atk 5
-#define shit2_atk 7
-#define shit3_atk 9
+#define shit1_atk 1
+#define shit2_atk 1
+#define shit3_atk 1
 #define etower1_atk 6
 #define etower2_atk 8
 #define etower3_atk 10
 #define bullet_range1 200
 #define bullet_range2 300
 #define bullet_range3 350
+#define AOE_range 3
 
